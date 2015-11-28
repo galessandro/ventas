@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin_min"
+    android:paddingLeft="@dimen/activity_horizontal_margin_min"
+    android:paddingRight="@dimen/activity_horizontal_margin_min"
+    android:paddingTop="@dimen/activity_vertical_margin_min"
+    android:orientation="vertical"
+    android:stretchColumns="1"
+    tools:context=".activity.NewOrderActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextItemList"
+            android:textStyle="bold"
+            android:text="@string/activity_order_cod_order" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtOrderCod" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextItemList"
+            android:textStyle="bold"
+            android:text="@string/activity_order_client" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtOrderClient" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextItemList"
+            android:textStyle="bold"
+            android:text="@string/activity_order_seller" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtOrderSeller" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dip"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextItemList"
+            android:textStyle="bold"
+            android:text="@string/activity_order_date" />
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextItemList"
+            android:textStyle="bold"
+            android:text="@string/activity_order_delivery_date" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="0dip"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtOrderDate" />
+
+        <Button
+            android:layout_width="0dip"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtOrderDeliveryDate" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextItemList"
+            android:textStyle="bold"
+            android:text="@string/activity_order_products" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextItemList"
+            android:textStyle="bold"
+            android:id="@+id/lblTotalProducts" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin_min"
+            android:textColor="@color/colorTextItemList"
+            android:textStyle="bold"
+            android:text="@string/activity_order_total" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/zero_soles"
+            android:textColor="@color/colorTextItemList"
+            android:textStyle="bold"
+            android:id="@+id/txtOrderTotalAmount" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/colorPrimary">
+        <TextView
+            android:layout_width="0dip"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:textColor="@color/order_item_text_color"
+            android:textStyle="bold"
+            android:text="@string/activity_order_item_row_cod"/>
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_weight="5"
+            android:layout_height="wrap_content"
+            android:textColor="@color/order_item_text_color"
+            android:textStyle="bold"
+            android:text="@string/activity_order_item_row_name"/>
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:textColor="@color/order_item_text_color"
+            android:textStyle="bold"
+            android:text="@string/activity_order_item_row_cant"/>
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:textColor="@color/order_item_text_color"
+            android:textStyle="bold"
+            android:text="@string/activity_order_item_row_price"/>
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lstItems"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </ListView>
+
+
+</LinearLayout>

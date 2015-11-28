@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Venta Broster</string>
+    <string name="nav_menu_cerrarVenta">Cerrar ventas</string>
+    <string name="nav_menu_clientes">Clientes</string>
+    <string name="nav_menu_parametros">Configuración</string>
+    <string name="navigation_drawer_close">AA</string>
+    <string name="navigation_drawer_open">BB</string>
+</resources>

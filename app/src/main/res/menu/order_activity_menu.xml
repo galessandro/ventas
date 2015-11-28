@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/order_add_product"
+        android:icon="@mipmap/ic_menu_find"
+        android:title="@string/activity_order_menu_add_product"
+        app:showAsAction="always" />
+
+    <item android:id="@+id/order_set_cliente"
+        android:icon="@mipmap/ic_menu_friendslist"
+        android:title="@string/activity_order_menu_add_cliente"
+        app:showAsAction="always" />
+
+    <item android:id="@+id/order_save_order"
+        android:icon="@mipmap/ic_menu_save"
+        android:title="@string/activity_order_menu_save_order"
+        app:showAsAction="always" />
+</menu>

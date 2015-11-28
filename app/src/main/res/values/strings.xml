@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ventas el Broster</string>
+    <string name="nav_menu_cerrarVenta">Cerrar Ventas</string>
+    <string name="nav_menu_clientes">Clientes</string>
+    <string name="nav_menu_parametros">Configuracion</string>
+    <string name="nav_menu_new_order">Nueva Orden</string>
+    <string name="navigation_drawer_close">AA</string>
+    <string name="navigation_drawer_open">BB</string>
+
+    <string name="simbolo_nuevo_sol">S/.</string>
+    <string name="zero_soles">S/. 0.0</string>
+
+    <string name="login_title">Ventas el Broster</string>
+    <string name="login_user">Usuario:</string>
+    <string name="login_pass">Clave:</string>
+    <string name="login_button">Ingresar</string>
+    <string name="login_user_error">Usuario y/o o clave son invalidos.</string>
+
+    <string name="activity_name_clients">Clientes</string>
+    <string name="activity_client_lbl_search">Ingresar datos</string>
+    <string name="activity_client_lbl_id">Cod. Cliente:</string>
+    <string name="activity_client_lbl_name">Nombres:</string>
+    <string name="activity_client_lbl_first_name">Nombres:</string>
+    <string name="activity_client_lbl_last_name">Apellidos:</string>
+    <string name="activity_client_lbl_address">Dirección:</string>
+    <string name="activity_client_lbl_ruc">RUC:</string>
+    <string name="activity_client_lbl_dni">DNI:</string>
+    <string name="activity_client_btn_save">Grabar</string>
+    <string name="activity_client_btn_cancel">Cancelar</string>
+
+    <string name="activity_name_orders">Ordenes</string>
+    <string name="activity_order_cod_order">Orden:</string>
+    <string name="activity_order_client">Cliente:</string>
+    <string name="activity_order_seller">Vendedor:</string>
+    <string name="activity_order_date">Fecha de pedido:</string>
+    <string name="activity_order_delivery_date">Fecha de entrega:</string>
+    <string name="activity_order_products">Items:</string>
+    <string name="activity_order_total">Total:</string>
+
+    <string name="activity_order_item_row_cod">Codigo</string>
+    <string name="activity_order_item_row_name">Nombre</string>
+    <string name="activity_order_item_row_cant">Cant.</string>
+    <string name="activity_order_item_row_price">Precio</string>
+    <string name="activity_order_item_row_subto">Subtotal</string>
+
+    <string name="activity_order_menu_add_product">Agregar producto</string>
+    <string name="activity_order_menu_add_cliente">Seleccionar Client</string>
+    <string name="activity_order_menu_save_order">Grabar orden</string>
+
+
+    <string name="activity_product_search_desc">Ingrese producto</string>
+
+    <string name="activity_product_add_codigo">Código:</string>
+    <string name="activity_product_add_nombre">Nombre:</string>
+    <string name="activity_product_add_cajapor">Caja por:</string>
+    <string name="activity_product_add_precio">Precio:</string>
+    <string name="activity_product_add_preciouno">Precio 1:</string>
+    <string name="activity_product_add_preciodos">Precio 2:</string>
+    <string name="activity_product_add_cantidad">Cantidad:</string>
+    <string name="activity_product_add_btn_aceptar">Aceptar</string>
+
+</resources>
