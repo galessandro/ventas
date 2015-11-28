@@ -12,9 +12,9 @@ import java.util.Locale;
 public class DateUtil {
 
     private static SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
-            "dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+            "yyyy-MM-dd HH:mm", Locale.getDefault());
     private static SimpleDateFormat dateFormat = new SimpleDateFormat(
-            "dd/MM/yyyy", Locale.getDefault());
+            "yyyy-MM-dd", Locale.getDefault());
     private static Calendar calendar = Calendar.getInstance();
 
     public static Date getDateTime(String date){

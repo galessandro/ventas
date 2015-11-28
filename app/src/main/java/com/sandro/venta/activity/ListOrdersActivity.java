@@ -69,12 +69,12 @@ public class ListOrdersActivity extends AppCompatActivity
         db = new DatabaseHelper(getApplicationContext());
 
         // Create a new TodoListAdapter for this ListActivity's ListView
-        orderAdapter = new OrderAdapter(getApplicationContext(), null);
+        //orderAdapter = new OrderAdapter(getApplicationContext(), null);
 
         ListView lstOrders = (ListView) findViewById(R.id.lstRealOrders);
 
         // Attach the adapter to this ListActivity's ListView
-        lstOrders.setAdapter(orderAdapter);
+        //lstOrders.setAdapter(orderAdapter);
 
         lstOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

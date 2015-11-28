@@ -25,7 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
     // Database Version
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     // Database Name
     private static final String DATABASE_NAME = "ventas";
@@ -286,7 +286,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.i(TAG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
-        //Cursor c = db.rawQuery(selectQuery, null);
 
         Cursor c =  db.query(TABLE_CLIENTS, new String [] {"MAX(codclient)"}, null, null, null, null, null);
 
@@ -357,7 +356,60 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public List<Order> getOrdersFromToday(){
         List<Order> orders = new ArrayList<>();
-        String selectQuery = "SELECT  * FROM " +
+        String selectQuery = "SELECT  " +
+                "O." + KEY_ORDER_COD_SALE + "," +
+                "O." + KEY_ORDER_COD_ORDER + "," +
+                "O." + KEY_ORDER_DATE_AT + "," +
+                "O." + KEY_ORDER_DELIVERY_AT + "," +
+                "C." + KEY_CLIENT_COD_CLIENT + "," +
+                "C." + KEY_CLIENT_FIRST_NAME + "," +
+                "C." + KEY_CLIENT_LAST_NAME + "," +
+                "U." + KEY_USER_COD_SELLER +
+                " FROM " +
+                TABLE_ORDERS +
+                "O INNER JOIN " + TABLE_CLIENTS  + " C ON "  +
+                "O." + KEY_ORDER_CLIENT_COD + " = " +
+                "C." + KEY_CLIENT_COD_CLIENT +
+                " INNER JOIN " + TABLE_USERS  + " U ON "  +
+                "O." + KEY_ORDER_SELLER_COD + " = " +
+                "U." + KEY_USER_COD_SELLER +
+                " WHERE O." + KEY_CREATED_AT + " = ?";
+
+        Log.i(TAG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, new String[]{
+
+        });
+
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                Order order = new Order();
+                Client client = new Client();
+                List<Item> lstItems = new ArrayList<>();
+                Item item = new Item();
+                lstItems.add(item);
+                order.setClient(client);
+                order.setItems(lstItems);
+                SalesMan seller = new SalesMan();
+                order.setSeller(seller);
+                orders.add(order);
+            } while (c.moveToNext());
+        }
+        return orders;
+    }
+
+    public List<Item> getItemsFromOrder() {
+        List<Item> items = new ArrayList<>();
+
+        String selectQuery = "SELECT  " +
+                TABLE_CLIENTS + "." + KEY_CLIENT_COD_CLIENT + "," +
+                TABLE_CLIENTS + "." + KEY_CLIENT_FIRST_NAME + "," +
+                TABLE_CLIENTS + "." + KEY_CLIENT_LAST_NAME + "," +
+                TABLE_USERS + "." + KEY_USER_COD_SELLER +
+                " FROM " +
                 TABLE_ORDERS +
                 " INNER JOIN " + TABLE_CLIENTS  + " ON "  +
                 TABLE_ORDERS + "." + KEY_ORDER_CLIENT_COD + " = " +
@@ -381,18 +433,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
-                Order order = new Order();
-                Client client = new Client();
-                List<Item> lstItems = new ArrayList<>();
                 Item item = new Item();
-                lstItems.add(item);
-                order.setClient(client);
-                order.setItems(lstItems);
-                SalesMan seller = new SalesMan();
-                order.setSeller(seller);
-                orders.add(order);
+                Product product = new Product();
+                item.setProduct(product);
+                product.setId(c.getInt(c.getColumnIndex(KEY_PRODUCT_ID)));
+                product.setCodProduct(c.getString(c.getColumnIndex(KEY_PRODUCT_COD)));
+                product.setName(c.getString(c.getColumnIndex(KEY_PRODUCT_NAME)));
+                //product.setPriceOne(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_ONE)));
+                //product.setPriceTwo(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_TWO)));
+                product.setBoxBy(c.getInt(c.getColumnIndex(KEY_PRODUCT_BOX_BY)));
+                product.setTypeUnit(c.getString(c.getColumnIndex(KEY_PRODUCT_TYPE_UNIT)));
+                // adding to client list
+                items.add(item);
             } while (c.moveToNext());
         }
-        return orders;
+
+        return items;
+
     }
 }
