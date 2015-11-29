@@ -31,7 +31,7 @@ public class ItemAdapter extends ArrayAdapter<Item> {
     private static final String TAG = "ItemAdapter";
 
     public ItemAdapter(Context mContext, List<Item> items) {
-        super(mContext, R.layout.list_product_item, items);
+        super(mContext, R.layout.list_order_item, items);
         this.mContext = mContext;
         this.items = items;
     }

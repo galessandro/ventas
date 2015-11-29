@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.sandro.venta.R;
 import com.sandro.venta.adapter.OrderAdapter;
@@ -69,17 +70,17 @@ public class ListOrdersActivity extends AppCompatActivity
         db = new DatabaseHelper(getApplicationContext());
 
         // Create a new TodoListAdapter for this ListActivity's ListView
-        //orderAdapter = new OrderAdapter(getApplicationContext(), null);
+        orderAdapter = new OrderAdapter(getApplicationContext(), db.getOrdersFromToday());
 
         ListView lstOrders = (ListView) findViewById(R.id.lstRealOrders);
 
         // Attach the adapter to this ListActivity's ListView
-        //lstOrders.setAdapter(orderAdapter);
+        lstOrders.setAdapter(orderAdapter);
 
         lstOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Toast.makeText(ListOrdersActivity.this, "Ordenes", Toast.LENGTH_SHORT).show();
             }
         });
     }

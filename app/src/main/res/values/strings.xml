@@ -29,6 +29,12 @@
     <string name="activity_client_btn_save">Grabar</string>
     <string name="activity_client_btn_cancel">Cancelar</string>
 
+    <string name="activity_back_close_yes">Si</string>
+    <string name="activity_back_close_no">No</string>
+    <string name="activity_back_title">Mensaje</string>
+    <string name="activity_back_warning">¿Esta seguro de salir?\nSe perderan los datos ingresados</string>
+
+
     <string name="activity_name_orders">Ordenes</string>
     <string name="activity_order_cod_order">Orden:</string>
     <string name="activity_order_client">Cliente:</string>

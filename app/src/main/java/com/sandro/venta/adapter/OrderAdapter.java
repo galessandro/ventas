@@ -24,7 +24,7 @@ public class OrderAdapter extends ArrayAdapter<Order> {
     private List<Order> orders;
     private Context mContext;
 
-    private static final String TAG = "ProductAdapter";
+    private static final String TAG = "OrderAdapter";
 
     public OrderAdapter(Context mContext, List<Order> orders) {
         super(mContext, R.layout.list_order_row, orders);
@@ -110,8 +110,8 @@ public class OrderAdapter extends ArrayAdapter<Order> {
 
         if(convertView == null){
             // Inflate the View for this product from product_item_layout.xml
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_product_item, null)
-                    .findViewById(R.id.productItemListLayout);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_order_row, null)
+                    .findViewById(R.id.orderListLayout);
 
             holder = new ViewOrderHolder();
             holder.orderCod = (TextView) convertView.findViewById(R.id.lblOrderCod);
@@ -126,7 +126,7 @@ public class OrderAdapter extends ArrayAdapter<Order> {
         // Get the current product
         final Order order = getItem(position);
 
-        holder.orderCod.setText(order.getCodOrder());
+        holder.orderCod.setText(String.valueOf(order.getCodOrder()));
         holder.orderClient.setText(order.getClient().getBusinessName());
         holder.orderTotalAmount.setText(order.getTotalAmount().toString());
         holder.orderDeliveryDate.setText(DateUtil.getFormatDate(order.getDateDelivery()));

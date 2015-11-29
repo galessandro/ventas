@@ -241,41 +241,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return clients;
     }
 
-    public List<Client> getClientsFilterBySearch(String searchFilter) {
-        List<Client> clients = new ArrayList<>();
-        String selectQuery = "SELECT  * FROM " + TABLE_CLIENTS +
-                " WHERE " + KEY_CLIENT_RUC + " LIKE ? " +
-                " OR " + KEY_CLIENT_FIRST_NAME + " LIKE ? " +
-                " OR " + KEY_CLIENT_LAST_NAME + " LIKE ?";
-
-        Log.i(TAG, selectQuery);
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery(selectQuery, new String[]{
-                "%" +searchFilter + "%",
-                "%" +searchFilter + "%",
-                "%" +searchFilter + "%"});
-
-        // looping through all rows and adding to list
-        if (c.moveToFirst()) {
-            do {
-                Client client = new Client();
-                client.setId(c.getInt(c.getColumnIndex(KEY_CLIENT_ID)));
-                client.setCodClient(c.getInt(c.getColumnIndex(KEY_CLIENT_COD_CLIENT)));
-                client.setFirstName((c.getString(c.getColumnIndex(KEY_CLIENT_FIRST_NAME))));
-                client.setLastName(c.getString(c.getColumnIndex(KEY_CLIENT_LAST_NAME)));
-                client.setAddress((c.getString(c.getColumnIndex(KEY_CLIENT_ADDRESS))));
-                client.setRuc((c.getString(c.getColumnIndex(KEY_CLIENT_RUC))));
-                client.setDni((c.getString(c.getColumnIndex(KEY_CLIENT_DNI))));
-                client.setDateReg(DateUtil.getDateTime(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
-
-                // adding to client list
-                clients.add(client);
-            } while (c.moveToNext());
-        }
-        return clients;
-    }
-
     public int getMaxCodClient(){
         int maxCodClient = 1;
         String selectQuery = "SELECT  MAX( " +
@@ -312,8 +277,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 product.setId(c.getInt(c.getColumnIndex(KEY_PRODUCT_ID)));
                 product.setCodProduct(c.getString(c.getColumnIndex(KEY_PRODUCT_COD)));
                 product.setName(c.getString(c.getColumnIndex(KEY_PRODUCT_NAME)));
-                //product.setPriceOne(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_ONE)));
-                //product.setPriceTwo(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_TWO)));
+                product.setPriceOne(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_ONE)));
+                product.setPriceTwo(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_TWO)));
                 product.setBoxBy(c.getInt(c.getColumnIndex(KEY_PRODUCT_BOX_BY)));
                 product.setTypeUnit(c.getString(c.getColumnIndex(KEY_PRODUCT_TYPE_UNIT)));
                 // adding to client list
@@ -357,7 +322,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<Order> getOrdersFromToday(){
         List<Order> orders = new ArrayList<>();
         String selectQuery = "SELECT  " +
-                "O." + KEY_ORDER_COD_SALE + "," +
+                "O." + KEY_ORDER_COD_SALE + ", " +
                 "O." + KEY_ORDER_COD_ORDER + "," +
                 "O." + KEY_ORDER_DATE_AT + "," +
                 "O." + KEY_ORDER_DELIVERY_AT + "," +
@@ -365,85 +330,87 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "C." + KEY_CLIENT_FIRST_NAME + "," +
                 "C." + KEY_CLIENT_LAST_NAME + "," +
                 "U." + KEY_USER_COD_SELLER +
-                " FROM " +
-                TABLE_ORDERS +
-                "O INNER JOIN " + TABLE_CLIENTS  + " C ON "  +
-                "O." + KEY_ORDER_CLIENT_COD + " = " +
-                "C." + KEY_CLIENT_COD_CLIENT +
-                " INNER JOIN " + TABLE_USERS  + " U ON "  +
-                "O." + KEY_ORDER_SELLER_COD + " = " +
-                "U." + KEY_USER_COD_SELLER +
-                " WHERE O." + KEY_CREATED_AT + " = ?";
+                " FROM " + TABLE_ORDERS +
+                " O INNER JOIN " + TABLE_CLIENTS  + " C ON O." + KEY_ORDER_CLIENT_COD + " =" +
+                " C." + KEY_CLIENT_COD_CLIENT +
+                " INNER JOIN " + TABLE_USERS  + " U ON O." + KEY_ORDER_SELLER_COD + " =" +
+                " U." + KEY_USER_COD_SELLER +
+                " WHERE O." + KEY_CREATED_AT + " BETWEEN datetime(date('now')||' 00:00:00') AND datetime(date('now')||' 23:59:59')";
 
         Log.i(TAG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery(selectQuery, new String[]{
-
-        });
+        Cursor c = db.rawQuery(selectQuery, null);
+        /*Cursor c = db.rawQuery(selectQuery, new String[]{
+                "datetime(date('now')||' 00:00:00')",
+                "datetime(date('now')||' 23:59:59')"
+        });*/
 
 
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
                 Order order = new Order();
+                order.setCodSale(c.getInt(c.getColumnIndex(KEY_ORDER_COD_SALE)));
+                order.setCodOrder(c.getInt(c.getColumnIndex(KEY_ORDER_COD_ORDER)));
+                order.setDateOrder(DateUtil.getDate(c.getString(
+                        c.getColumnIndex(KEY_ORDER_DATE_AT))));
+                order.setDateDelivery(DateUtil.getDate(c.getString(
+                        c.getColumnIndex(KEY_ORDER_DELIVERY_AT))));
                 Client client = new Client();
-                List<Item> lstItems = new ArrayList<>();
-                Item item = new Item();
-                lstItems.add(item);
-                order.setClient(client);
-                order.setItems(lstItems);
+                client.setCodClient(c.getInt(c.getColumnIndex(KEY_CLIENT_COD_CLIENT)));
+                client.setFirstName(c.getString(c.getColumnIndex(KEY_CLIENT_FIRST_NAME)));
+                client.setLastName(c.getString(c.getColumnIndex(KEY_CLIENT_LAST_NAME)));
                 SalesMan seller = new SalesMan();
+                seller.setCodSeller(c.getString(c.getColumnIndex(KEY_USER_COD_SELLER)));
                 order.setSeller(seller);
+                order.setClient(client);
+                order.setItems(getItemsFromOrder(order.getCodSale()));
+
                 orders.add(order);
             } while (c.moveToNext());
         }
         return orders;
     }
 
-    public List<Item> getItemsFromOrder() {
+    public List<Item> getItemsFromOrder(int codSale) {
         List<Item> items = new ArrayList<>();
 
         String selectQuery = "SELECT  " +
-                TABLE_CLIENTS + "." + KEY_CLIENT_COD_CLIENT + "," +
-                TABLE_CLIENTS + "." + KEY_CLIENT_FIRST_NAME + "," +
-                TABLE_CLIENTS + "." + KEY_CLIENT_LAST_NAME + "," +
-                TABLE_USERS + "." + KEY_USER_COD_SELLER +
+                "O." + KEY_ORDER_ITEM_QUANTITY + ", " +
+                "O." + KEY_ORDER_ITEM_PRICE + "," +
+                "O." + KEY_ORDER_ITEM_TYPE_PRICE + "," +
+                "P." + KEY_PRODUCT_COD + "," +
+                "P." + KEY_PRODUCT_NAME + "," +
+                "P." + KEY_PRODUCT_BOX_BY + "," +
+                "P." + KEY_PRODUCT_TYPE_UNIT +
                 " FROM " +
-                TABLE_ORDERS +
-                " INNER JOIN " + TABLE_CLIENTS  + " ON "  +
-                TABLE_ORDERS + "." + KEY_ORDER_CLIENT_COD + " = " +
-                TABLE_CLIENTS + "." + KEY_CLIENT_COD_CLIENT +
-                " INNER JOIN " + TABLE_USERS  + " ON "  +
-                TABLE_ORDERS + "." + KEY_ORDER_SELLER_COD + " = " +
-                TABLE_USERS + "." + KEY_USER_COD_SELLER +
-                " INNER JOIN " + TABLE_ORDER_ITEMS + " ON "  +
-                TABLE_ORDERS + "." + KEY_ORDER_COD_SALE + " = " +
-                TABLE_ORDER_ITEMS + "." + KEY_ORDER_ITEM_COD_SALE +
-                " INNER JOIN " + TABLE_PRODUCTS + " ON "  +
-                TABLE_ORDER_ITEMS + "." + KEY_ORDER_ITEM_COD_PRODUCT + " = " +
-                TABLE_PRODUCTS + "." + KEY_PRODUCT_COD +
-                " WHERE " + TABLE_ORDERS + "";
+                TABLE_ORDER_ITEMS +
+                " O INNER JOIN " + TABLE_PRODUCTS  + " P ON O." + KEY_ORDER_ITEM_COD_PRODUCT + " = " +
+                "P." + KEY_PRODUCT_COD +
+                " WHERE O." + KEY_ORDER_COD_SALE + " = ?";
 
         Log.i(TAG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery(selectQuery, null);
+        Cursor c = db.rawQuery(selectQuery, new String[]{
+                String.valueOf(codSale)
+        });
 
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
                 Item item = new Item();
+                item.setQuantity(c.getInt(c.getColumnIndex(KEY_ORDER_ITEM_QUANTITY)));
+                item.setPrice(c.getDouble(c.getColumnIndex(KEY_ORDER_ITEM_PRICE)));
+                item.setTypePrice(c.getString(c.getColumnIndex(KEY_ORDER_ITEM_TYPE_PRICE)));
                 Product product = new Product();
-                item.setProduct(product);
-                product.setId(c.getInt(c.getColumnIndex(KEY_PRODUCT_ID)));
                 product.setCodProduct(c.getString(c.getColumnIndex(KEY_PRODUCT_COD)));
                 product.setName(c.getString(c.getColumnIndex(KEY_PRODUCT_NAME)));
-                //product.setPriceOne(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_ONE)));
-                //product.setPriceTwo(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_TWO)));
                 product.setBoxBy(c.getInt(c.getColumnIndex(KEY_PRODUCT_BOX_BY)));
                 product.setTypeUnit(c.getString(c.getColumnIndex(KEY_PRODUCT_TYPE_UNIT)));
-                // adding to client list
+                item.setProduct(product);
+                // adding to product list
                 items.add(item);
             } while (c.moveToNext());
         }

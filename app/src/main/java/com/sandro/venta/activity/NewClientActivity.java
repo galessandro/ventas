@@ -1,8 +1,10 @@
 package com.sandro.venta.activity;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -64,7 +66,26 @@ public class NewClientActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(getResources().getString(R.string.activity_back_title))
+                .setMessage(getResources().getString(R.string.activity_back_warning))
+                .setPositiveButton(getResources().getString(R.string.activity_back_close_yes),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                setResult(Activity.RESULT_CANCELED);
+                                finish();
+                            }
 
+                        })
+                .setNegativeButton(getResources().getString(R.string.activity_back_close_no),
+                        null)
+                .show();
+
+    }
 
     private Client loadClientFromActivity() {
         Client client = new Client();
