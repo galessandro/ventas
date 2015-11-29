@@ -109,8 +109,8 @@ public class ListOrdersActivity extends AppCompatActivity
         } else if (id == R.id.nav_new_order) {
             intent.setClass(this, NewOrderActivity.class);
             startActivityForResult(intent, REQUEST_NEW_ORDER_CODE);
-        } else if (id == R.id.nav_closeSale) {
-            intent.setClass(this, CloseSaleActivity.class);
+        } else if (id == R.id.nav_sync) {
+            intent.setClass(this, SyncActivity.class);
             startActivity(intent);
         }
 

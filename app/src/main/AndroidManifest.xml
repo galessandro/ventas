@@ -23,12 +23,17 @@
         <activity
             android:name=".activity.NewOrderActivity"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".activity.CloseSaleActivity" />
+        <activity android:name=".activity.SyncActivity" />
         <activity android:name=".activity.NewClientActivity" />
         <activity android:name=".activity.ViewClientActivity" />
         <activity android:name=".activity.ProductsActivity" />
         <activity android:name=".activity.AddProductActivity" />
         <activity android:name=".activity.SelectClientActivity"></activity>
+        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

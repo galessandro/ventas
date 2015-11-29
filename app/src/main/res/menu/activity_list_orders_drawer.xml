@@ -11,9 +11,9 @@
             android:icon="@mipmap/ic_menu_week"
             android:title="@string/nav_menu_new_order" />
         <item
-            android:id="@+id/nav_closeSale"
+            android:id="@+id/nav_sync"
             android:icon="@mipmap/ic_menu_upload"
-            android:title="@string/nav_menu_cerrarVenta" />
+            android:title="@string/nav_menu_sync" />
     </group>
 
 </menu>

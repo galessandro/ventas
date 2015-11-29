@@ -9,13 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sandro.venta.R;
 import com.sandro.venta.bean.Client;
 import com.sandro.venta.helper.DatabaseHelper;
-import com.sandro.venta.util.DateUtil;
 
 import java.util.Date;
 
@@ -26,7 +23,6 @@ public class NewClientActivity extends AppCompatActivity {
     private EditText txtClientAddress;
     private EditText txtClientRuc;
     private EditText txtClientDni;
-    private Button btnSaveClient;
 
     // Database Helper
     DatabaseHelper db;
@@ -46,7 +42,7 @@ public class NewClientActivity extends AppCompatActivity {
         txtClientAddress = (EditText) findViewById(R.id.txtClientAddress);
         txtClientRuc = (EditText) findViewById(R.id.txtClientRuc);
         txtClientDni = (EditText) findViewById(R.id.txtClientDni);
-        btnSaveClient = (Button) findViewById(R.id.btnSaveClient);
+        Button btnSaveClient = (Button) findViewById(R.id.btnSaveClient);
 
         btnSaveClient.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,12 +75,10 @@ public class NewClientActivity extends AppCompatActivity {
                                 setResult(Activity.RESULT_CANCELED);
                                 finish();
                             }
-
                         })
                 .setNegativeButton(getResources().getString(R.string.activity_back_close_no),
                         null)
                 .show();
-
     }
 
     private Client loadClientFromActivity() {

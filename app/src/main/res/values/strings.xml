@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Ventas el Broster</string>
-    <string name="nav_menu_cerrarVenta">Cerrar Ventas</string>
+    <string name="nav_menu_sync">Sincronizar</string>
     <string name="nav_menu_clientes">Clientes</string>
     <string name="nav_menu_parametros">Configuracion</string>
     <string name="nav_menu_new_order">Nueva Orden</string>
@@ -65,5 +65,7 @@
     <string name="activity_product_add_preciodos">Precio 2:</string>
     <string name="activity_product_add_cantidad">Cantidad:</string>
     <string name="activity_product_add_btn_aceptar">Aceptar</string>
+
+    <string name="activity_sync_items">Sincronizar</string>
 
 </resources>
