@@ -53,10 +53,17 @@ public class AddProductActivity extends AppCompatActivity {
         btnAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                capturarDatosIngresados();
-                addProduct();
+                if (validarDatosIngresados()) {
+                    capturarDatosIngresados();
+                    addProduct();
+                }
             }
         });
+    }
+
+    private boolean validarDatosIngresados() {
+
+        return false;
     }
 
     private void addProduct() {

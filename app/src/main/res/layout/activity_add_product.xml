@@ -73,6 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
+            android:hint="@string/activity_product_add_precio"
             android:ems="10" />
     </TableRow>
 

@@ -6,8 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.sandro.venta.R;
+import com.sandro.venta.activity.SyncActivity;
 import com.sandro.venta.bean.Sync;
 
 import java.util.List;
@@ -99,17 +102,17 @@ public class SyncAdapter extends ArrayAdapter<Sync> {
      * @return A View corresponding to the data at the specified position.
      */
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         ViewSyncHolder holder;
 
         if(convertView == null){
             // Inflate the View for this product from product_item_layout.xml
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_sync_item, null)
-                    .findViewById(R.id.listRealSyncItems);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_sync_item, parent,
+                    false).findViewById(R.id.listRealSyncItems);
 
             holder = new ViewSyncHolder();
-            holder.syncName = (CheckedTextView) convertView.findViewById(R.id.chkSyncItem);
+            holder.syncName = (TextView) convertView.findViewById(R.id.chkSyncItem);
             convertView.setTag(holder);
         } else {
             holder = (ViewSyncHolder) convertView.getTag();
@@ -124,7 +127,9 @@ public class SyncAdapter extends ArrayAdapter<Sync> {
         return convertView;
     }
 
+
+
     private class  ViewSyncHolder {
-        CheckedTextView syncName;
+        TextView syncName;
     }
 }

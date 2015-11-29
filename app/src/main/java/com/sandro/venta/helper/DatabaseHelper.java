@@ -252,7 +252,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c =  db.query(TABLE_CLIENTS, new String [] {"MAX(codclient)"}, null, null, null, null, null);
+        Cursor c =  db.query(TABLE_CLIENTS, new String[]{"MAX(codclient)"}, null, null, null, null, null);
 
         if(c.moveToFirst()){
             maxCodClient = c.getInt(0);
@@ -288,6 +288,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return products;
 
+    }
+
+    public int deleteAllProducts(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_PRODUCTS, null, null);
+    }
+
+    public long createProduct(Product product){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_PRODUCT_COD, product.getCodProduct());
+        values.put(KEY_PRODUCT_NAME, product.getName());
+        values.put(KEY_PRODUCT_PRICE_ONE, product.getPriceOne());
+        values.put(KEY_PRODUCT_PRICE_TWO, product.getPriceTwo());
+        values.put(KEY_PRODUCT_BOX_BY, product.getBoxBy());
+        values.put(KEY_PRODUCT_TYPE_UNIT, product.getTypeUnit());
+
+        return db.insert(TABLE_PRODUCTS, null, values);
     }
 
     public long createOrder(Order order){

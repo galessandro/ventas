@@ -1,8 +1,12 @@
 package com.sandro.venta.activity;
 
-import android.net.Uri;
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,43 +15,43 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.sandro.venta.R;
 import com.sandro.venta.adapter.SyncAdapter;
+import com.sandro.venta.bean.Product;
 import com.sandro.venta.bean.Sync;
+import com.sandro.venta.helper.DatabaseHelper;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SyncActivity extends AppCompatActivity {
 
+    private static final String TAG = "SyncActivity";
+    private DatabaseHelper db;
     private SyncAdapter syncAdapter;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
+    private ListView lstSyncs;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sync);
 
-        // Create a new TodoListAdapter for this ListActivity's ListView
-        syncAdapter = new SyncAdapter(getApplicationContext(), getAllSyncs());
+        db = new DatabaseHelper(getApplicationContext());
 
-        ListView lstSyncs = (ListView) findViewById(R.id.listSyncItems);
+        // Create a new TodoListAdapter for this ListActivity's ListView
+        syncAdapter = new SyncAdapter(this, getAllSyncs());
+
+        lstSyncs = (ListView) findViewById(R.id.listSyncItems);
 
         // Attach the adapter to this ListActivity's ListView
         lstSyncs.setAdapter(syncAdapter);
 
-        lstSyncs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-        });
     }
 
     @Override
@@ -61,19 +65,88 @@ public class SyncActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sync_items:
-                Toast.makeText(this, "chambito", Toast.LENGTH_SHORT).show();;
+                confirmSync();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void confirmSync() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(getResources().getString(R.string.activity_back_title))
+                .setMessage(getResources().getString(R.string.activity_sync_warning))
+                .setPositiveButton(getResources().getString(R.string.activity_back_close_yes),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                syncItemsFromFile();
+                            }
+                        })
+                .setNegativeButton(getResources().getString(R.string.activity_back_close_no),
+                        null)
+                .show();
+    }
+
+    private void syncItemsFromFile() {
+        BufferedReader bufferedReader;
+        try {
+            bufferedReader = new BufferedReader(new FileReader(new
+                    File(getFilesDir() +
+                    File.separator + "productos" +
+                    File.separator + "ARTICULOS.TXT")));
+            String read;
+            List<Product> lstProducts = new ArrayList<>();
+
+            while ((read = bufferedReader.readLine()) != null) {
+                Product product = new Product();
+                product.setCodProduct(read.substring(0, 9).replaceAll("\\s+", ""));
+                product.setName(read.substring(9, 89).trim());
+                product.setPriceOne(Double.parseDouble(read.substring(89, 99)));
+                product.setPriceTwo(Double.parseDouble(read.substring(99, 109)));
+                product.setBoxBy(Integer.parseInt(read.substring(109, 117)));
+                product.setTypeUnit(read.substring(117, 118).isEmpty() ? "U" :
+                        read.substring(117, 118));
+                lstProducts.add(product);
+            }
+
+            bufferedReader.close();
+
+            if(!lstProducts.isEmpty()){
+                int deletedProducts = db.deleteAllProducts();
+                Log.d(TAG, "deletedProducts:" + deletedProducts);
+                for (Product newProduct : lstProducts) {
+                    db.createProduct(newProduct);
+                }
+                Log.d(TAG, "newProducts:" + lstProducts.size());
+
+                Toast.makeText(SyncActivity.this,
+                        getResources().getString(R.string.activity_sync_success),
+                        Toast.LENGTH_SHORT).show();
+            }
+
+        } catch (FileNotFoundException e) {
+            Toast.makeText(this, getResources().getString(R.string.activity_sync_no_found_file),
+                    Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        } catch (IOException e){
+            Toast.makeText(this, getResources().getString(R.string.activity_sync_no_read_line),
+                    Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
     private List<Sync> getAllSyncs() {
         List<Sync> syncs = new ArrayList<>();
-        Sync productSync = new Sync();
-        productSync.setCod(1);
-        productSync.setName("PRODUCTOS");
-        syncs.add(productSync);
+        Sync sync = new Sync();
+        sync.setCod(1);
+        sync.setName("PRODUCTOS");
+        syncs.add(sync);
+        sync = new Sync();
+        sync.setCod(2);
+        sync.setName("CLIENTES");
+        syncs.add(sync);
         return syncs;
     }
 }

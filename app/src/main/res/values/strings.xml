@@ -32,7 +32,8 @@
     <string name="activity_back_close_yes">Si</string>
     <string name="activity_back_close_no">No</string>
     <string name="activity_back_title">Mensaje</string>
-    <string name="activity_back_warning">¿Esta seguro de salir?\nSe perderan los datos ingresados</string>
+    <string name="activity_back_warning">¿Esta seguro de salir?\nSe perderan los
+        datos ingresados</string>
 
 
     <string name="activity_name_orders">Ordenes</string>
@@ -65,7 +66,17 @@
     <string name="activity_product_add_preciodos">Precio 2:</string>
     <string name="activity_product_add_cantidad">Cantidad:</string>
     <string name="activity_product_add_btn_aceptar">Aceptar</string>
+    <string name="product_add_price_hint">Precio</string>
+    <string name="product_add_quantity_hint">Cantidad</string>
 
     <string name="activity_sync_items">Sincronizar</string>
+    <string name="activity_sync_no_check_items">Seleccione el item a sincronizar</string>
+    <string name="activity_sync_no_found_file">No se encontro el archivo a sincronizar
+    en el telefono</string>
+    <string name="activity_sync_no_read_line">Ocurrio un error al intentar leer
+    el archivo</string>
+    <string name="activity_sync_warning">Se sincronizaran los clientes y productos\n
+        ¿Esta seguro de continuar?</string>
+    <string name="activity_sync_success">Se realizo la sincronizacion correctamente</string>
 
 </resources>

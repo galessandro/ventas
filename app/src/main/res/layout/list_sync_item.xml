@@ -4,9 +4,10 @@
     android:layout_height="match_parent"
     android:id="@+id/listRealSyncItems">
 
-    <CheckedTextView
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTextItemList"
         android:id="@+id/chkSyncItem"/>
 
 </LinearLayout>

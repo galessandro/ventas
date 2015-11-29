@@ -41,7 +41,7 @@ public class ProductsActivity extends AppCompatActivity
 
         // Create a new TodoListAdapter for this ListActivity's ListView
         //productAdapter = new ProductAdapter(getApplicationContext(), db.getAllProducts());
-        productAdapter = new ProductAdapter(getApplicationContext(), getProductos());
+        productAdapter = new ProductAdapter(getApplicationContext(), db.getAllProducts());
 
 
         ListView lstProductsView = (ListView) findViewById(R.id.lstProductsView);
