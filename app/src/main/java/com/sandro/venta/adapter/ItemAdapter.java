@@ -154,7 +154,7 @@ public class ItemAdapter extends ArrayAdapter<Item> {
         final TextView txtOrderItemPrice = (TextView) itemLayout.findViewById(R.id.order_item_price);
         txtOrderItemPrice.setText(String.valueOf(item.getPrice()));
 
-        txtOrderItemPrice.addTextChangedListener(new TextWatcher() {
+        /*txtOrderItemPrice.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -170,13 +170,12 @@ public class ItemAdapter extends ArrayAdapter<Item> {
             @Override
             public void afterTextChanged(Editable s) {
             }
-        });
+        });*/
 
         final ImageButton btnOrderItemRemove = (ImageButton) itemLayout.findViewById(R.id.order_item_btn_remove);
         btnOrderItemRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "eliminar",  Toast.LENGTH_SHORT).show();
                 remove(item);
                 ((NewOrderActivity) mContext).updateTotalProducts();
                 ((NewOrderActivity) mContext).updateTotalOrderAmount();

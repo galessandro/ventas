@@ -33,6 +33,7 @@ public class Order implements Parcelable{
         this.client = in.readParcelable(Client.class.getClassLoader());
         this.seller = in.readParcelable(SalesMan.class.getClassLoader());
         this.dateDelivery = new Date(in.readLong());
+        items = new ArrayList<>();
         in.readTypedList(items, Item.CREATOR);
     }
 

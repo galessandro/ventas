@@ -25,7 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
     // Database Version
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     // Database Name
     private static final String DATABASE_NAME = "ventas";
@@ -398,7 +398,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_ORDER_ITEM_COD_SALE, item.getCodSale());
         values.put(KEY_ORDER_ITEM_COD_PRODUCT, item.getProduct().getCodProduct());
         values.put(KEY_ORDER_ITEM_QUANTITY, item.getQuantity());
-        values.put(KEY_ORDER_ITEM_PRICE, item.getProduct().getPriceOne().doubleValue());
+        values.put(KEY_ORDER_ITEM_PRICE, item.getPrice());
         values.put(KEY_ORDER_ITEM_TYPE_UNIT, item.getProduct().getTypeUnit());
         values.put(KEY_ORDER_ITEM_BOX_BY, item.getProduct().getBoxBy());
         values.put(KEY_ORDER_ITEM_TYPE_PRICE, item.getTypePrice());

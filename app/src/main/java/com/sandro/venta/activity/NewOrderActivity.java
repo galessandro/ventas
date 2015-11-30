@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,6 +30,13 @@ import com.sandro.venta.helper.DatabaseHelper;
 import com.sandro.venta.util.DateUtil;
 import com.sandro.venta.util.SessionManager;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -195,10 +204,39 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
             db.createOrderItem(saveItem);
         }
 
+        saveOrderToFile(order);
+
         Intent intent = new Intent();
         intent.putExtra("orderAdded", order);
         setResult(Activity.RESULT_OK, intent);
         finish();
+    }
+
+    private void saveOrderToFile(Order order) {
+        BufferedWriter bufferedWriter;
+        try {
+            File downloadPath =
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            File fileOrder = new File(downloadPath, "ORDERS.TXT");
+            File fileItem = new File(downloadPath, "ITEMS.TXT");
+            bufferedWriter = new BufferedWriter(new FileWriter(fileOrder,true));
+            bufferedWriter.write(order.toString() + "\n");
+            bufferedWriter.close();
+
+            bufferedWriter = new BufferedWriter(new FileWriter(fileItem, true));
+            bufferedWriter.write(order.getItems().toString() + "\n");
+            bufferedWriter.close();
+
+
+        } catch (FileNotFoundException e) {
+            Toast.makeText(this, getResources().getString(R.string.activity_sync_no_found_file),
+                    Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        } catch (IOException e){
+            Toast.makeText(this, getResources().getString(R.string.activity_sync_no_read_line),
+                    Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
 
     private boolean validateNewOrderForm() {
