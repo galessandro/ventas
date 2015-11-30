@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.sandro.venta.R;
 import com.sandro.venta.adapter.OrderAdapter;
+import com.sandro.venta.bean.Order;
 import com.sandro.venta.helper.DatabaseHelper;
 
 public class ListOrdersActivity extends AppCompatActivity
@@ -117,5 +118,15 @@ public class ListOrdersActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_NEW_ORDER_CODE){
+            if(resultCode == AppCompatActivity.RESULT_OK){
+                Order orderAdded = data.getParcelableExtra("orderAdded");
+                orderAdapter.add(orderAdded);
+            }
+        }
     }
 }

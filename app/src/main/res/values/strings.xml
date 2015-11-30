@@ -44,6 +44,12 @@
     <string name="activity_order_delivery_date">Fecha de entrega:</string>
     <string name="activity_order_products">Items:</string>
     <string name="activity_order_total">Total:</string>
+    <string name="order_warning_save">¿Esta seguro de grabar el pedido?</string>
+    <string name="order_error_no_client">Seleccione un cliente</string>
+    <string name="order_error_no_product">Seleccione un producto</string>
+    <string name="order_error_no_quantity">Verifique las cantidades</string>
+    <string name="order_warning_save_accept">Aceptar</string>
+    <string name="order_warning_save_cancel">Cancelar</string>
 
     <string name="activity_order_item_row_cod">Codigo</string>
     <string name="activity_order_item_row_name">Nombre</string>
@@ -52,7 +58,7 @@
     <string name="activity_order_item_row_subto">Subtotal</string>
 
     <string name="activity_order_menu_add_product">Agregar producto</string>
-    <string name="activity_order_menu_add_cliente">Seleccionar Client</string>
+    <string name="activity_order_menu_add_cliente">Seleccionar Cliente</string>
     <string name="activity_order_menu_save_order">Grabar orden</string>
 
 

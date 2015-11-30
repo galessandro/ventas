@@ -46,6 +46,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
     private ListView lstProductsView;
     private Order order;
     private SessionManager session;
+    private int codSale;
 
     DatePickerDialog datePickerOrderDialog;
     DatePickerDialog datePickerDeliveryDialog;
@@ -67,6 +68,8 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
 
         db = new DatabaseHelper(getApplicationContext());
 
+        codSale = db.getMaxOrder() + 1;
+
         itemAdapter = new ItemAdapter(this, new ArrayList<Item>());
 
         lstProductsView = (ListView) findViewById(R.id.lstItems);
@@ -78,6 +81,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
         setDefaultDate();
         setListeners();
         updateSalesMan();
+        txtOrderCod.setText(String.valueOf(codSale));
 
     }
 
@@ -156,20 +160,70 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                 startActivityForResult(i, REQUEST_SEARCH_PRODUCT_CODE);
                 return true;
             case R.id.order_save_order:
-                Toast.makeText(this, "Save order", Toast.LENGTH_SHORT).show();
-                order.setItems(itemAdapter.getItems());
-                order.setCodOrder(1);
-                order.setCodSale(1);
-                order.setDateDelivery(DateUtil.getDate(txtOrderDeliveryDate.getText().toString()));
-                order.setDateOrder(DateUtil.getDate(txtOrderDate.getText().toString()));
-                db.createOrder(order);
-                for (Item saveItem : order.getItems()) {
-                    db.createOrderItem(saveItem);
+                if (validateNewOrderForm()) {
+                    new AlertDialog.Builder(getSupportActionBar().getThemedContext())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle(getResources().getString(R.string.activity_back_title))
+                            .setMessage(getResources().getString(R.string.order_warning_save))
+                            .setPositiveButton(
+                                    getResources().getString(R.string.order_warning_save_accept),
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            saveNewOrder();
+                                        }
+                                    })
+                            .setNegativeButton(
+                                    getResources().getString(R.string.order_warning_save_cancel),
+                                    null)
+                            .show();
                 }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void saveNewOrder() {
+        order.setItems(itemAdapter.getItems());
+        order.setCodOrder(codSale);
+        order.setCodSale(codSale);
+        order.setDateDelivery(DateUtil.getDate(txtOrderDeliveryDate.getText().toString()));
+        order.setDateOrder(DateUtil.getDate(txtOrderDate.getText().toString()));
+        db.createOrder(order);
+        for (Item saveItem : order.getItems()) {
+            db.createOrderItem(saveItem);
+        }
+
+        Intent intent = new Intent();
+        intent.putExtra("orderAdded", order);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
+    }
+
+    private boolean validateNewOrderForm() {
+        if(order.getClient() == null){
+            Toast.makeText(this, getResources().getString(R.string.order_error_no_client),
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if(itemAdapter.getCount() <= 0){
+            Toast.makeText(this, getResources().getString(R.string.order_error_no_product),
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        List<Item> itemValidateList = itemAdapter.getItems();
+        for (Item item : itemValidateList) {
+            if(item.getQuantity() <= 0){
+                Toast.makeText(this, getResources().getString(R.string.order_error_no_quantity),
+                        Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
@@ -185,6 +239,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                     item.setProduct(productAdded);
                     item.setQuantity(quantityAdded);
                     item.setPrice(priceAdded);
+                    item.setCodSale(codSale);
                     item.setTypePrice("P");
                     itemAdapter.add(item);
                     updateTotalProducts();

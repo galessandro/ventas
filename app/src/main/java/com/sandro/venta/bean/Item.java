@@ -1,24 +1,40 @@
 package com.sandro.venta.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Date;
 
 /**
  * Creado por chambo on 25/10/2015.
  */
-public class Item {
+public class Item implements Parcelable{
 
-    private String codSale;
+    private Integer codSale;
     private Product product;
     private Integer quantity;
     private Double price;
     private String typePrice;
     private Date dateReg;
 
-    public String getCodSale() {
+    public Item() {
+
+    }
+
+    private Item(Parcel in) {
+        super();
+        this.codSale = in.readInt();
+        this.product = in.readParcelable(Product.class.getClassLoader());
+        this.quantity = in.readInt();
+        this.price = in.readDouble();
+        this.typePrice = in.readString();
+    }
+
+    public Integer getCodSale() {
         return codSale;
     }
 
-    public void setCodSale(String codSale) {
+    public void setCodSale(Integer codSale) {
         this.codSale = codSale;
     }
 
@@ -62,4 +78,27 @@ public class Item {
         this.dateReg = dateReg;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeInt(getCodSale());
+        parcel.writeParcelable(getProduct(), flags);
+        parcel.writeInt(getQuantity());
+        parcel.writeDouble(getPrice());
+        parcel.writeString(getTypePrice());
+    }
+
+    public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
+        public Item createFromParcel(Parcel in) {
+            return new Item(in);
+        }
+
+        public Item[] newArray(int size) {
+            return new Item[size];
+        }
+    };
 }

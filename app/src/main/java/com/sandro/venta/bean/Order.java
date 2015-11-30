@@ -1,5 +1,8 @@
 package com.sandro.venta.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,7 +10,7 @@ import java.util.List;
 /**
  * Created by t430 on 25/10/2015.
  */
-public class Order {
+public class Order implements Parcelable{
 
     private int codSale;
     private int codOrder;
@@ -20,6 +23,17 @@ public class Order {
 
     public Order (){
         items = new ArrayList<>();
+    }
+
+    private Order(Parcel in) {
+        super();
+        this.codSale = in.readInt();
+        this.codOrder = in.readInt();
+        this.dateOrder = new Date(in.readLong());
+        this.client = in.readParcelable(Client.class.getClassLoader());
+        this.seller = in.readParcelable(SalesMan.class.getClassLoader());
+        this.dateDelivery = new Date(in.readLong());
+        in.readTypedList(items, Item.CREATOR);
     }
 
     public int getCodSale() {
@@ -94,4 +108,29 @@ public class Order {
         return totalAmount;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeInt(getCodSale());
+        parcel.writeInt(getCodOrder());
+        parcel.writeLong(getDateOrder().getTime());
+        parcel.writeParcelable(getClient(), flags);
+        parcel.writeParcelable(getSeller(), flags);
+        parcel.writeLong(getDateDelivery().getTime());
+        parcel.writeTypedList(getItems());
+    }
+
+    public static final Parcelable.Creator<Order> CREATOR = new Parcelable.Creator<Order>() {
+        public Order createFromParcel(Parcel in) {
+            return new Order(in);
+        }
+
+        public Order[] newArray(int size) {
+            return new Order[size];
+        }
+    };
 }

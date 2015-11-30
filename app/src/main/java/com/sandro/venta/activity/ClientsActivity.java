@@ -112,7 +112,6 @@ public class ClientsActivity extends AppCompatActivity implements AdapterView.On
                 Client clientAdded = data.getParcelableExtra("clientAdded");
                 clientAdapter.add(clientAdded);
             } else if (resultCode == Activity.RESULT_CANCELED){
-                Toast.makeText(ClientsActivity.this, "cancelo", Toast.LENGTH_SHORT).show();
             }
         }
     }

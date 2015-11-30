@@ -312,6 +312,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return maxCodClient;
     }
 
+    public int getMaxOrder(){
+        int maxOrder = 1;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c =  db.query(TABLE_ORDERS, new String[]{"MAX(codsale)"}, null, null, null, null, null);
+
+        if(c.moveToFirst()){
+            maxOrder = c.getInt(0);
+        }
+
+        return maxOrder;
+    }
+
     public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
         String selectQuery = "SELECT  * FROM " + TABLE_PRODUCTS;
