@@ -1,7 +1,9 @@
 package com.sandro.venta.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 import com.sandro.venta.R;
 import com.sandro.venta.adapter.SyncAdapter;
+import com.sandro.venta.bean.Client;
 import com.sandro.venta.bean.Product;
 import com.sandro.venta.bean.Sync;
 import com.sandro.venta.helper.DatabaseHelper;
@@ -81,7 +84,8 @@ public class SyncActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                syncItemsFromFile();
+                                syncProductosFromFile();
+                                syncClientesFromFile();
                             }
                         })
                 .setNegativeButton(getResources().getString(R.string.activity_back_close_no),
@@ -89,13 +93,13 @@ public class SyncActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void syncItemsFromFile() {
+    private void syncProductosFromFile() {
         BufferedReader bufferedReader;
         try {
-            bufferedReader = new BufferedReader(new FileReader(new
-                    File(getFilesDir() +
-                    File.separator + "productos" +
-                    File.separator + "ARTICULOS.TXT")));
+            File downloadPath =
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            File file = new File(downloadPath, "ARTICULOS.TXT");
+            bufferedReader = new BufferedReader(new FileReader(file));
             String read;
             List<Product> lstProducts = new ArrayList<>();
 
@@ -120,6 +124,54 @@ public class SyncActivity extends AppCompatActivity {
                     db.createProduct(newProduct);
                 }
                 Log.d(TAG, "newProducts:" + lstProducts.size());
+
+                Toast.makeText(SyncActivity.this,
+                        getResources().getString(R.string.activity_sync_success),
+                        Toast.LENGTH_SHORT).show();
+            }
+
+        } catch (FileNotFoundException e) {
+            Toast.makeText(this, getResources().getString(R.string.activity_sync_no_found_file),
+                    Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        } catch (IOException e){
+            Toast.makeText(this, getResources().getString(R.string.activity_sync_no_read_line),
+                    Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    private void syncClientesFromFile() {
+        BufferedReader bufferedReader;
+        try {
+            File downloadPath =
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            File file = new File(downloadPath, "CLIENTES.TXT");
+            bufferedReader = new BufferedReader(new FileReader(file));
+            String read;
+            List<Client> lstClients = new ArrayList<>();
+            int i = 0;
+            while ((read = bufferedReader.readLine()) != null) {
+                Client client = new Client();
+                i++;
+                client.setCodClient(i);
+                client.setRuc(read.substring(4, 15));
+                client.setDni(read.substring(15, 23));
+                client.setFirstName("");
+                client.setLastName(read.substring(23, 113));
+                client.setAddress(read.substring(113, 193));
+                lstClients.add(client);
+            }
+
+            bufferedReader.close();
+
+            if(!lstClients.isEmpty()){
+                int deletedClients = db.deleteAllClients();
+                Log.d(TAG, "deletedClients:" + deletedClients);
+                for (Client newClient : lstClients) {
+                    db.createClient(newClient);
+                }
+                Log.d(TAG, "newClients:" + lstClients.size());
 
                 Toast.makeText(SyncActivity.this,
                         getResources().getString(R.string.activity_sync_success),

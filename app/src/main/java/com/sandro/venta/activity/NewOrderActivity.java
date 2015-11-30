@@ -2,7 +2,9 @@ package com.sandro.venta.activity;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -24,8 +26,10 @@ import com.sandro.venta.bean.Product;
 import com.sandro.venta.bean.SalesMan;
 import com.sandro.venta.helper.DatabaseHelper;
 import com.sandro.venta.util.DateUtil;
+import com.sandro.venta.util.SessionManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NewOrderActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -41,7 +45,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
     private TextView lblTotalProducts;
     private ListView lstProductsView;
     private Order order;
-    SalesMan salesMan;
+    private SessionManager session;
 
     DatePickerDialog datePickerOrderDialog;
     DatePickerDialog datePickerDeliveryDialog;
@@ -54,10 +58,10 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_order);
 
+        session = new SessionManager(getApplicationContext());
+
         order = new Order();
-        salesMan = new SalesMan();
-        salesMan.setCodSeller("V001");
-        salesMan.setName("Monito Granados");
+        SalesMan salesMan = session.getUserDetails();
         order.setSeller(salesMan);
 
 
@@ -73,7 +77,6 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
         findViewsById();
         setDefaultDate();
         setListeners();
-
         updateSalesMan();
 
     }
@@ -90,10 +93,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void setListeners() {
-        txtOrderDate.setOnClickListener(this);
-        txtOrderDeliveryDate.setOnClickListener(this);
-
-        datePickerOrderDialog = new DatePickerDialog(this,
+        datePickerOrderDialog = new DatePickerDialog(getSupportActionBar().getThemedContext(),
                 new DatePickerDialog.OnDateSetListener() {
 
                     public void onDateSet(DatePicker view, int year,
@@ -108,7 +108,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                 DateUtil.getCurrentMonth(),
                 DateUtil.getCurrentDay());
 
-        datePickerDeliveryDialog = new DatePickerDialog(this,
+        datePickerDeliveryDialog = new DatePickerDialog(getSupportActionBar().getThemedContext(),
                 new DatePickerDialog.OnDateSetListener() {
 
                     public void onDateSet(DatePicker view, int year,
@@ -122,6 +122,9 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                 }, DateUtil.getCurrentYear(),
                 DateUtil.getCurrentMonth(),
                 DateUtil.getCurrentDay());
+
+        txtOrderDate.setOnClickListener(this);
+        txtOrderDeliveryDate.setOnClickListener(this);
     }
 
     @Override
@@ -175,19 +178,23 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
         if(requestCode == REQUEST_SEARCH_PRODUCT_CODE){
             if(resultCode == Activity.RESULT_OK){
                 Product productAdded = data.getParcelableExtra("productAdded");
-                int quantityAdded = data.getIntExtra("quantityAdded", 0);
-                double priceAdded = data.getDoubleExtra("priceAdded", 0d);
-                Item item = new Item();
-                item.setProduct(productAdded);
-                item.setQuantity(quantityAdded);
-                item.setPrice(priceAdded);
-                item.setTypePrice("P");
-                itemAdapter.add(item);
-                updateTotalProducts();
-                updateTotalOrderAmount();
-                Toast.makeText(this, productAdded.getName() + ": " + quantityAdded, Toast.LENGTH_SHORT).show();
+                if(!productAlreadyAdded(productAdded)) {
+                    int quantityAdded = data.getIntExtra("quantityAdded", 0);
+                    double priceAdded = data.getDoubleExtra("priceAdded", 0d);
+                    Item item = new Item();
+                    item.setProduct(productAdded);
+                    item.setQuantity(quantityAdded);
+                    item.setPrice(priceAdded);
+                    item.setTypePrice("P");
+                    itemAdapter.add(item);
+                    updateTotalProducts();
+                    updateTotalOrderAmount();
+                } else {
+                    Toast.makeText(this,
+                            getResources().getString(R.string.product_add_error_product_duplicate),
+                            Toast.LENGTH_SHORT).show();
+                }
             } else if (resultCode == Activity.RESULT_CANCELED){
-                Toast.makeText(this, "cancelo", Toast.LENGTH_SHORT).show();
             }
         }else if(requestCode == REQUEST_SEARCH_CLIENT_CODE){
             if(resultCode == Activity.RESULT_OK){
@@ -195,9 +202,25 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                 order.setClient(clientAdded);
                 updateClient();
             } else if (resultCode == Activity.RESULT_CANCELED){
-                Toast.makeText(NewOrderActivity.this, "cancelo", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void onActivityReenter(int resultCode, Intent data) {
+        super.onActivityReenter(resultCode, data);
+    }
+
+    private boolean productAlreadyAdded(Product productAdded) {
+        boolean isProductAlreadyAdded = false;
+        List<Item> lstItemsAdded = itemAdapter.getItems();
+        for (Item item: lstItemsAdded ) {
+            if(productAdded.getCodProduct().equals(item.getProduct().getCodProduct())){
+                isProductAlreadyAdded = true;
+                break;
+            }
+        }
+        return isProductAlreadyAdded;
     }
 
     public void updateTotalProducts() {
@@ -223,5 +246,24 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
     private void setDefaultDate() {
         txtOrderDate.setText(DateUtil.getCurrentDate());
         txtOrderDeliveryDate.setText(DateUtil.getCurrentDate());
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(getSupportActionBar().getThemedContext())
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(getResources().getString(R.string.activity_back_title))
+                .setMessage(getResources().getString(R.string.activity_back_warning))
+                .setPositiveButton(getResources().getString(R.string.activity_back_close_yes),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                setResult(Activity.RESULT_CANCELED);
+                                finish();
+                            }
+                        })
+                .setNegativeButton(getResources().getString(R.string.activity_back_close_no),
+                        null)
+                .show();
     }
 }

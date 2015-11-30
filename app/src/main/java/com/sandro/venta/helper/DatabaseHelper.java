@@ -25,7 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
     // Database Version
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     // Database Name
     private static final String DATABASE_NAME = "ventas";
@@ -146,7 +146,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
         // creating required tables
         db.execSQL(CREATE_TABLE_USERS);
         db.execSQL(CREATE_TABLE_CLIENTS);
@@ -154,8 +153,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_ORDERS);
         db.execSQL(CREATE_TABLE_ORDERS_ITEM);
 
+        crearUsuariosDefecto(db);
 
+    }
 
+    public SalesMan validateUser(String user, String pass){
+        SalesMan seller = null;
+        String selectQuery = "SELECT  * " +
+                "FROM " + TABLE_USERS + " " +
+                "WHERE " + KEY_USER_USER + " = ? " +
+                " AND " + KEY_USER_PASS + " = ?";
+
+        Log.i(TAG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, new String[]{user, pass});
+
+        if(c.moveToFirst()){
+            seller = new SalesMan();
+            seller.setUser((c.getString(c.getColumnIndex(KEY_USER_USER))));
+            seller.setPass((c.getString(c.getColumnIndex(KEY_USER_PASS))));
+            seller.setCodSeller((c.getString(c.getColumnIndex(KEY_USER_COD_SELLER))));
+            seller.setName((c.getString(c.getColumnIndex(KEY_USER_NAME))));
+        }
+
+        return seller;
+    }
+
+    private void crearUsuariosDefecto(SQLiteDatabase db) {
+        for(SalesMan seller : getDefaultUsers()){
+            createUser(seller, db);
+        }
     }
 
     @Override
@@ -171,6 +199,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    private List<SalesMan> getDefaultUsers(){
+        List<SalesMan> lstUsers = new ArrayList<>();
+        for (int i = 0; i < 5; i++){
+            SalesMan user = new SalesMan();
+            user.setCodSeller("V00" + (i+1));
+            user.setName("Luis" + (i + 1));
+            user.setPass("123");
+            user.setUser("V00" + (i+1));
+            lstUsers.add(user);
+        }
+        return lstUsers;
+    }
+
 
     public long createClient(Client client){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -184,6 +225,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
 
         return db.insert(TABLE_CLIENTS, null, values);
+    }
+
+    public long createUser(SalesMan user, SQLiteDatabase db){
+        ContentValues values = new ContentValues();
+        values.put(KEY_USER_COD_SELLER, user.getCodSeller());
+        values.put(KEY_USER_NAME, user.getName());
+        values.put(KEY_USER_USER, user.getUser());
+        values.put(KEY_USER_PASS, user.getPass());
+
+        return db.insert(TABLE_USERS, null, values);
     }
 
     public Client getClient(int id){
@@ -293,6 +344,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public int deleteAllProducts(){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_PRODUCTS, null, null);
+    }
+
+    public int deleteAllClients(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_CLIENTS, null, null);
     }
 
     public long createProduct(Product product){

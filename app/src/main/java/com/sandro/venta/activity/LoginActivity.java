@@ -6,21 +6,31 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.sandro.venta.R;
 import com.sandro.venta.bean.SalesMan;
+import com.sandro.venta.helper.DatabaseHelper;
+import com.sandro.venta.util.SessionManager;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText txtLoginUser;
     private EditText txtLoginPass;
     private Button btnLogin;
+    DatabaseHelper db;
+    private SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         configActivity();
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
+
+        db = new DatabaseHelper(getApplicationContext());
     }
 
     private void configActivity() {
@@ -37,12 +47,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void logIn(){
-        SalesMan user = new SalesMan();
-        user.setUser(txtLoginUser.getText().toString());
-        user.setPass(txtLoginPass.getText().toString());
+        SalesMan user= db.validateUser(
+                txtLoginUser.getText().toString(),
+                txtLoginPass.getText().toString());
 
-        Intent intent = new Intent(LoginActivity.this, ListOrdersActivity.class);
-        startActivity(intent);
+        if( user != null ){
+            session.logoutUser();
+            session.createLoginSession(user.getName(), user.getCodSeller());
+            Intent intent = new Intent(LoginActivity.this, ListOrdersActivity.class);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, R.string.login_user_error, Toast.LENGTH_SHORT).show();
+        }
+
 
        /* if (user.getUser().equals("admin") && user.getPass().equals("admin")) {
             Intent intent = new Intent(LoginActivity.this, ListOrdersActivity.class);

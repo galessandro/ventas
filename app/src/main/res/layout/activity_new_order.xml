@@ -8,7 +8,6 @@
     android:paddingRight="@dimen/activity_horizontal_margin_min"
     android:paddingTop="@dimen/activity_vertical_margin_min"
     android:orientation="vertical"
-    android:stretchColumns="1"
     tools:context=".activity.NewOrderActivity">
 
     <LinearLayout

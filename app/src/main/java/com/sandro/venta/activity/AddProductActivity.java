@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.sandro.venta.R;
 import com.sandro.venta.bean.Product;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class AddProductActivity extends AppCompatActivity {
 
     private TextView lblCodProduct;
@@ -63,7 +65,27 @@ public class AddProductActivity extends AppCompatActivity {
 
     private boolean validarDatosIngresados() {
 
-        return false;
+        if(StringUtils.isEmpty(txtPriceProduct.getText().toString())){
+            txtPriceProduct.setError(getResources().getString(R.string.product_add_error));
+            return false;
+        }
+
+        if (Double.parseDouble(txtPriceProduct.getText().toString()) <= 0d) {
+            txtPriceProduct.setError(getResources().getString(R.string.product_add_error_zero));
+            return false;
+        }
+
+        if(StringUtils.isEmpty(txtQuantityProduct.getText().toString())){
+            txtQuantityProduct.setError(getResources().getString(R.string.product_add_error));
+            return false;
+        }
+
+        if (Integer.parseInt(txtQuantityProduct.getText().toString()) <= 0){
+            txtQuantityProduct.setError(getResources().getString(R.string.product_add_error_zero));
+            return false;
+        }
+
+        return true;
     }
 
     private void addProduct() {

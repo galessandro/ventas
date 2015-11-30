@@ -18,6 +18,7 @@
         android:layout_weight="5"
         android:textColor="@color/colorTextItemList"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:id="@+id/order_item_name"/>
 
     <EditText

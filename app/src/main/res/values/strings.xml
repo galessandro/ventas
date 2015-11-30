@@ -69,6 +69,11 @@
     <string name="product_add_price_hint">Precio</string>
     <string name="product_add_quantity_hint">Cantidad</string>
 
+    <string name="product_add_error">Este valor es requerido</string>
+    <string name="product_add_error_zero">El valor debe ser mayor a 0</string>
+    <string name="product_add_error_product_duplicate">
+        El producto ya ha sido selccionado. Ingrese otro</string>
+
     <string name="activity_sync_items">Sincronizar</string>
     <string name="activity_sync_no_check_items">Seleccione el item a sincronizar</string>
     <string name="activity_sync_no_found_file">No se encontro el archivo a sincronizar
