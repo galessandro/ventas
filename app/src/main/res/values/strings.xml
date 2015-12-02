@@ -51,6 +51,8 @@
     <string name="order_error_no_client">Seleccione un cliente</string>
     <string name="order_error_no_product">Seleccione un producto</string>
     <string name="order_error_no_quantity">Verifique las cantidades</string>
+    <string name="order_error_date_error">La fecha de entrega no puede ser menor a
+    la fecha del pedido</string>
     <string name="order_warning_save_accept">Aceptar</string>
     <string name="order_warning_save_cancel">Cancelar</string>
     <string name="order_register_success">Se registro correctamente el pedido</string>

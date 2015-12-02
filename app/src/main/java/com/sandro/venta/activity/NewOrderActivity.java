@@ -285,6 +285,14 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
             return false;
         }
 
+
+        if(DateUtil.isDateOneLessThanTwo(DateUtil.getDate(txtOrderDate.getText().toString())
+                , DateUtil.getDate(txtOrderDate.getText().toString()))){
+            Toast.makeText(this, getResources().getString(R.string.order_error_date_error),
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         List<Item> itemValidateList = itemAdapter.getItems();
         for (Item item : itemValidateList) {
             if(item.getQuantity() <= 0){

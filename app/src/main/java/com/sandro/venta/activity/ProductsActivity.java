@@ -128,7 +128,6 @@ public class ProductsActivity extends AppCompatActivity
                 setResult(Activity.RESULT_OK, intent);
                 finish();
             } else if (resultCode == Activity.RESULT_CANCELED){
-                Toast.makeText(this, "cancelo", Toast.LENGTH_SHORT).show();
             }
         }
     }

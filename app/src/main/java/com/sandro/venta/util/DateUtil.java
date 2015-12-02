@@ -21,6 +21,10 @@ public class DateUtil {
             "HH:mm:ss", Locale.getDefault());
     private static Calendar calendar = Calendar.getInstance();
 
+    public static boolean isDateOneLessThanTwo(Date dateOne, Date dateTwo){
+        return dateOne.after(dateTwo);
+    }
+
 
     public static Date getDateTime(String date){
         try {
