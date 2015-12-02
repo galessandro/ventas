@@ -1,5 +1,7 @@
 package com.sandro.venta.activity;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -7,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,6 +26,7 @@ import com.sandro.venta.R;
 import com.sandro.venta.adapter.OrderAdapter;
 import com.sandro.venta.bean.Order;
 import com.sandro.venta.helper.DatabaseHelper;
+import com.sandro.venta.util.SessionManager;
 
 public class ListOrdersActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -88,6 +92,25 @@ public class ListOrdersActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+
+        new AlertDialog.Builder(getSupportActionBar().getThemedContext())
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(getResources().getString(R.string.activity_back_title))
+                .setMessage(getResources().getString(R.string.order_logout))
+                .setPositiveButton(getResources().getString(R.string.activity_back_close_yes),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                clearDrawer();
+                                finish();
+                            }
+                        })
+                .setNegativeButton(getResources().getString(R.string.activity_back_close_no),
+                        null)
+                .show();
+    }
+
+    private void clearDrawer(){
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -129,4 +152,5 @@ public class ListOrdersActivity extends AppCompatActivity
             }
         }
     }
+
 }

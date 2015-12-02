@@ -30,6 +30,8 @@ import com.sandro.venta.helper.DatabaseHelper;
 import com.sandro.venta.util.DateUtil;
 import com.sandro.venta.util.SessionManager;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -38,6 +40,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class NewOrderActivity extends AppCompatActivity implements View.OnClickListener {
@@ -206,10 +209,23 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
 
         saveOrderToFile(order);
 
-        Intent intent = new Intent();
-        intent.putExtra("orderAdded", order);
-        setResult(Activity.RESULT_OK, intent);
-        finish();
+
+        new AlertDialog.Builder(getSupportActionBar().getThemedContext())
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setTitle(getResources().getString(R.string.activity_back_title))
+                .setMessage(getResources().getString(R.string.order_register_success))
+                .setPositiveButton(
+                        getResources().getString(R.string.order_warning_save_accept),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent();
+                                intent.putExtra("orderAdded", order);
+                                setResult(Activity.RESULT_OK, intent);
+                                finish();
+                            }
+                        })
+                .show();
     }
 
     private void saveOrderToFile(Order order) {
@@ -219,11 +235,28 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
             File fileOrder = new File(downloadPath, "ORDERS.TXT");
             File fileItem = new File(downloadPath, "ITEMS.TXT");
+
+            StringBuffer sb = new StringBuffer();
+            sb.append(StringUtils.leftPad(String.valueOf(order.getCodSale()), 8, "0"))
+                    .append(StringUtils.leftPad(String.valueOf(order.getCodOrder()), 4, "0"))
+                    .append(DateUtil.getFormatDate(order.getDateOrder(), DateUtil.dateSimpleFormat))
+                    .append(StringUtils.leftPad(String.valueOf(order.getClient().getCodClient()), 4, "0"))
+                    .append(order.getSeller().getCodSeller().substring(0, 2))
+                    .append(DateUtil.getFormatDate(order.getDateDelivery(), DateUtil.dateSimpleFormat))
+                    .append(DateUtil.getFormatDate(new Date(), DateUtil.dateSimpleFormat))
+                    .append(DateUtil.getFormatDate(new Date(), DateUtil.timeFormat));
+
             bufferedWriter = new BufferedWriter(new FileWriter(fileOrder,true));
-            bufferedWriter.write(order.toString() + "\n");
+            bufferedWriter.write(sb.toString() + "\n");
             bufferedWriter.close();
 
             bufferedWriter = new BufferedWriter(new FileWriter(fileItem, true));
+
+            /*for (Item item : order.getItems()) {
+                StringUtils.leftPad(String.valueOf(item.getCodSale()), 8, "0");
+                StringUtils.rightPad(item.getProduct().getCodProduct(), 9, " ");
+            }*/
+
             bufferedWriter.write(order.getItems().toString() + "\n");
             bufferedWriter.close();
 

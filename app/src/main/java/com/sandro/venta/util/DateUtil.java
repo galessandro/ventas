@@ -11,11 +11,16 @@ import java.util.Locale;
  */
 public class DateUtil {
 
-    private static SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
+    public static SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
             "yyyy-MM-dd HH:mm", Locale.getDefault());
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat(
+    public static SimpleDateFormat dateFormat = new SimpleDateFormat(
             "yyyy-MM-dd", Locale.getDefault());
+    public static SimpleDateFormat dateSimpleFormat = new SimpleDateFormat(
+            "yyyyMMdd", Locale.getDefault());
+    public static SimpleDateFormat timeFormat = new SimpleDateFormat(
+            "HH:mm:ss", Locale.getDefault());
     private static Calendar calendar = Calendar.getInstance();
+
 
     public static Date getDateTime(String date){
         try {
@@ -28,6 +33,10 @@ public class DateUtil {
 
     public static String getFormatDate(Date date){
         return dateFormat.format(date);
+    }
+
+    public static String getFormatDate(Date date, SimpleDateFormat format){
+        return format.format(date);
     }
 
     public static Date getDate(String date){

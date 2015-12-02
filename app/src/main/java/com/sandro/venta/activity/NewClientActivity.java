@@ -14,6 +14,8 @@ import com.sandro.venta.R;
 import com.sandro.venta.bean.Client;
 import com.sandro.venta.helper.DatabaseHelper;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Date;
 
 public class NewClientActivity extends AppCompatActivity {
@@ -47,11 +49,47 @@ public class NewClientActivity extends AppCompatActivity {
         btnSaveClient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Client client = loadClientFromActivity();
-                saveClient(client);
+                if (validateForm()) {
+                    Client client = loadClientFromActivity();
+                    saveClient(client);
+                }
             }
         });
 
+    }
+
+    private boolean validateForm() {
+        if(StringUtils.isEmpty(txtClientFirstName.getText().toString())){
+            txtClientFirstName.setError(
+                    getResources().getString(R.string.client_add_error_required_value));
+            return false;
+        }
+
+        if(StringUtils.isEmpty(txtClientLastName.getText().toString())){
+            txtClientLastName.setError(
+                    getResources().getString(R.string.client_add_error_required_value));
+            return false;
+        }
+
+        if(StringUtils.isEmpty(txtClientAddress.getText().toString())){
+            txtClientAddress.setError(
+                    getResources().getString(R.string.client_add_error_required_value));
+            return false;
+        }
+
+        if(StringUtils.isEmpty(txtClientRuc.getText().toString())){
+            txtClientRuc.setError(
+                    getResources().getString(R.string.client_add_error_required_value));
+            return false;
+        }
+
+        if(StringUtils.isEmpty(txtClientDni.getText().toString())){
+            txtClientDni.setError(
+                    getResources().getString(R.string.client_add_error_required_value));
+            return false;
+        }
+
+        return true;
     }
 
     private void saveClient(Client client) {

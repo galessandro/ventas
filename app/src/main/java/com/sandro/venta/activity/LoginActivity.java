@@ -33,6 +33,18 @@ public class LoginActivity extends AppCompatActivity {
         db = new DatabaseHelper(getApplicationContext());
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        clearForm();
+    }
+
+    private void clearForm() {
+        txtLoginUser.setText("");
+        txtLoginPass.setText("");
+        txtLoginUser.requestFocus();
+    }
+
     private void configActivity() {
         txtLoginUser = (EditText) findViewById(R.id.txtLoginUser);
         txtLoginPass = (EditText) findViewById(R.id.txtLoginPass);

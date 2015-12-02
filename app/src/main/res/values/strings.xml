@@ -29,6 +29,9 @@
     <string name="activity_client_btn_save">Grabar</string>
     <string name="activity_client_btn_cancel">Cancelar</string>
 
+    <string name="client_add_error_required_value">Este valor es requerido</string>
+
+
     <string name="activity_back_close_yes">Si</string>
     <string name="activity_back_close_no">No</string>
     <string name="activity_back_title">Mensaje</string>
@@ -50,6 +53,8 @@
     <string name="order_error_no_quantity">Verifique las cantidades</string>
     <string name="order_warning_save_accept">Aceptar</string>
     <string name="order_warning_save_cancel">Cancelar</string>
+    <string name="order_register_success">Se registro correctamente el pedido</string>
+    <string name="order_logout">¿Esta seguro que desea salir de la aplicacion?</string>
 
     <string name="activity_order_item_row_cod">Codigo</string>
     <string name="activity_order_item_row_name">Nombre</string>

@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:ems="10"
+            android:maxLength="45"
             android:id="@+id/txtClientFirstName" />
     </TableRow>
 
@@ -45,6 +46,7 @@
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:ems="10"
+            android:maxLength="45"
             android:id="@+id/txtClientLastName" />
     </TableRow>
 
@@ -61,6 +63,7 @@
             android:layout_height="wrap_content"
             android:inputType="text"
             android:ems="10"
+            android:maxLength="80"
             android:id="@+id/txtClientAddress" />
     </TableRow>
 
@@ -77,6 +80,7 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:ems="10"
+            android:maxLength="11"
             android:id="@+id/txtClientRuc" />
     </TableRow>
 
@@ -93,6 +97,7 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:ems="10"
+            android:maxLength="8"
             android:id="@+id/txtClientDni" />
     </TableRow>
 
