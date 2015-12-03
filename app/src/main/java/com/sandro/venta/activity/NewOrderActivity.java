@@ -236,6 +236,8 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
             File fileOrder = new File(downloadPath, "ORDERS.TXT");
             File fileItem = new File(downloadPath, "ITEMS.TXT");
 
+            Date date = new Date();
+
             StringBuffer sb = new StringBuffer();
             sb.append(StringUtils.leftPad(String.valueOf(order.getCodSale()), 8, "0"))
                     .append(StringUtils.leftPad(String.valueOf(order.getCodOrder()), 4, "0"))
@@ -243,21 +245,28 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                     .append(StringUtils.leftPad(String.valueOf(order.getClient().getCodClient()), 4, "0"))
                     .append(order.getSeller().getCodSeller().substring(0, 2))
                     .append(DateUtil.getFormatDate(order.getDateDelivery(), DateUtil.dateSimpleFormat))
-                    .append(DateUtil.getFormatDate(new Date(), DateUtil.dateSimpleFormat))
-                    .append(DateUtil.getFormatDate(new Date(), DateUtil.timeFormat));
+                    .append(DateUtil.getFormatDate(date, DateUtil.dateSimpleFormat))
+                    .append(DateUtil.getFormatDate(date, DateUtil.timeFormat));
 
             bufferedWriter = new BufferedWriter(new FileWriter(fileOrder,true));
             bufferedWriter.write(sb.toString() + "\n");
             bufferedWriter.close();
 
             bufferedWriter = new BufferedWriter(new FileWriter(fileItem, true));
-
-            /*for (Item item : order.getItems()) {
-                StringUtils.leftPad(String.valueOf(item.getCodSale()), 8, "0");
-                StringUtils.rightPad(item.getProduct().getCodProduct(), 9, " ");
-            }*/
-
-            bufferedWriter.write(order.getItems().toString() + "\n");
+            for (Item item : order.getItems()) {
+                sb = new StringBuffer();
+                sb.append(StringUtils.leftPad(String.valueOf(item.getCodSale()), 8, "0"))
+                        .append(StringUtils.rightPad(item.getProduct().getCodProduct(), 9, " "))
+                        .append(StringUtils.leftPad(String.valueOf(item.getQuantity()), 6, " "))
+                        .append(StringUtils.leftPad(String.valueOf(item.getPrice()), 10, " "))
+                        .append(item.getTypePrice())
+                        .append(StringUtils.leftPad(String.valueOf(
+                                item.getProduct().getBoxBy()), 8, "0"))
+                        .append(item.getProduct().getTypeUnit())
+                        .append(DateUtil.getFormatDate(date, DateUtil.dateSimpleFormat))
+                        .append(DateUtil.getFormatDate(date, DateUtil.timeFormat));
+                bufferedWriter.write(sb.toString() + "\n");
+            }
             bufferedWriter.close();
 
 
