@@ -9,6 +9,7 @@
         android:id="@+id/productDesc"
         android:layout_width="0dip"
         android:layout_weight="9"
+        android:textColor="@color/colorTextItemList"
         android:layout_height="wrap_content" />
 
     <ImageView
