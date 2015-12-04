@@ -22,4 +22,13 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="PopupSelectList">
+        <item name="android:textSize">16.0sp</item>
+        <item name="android:textColor">@color/list_client_item_bg</item>
+        <item name="android:background">@color/list_client_item_bg</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/activity_vertical_margin_min</item>
+    </style>
+
 </resources>

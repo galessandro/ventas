@@ -112,7 +112,7 @@ public class SyncAdapter extends ArrayAdapter<Sync> {
                     false).findViewById(R.id.listRealSyncItems);
 
             holder = new ViewSyncHolder();
-            holder.syncName = (TextView) convertView.findViewById(R.id.chkSyncItem);
+            holder.syncName = (CheckedTextView) convertView.findViewById(R.id.chkSyncItem);
             convertView.setTag(holder);
         } else {
             holder = (ViewSyncHolder) convertView.getTag();
@@ -122,6 +122,15 @@ public class SyncAdapter extends ArrayAdapter<Sync> {
         final Sync sync = getItem(position);
 
         holder.syncName.setText(sync.getName());
+        holder.syncName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((CheckedTextView)v).toggle();
+            }
+        });
+        //holder.syncName.setSelected(mCheckedItem == position ? true : false);
+        //holder.syncName.setCheckMarkDrawable(position == mCheckedItem ? R.drawable.btn_radio_off_holo_light
+         //       : R.drawable.btn_radio_on_holo_light);
 
         // Return the View you just created
         return convertView;
@@ -130,6 +139,6 @@ public class SyncAdapter extends ArrayAdapter<Sync> {
 
 
     private class  ViewSyncHolder {
-        TextView syncName;
+        CheckedTextView syncName;
     }
 }
