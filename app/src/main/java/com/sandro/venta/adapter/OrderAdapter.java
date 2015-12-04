@@ -129,7 +129,7 @@ public class OrderAdapter extends ArrayAdapter<Order> {
         holder.orderCod.setText(String.valueOf(order.getCodOrder()));
         holder.orderClient.setText(order.getClient().getBusinessName());
         holder.orderTotalAmount.setText(order.getTotalAmount().toString());
-        holder.orderDeliveryDate.setText(DateUtil.getFormatDate(order.getDateDelivery()));
+        holder.orderDeliveryDate.setText(DateUtil.getFormatDate(order.getDateDelivery(), DateUtil.datePeruFormat));
 
         // Return the View you just created
         return convertView;

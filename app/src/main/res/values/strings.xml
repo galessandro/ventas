@@ -96,5 +96,9 @@
     <string name="activity_sync_warning">Se sincronizaran los clientes y productos\n
         ¿Esta seguro de continuar?</string>
     <string name="activity_sync_success">Se realizo la sincronizacion correctamente</string>
+    <string name="order_row_cod_order">Cod.</string>
+    <string name="order_row_name_client">Cliente</string>
+    <string name="order_row_total_amount">Total</string>
+    <string name="order_row_delivery_date">Fec. entrega</string>
 
 </resources>

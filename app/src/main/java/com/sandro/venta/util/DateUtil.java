@@ -19,6 +19,8 @@ public class DateUtil {
             "yyyyMMdd", Locale.getDefault());
     public static SimpleDateFormat timeFormat = new SimpleDateFormat(
             "HH:mm:ss", Locale.getDefault());
+    public static SimpleDateFormat datePeruFormat = new SimpleDateFormat(
+            "dd-MM-yyyy", Locale.getDefault());
     private static Calendar calendar = Calendar.getInstance();
 
     public static boolean isDateOneLessThanTwo(Date dateOne, Date dateTwo){

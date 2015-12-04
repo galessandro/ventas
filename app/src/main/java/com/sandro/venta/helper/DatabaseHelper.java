@@ -423,7 +423,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " C." + KEY_CLIENT_COD_CLIENT +
                 " INNER JOIN " + TABLE_USERS  + " U ON O." + KEY_ORDER_SELLER_COD + " =" +
                 " U." + KEY_USER_COD_SELLER +
-                " WHERE O." + KEY_CREATED_AT + " BETWEEN datetime(date('now')||' 00:00:00') AND datetime(date('now')||' 23:59:59')";
+                " WHERE O." + KEY_CREATED_AT + " BETWEEN datetime(date('now', 'localtime')||' 00:00:00') AND datetime(date('now', 'localtime')||' 23:59:59')";
 
         Log.i(TAG, selectQuery);
 
