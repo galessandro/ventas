@@ -417,7 +417,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "C." + KEY_CLIENT_COD_CLIENT + "," +
                 "C." + KEY_CLIENT_FIRST_NAME + "," +
                 "C." + KEY_CLIENT_LAST_NAME + "," +
-                "U." + KEY_USER_COD_SELLER +
+                "U." + KEY_USER_COD_SELLER + "," +
+                "U." + KEY_USER_NAME +
                 " FROM " + TABLE_ORDERS +
                 " O INNER JOIN " + TABLE_CLIENTS  + " C ON O." + KEY_ORDER_CLIENT_COD + " =" +
                 " C." + KEY_CLIENT_COD_CLIENT +
@@ -451,6 +452,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 client.setLastName(c.getString(c.getColumnIndex(KEY_CLIENT_LAST_NAME)));
                 SalesMan seller = new SalesMan();
                 seller.setCodSeller(c.getString(c.getColumnIndex(KEY_USER_COD_SELLER)));
+                seller.setName(c.getString(c.getColumnIndex(KEY_USER_NAME)));
                 order.setSeller(seller);
                 order.setClient(client);
                 order.setItems(getItemsFromOrder(order.getCodSale()));

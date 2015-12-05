@@ -85,7 +85,7 @@ public class Item implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeInt(getCodSale());
+        parcel.writeInt(getCodSale() == null ? 0 : getCodSale());
         parcel.writeParcelable(getProduct(), flags);
         parcel.writeInt(getQuantity());
         parcel.writeDouble(getPrice());

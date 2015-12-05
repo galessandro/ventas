@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Ventas el Broster</string>
+    <string name="app_name">Ventas Wilfredo</string>
     <string name="nav_menu_sync">Sincronizar</string>
     <string name="nav_menu_clientes">Clientes</string>
     <string name="nav_menu_parametros">Configuracion</string>
@@ -99,6 +99,7 @@
     <string name="order_row_cod_order">Cod.</string>
     <string name="order_row_name_client">Cliente</string>
     <string name="order_row_total_amount">Total</string>
+    <string name="order_row_total_amount_with_symbol">S/. Total</string>
     <string name="order_row_delivery_date">Fec. entrega</string>
 
 </resources>

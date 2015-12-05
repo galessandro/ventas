@@ -75,7 +75,7 @@ public class ListOrdersActivity extends AppCompatActivity
         db = new DatabaseHelper(getApplicationContext());
 
         // Create a new TodoListAdapter for this ListActivity's ListView
-        orderAdapter = new OrderAdapter(getApplicationContext(), db.getOrdersFromToday());
+        orderAdapter = new OrderAdapter(this, db.getOrdersFromToday());
 
         ListView lstOrders = (ListView) findViewById(R.id.lstRealOrders);
 

@@ -40,7 +40,6 @@ public class Client implements Parcelable {
         this.address = in.readString();
         this.ruc = in.readString();
         this.dni = in.readString();
-        this.dateReg =  new Date(in.readLong());
     }
 
     public int getId() {
@@ -125,7 +124,6 @@ public class Client implements Parcelable {
         parcel.writeString(getAddress());
         parcel.writeString(getRuc());
         parcel.writeString(getDni());
-        parcel.writeLong(getDateReg().getTime());
     }
 
     public static final Parcelable.Creator<Client> CREATOR = new Parcelable.Creator<Client>() {

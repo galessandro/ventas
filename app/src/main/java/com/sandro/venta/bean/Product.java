@@ -113,8 +113,8 @@ public class Product implements Parcelable {
         parcel.writeInt(getId());
         parcel.writeString(getCodProduct());
         parcel.writeString(getName());
-        parcel.writeDouble(getPriceOne());
-        parcel.writeDouble(getPriceTwo());
+        parcel.writeDouble(getPriceOne() == null ? 0d : getPriceOne());
+        parcel.writeDouble(getPriceTwo() == null ? 0d : getPriceTwo());
         parcel.writeInt(getBoxBy());
         parcel.writeString(getTypeUnit());
     }
