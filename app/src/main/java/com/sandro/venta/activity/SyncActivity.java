@@ -3,6 +3,7 @@ package com.sandro.venta.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,8 +15,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.sandro.venta.R;
@@ -39,6 +42,8 @@ public class SyncActivity extends AppCompatActivity {
     private DatabaseHelper db;
     private SyncAdapter syncAdapter;
     private ListView lstSyncs;
+    private ProgressBar mProgressBar;
+    private Button btnSync;
 
     private static final int PRODUCTOS = 0;
     private static final int CLIENTES = 1;
@@ -48,6 +53,8 @@ public class SyncActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sync);
+
+        btnSync = (Button) findViewById(R.id.btnSync);
 
         db = new DatabaseHelper(getApplicationContext());
 
@@ -68,19 +75,11 @@ public class SyncActivity extends AppCompatActivity {
         // Attach the adapter to this ListActivity's ListView
         lstSyncs.setAdapter(syncAdapter);
 
-    }
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.sync_activity_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.sync_items:
+        btnSync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 List<Integer> checkedItems = getSelectedItems();
                 if(checkedItems.size() <= 0){
                     Toast.makeText(SyncActivity.this,
@@ -89,10 +88,9 @@ public class SyncActivity extends AppCompatActivity {
                 } else {
                     confirmSync(checkedItems);
                 }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+            }
+        });
+
     }
 
     private List<Integer> getSelectedItems() {
@@ -118,13 +116,14 @@ public class SyncActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                for (Integer i: checkedItems) {
+                                /*for (Integer i: checkedItems) {
                                     if (i == PRODUCTOS) {
                                         syncProductosFromFile();
                                     } else if (i == CLIENTES) {
                                         syncClientesFromFile();
                                     }
-                                }
+                                }*/
+                                new SyncFileTask().execute(checkedItems);
                             }
                         })
                 .setNegativeButton(getResources().getString(R.string.activity_back_close_no),
@@ -132,7 +131,7 @@ public class SyncActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void syncProductosFromFile() {
+    private int syncProductosFromFile() {
         BufferedReader bufferedReader;
         try {
             File downloadPath =
@@ -163,10 +162,7 @@ public class SyncActivity extends AppCompatActivity {
                     db.createProduct(newProduct);
                 }
                 Log.d(TAG, "newProducts:" + lstProducts.size());
-
-                Toast.makeText(SyncActivity.this,
-                        getResources().getString(R.string.activity_sync_success),
-                        Toast.LENGTH_SHORT).show();
+                return 0;
             }
 
         } catch (FileNotFoundException e) {
@@ -178,9 +174,10 @@ public class SyncActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
+        return -1;
     }
 
-    private void syncClientesFromFile() {
+    private int syncClientesFromFile() {
         BufferedReader bufferedReader;
         try {
             File downloadPath =
@@ -212,9 +209,7 @@ public class SyncActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, "newClients:" + lstClients.size());
 
-                Toast.makeText(SyncActivity.this,
-                        getResources().getString(R.string.activity_sync_success),
-                        Toast.LENGTH_SHORT).show();
+                return 0;
             }
 
         } catch (FileNotFoundException e) {
@@ -226,6 +221,46 @@ public class SyncActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
+        return -1;
+    }
+
+    class SyncFileTask extends AsyncTask<List<Integer>, Integer, Void> {
+        @Override
+        protected void onPreExecute() {
+            btnSync.setEnabled(false);
+            mProgressBar.setVisibility(ProgressBar.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(List<Integer>... checkedItems) {
+            List<Integer> result = checkedItems[0];
+            for (Integer i: result) {
+                if (i == PRODUCTOS) {
+                    syncProductosFromFile();
+                    publishProgress(20);
+                } else if (i == CLIENTES) {
+                    publishProgress(30);
+                    syncClientesFromFile();
+                    publishProgress(100);
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            mProgressBar.setProgress(values[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Void nothing) {
+            mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+            btnSync.setEnabled(true);
+            Toast.makeText(SyncActivity.this,
+                    getResources().getString(R.string.activity_sync_success),
+                    Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private List<Sync> getAllSyncs() {

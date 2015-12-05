@@ -12,11 +12,27 @@
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/listSyncItems"
         android:choiceMode="multipleChoice"
         >
 
     </ListView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="5dip"
+        android:minHeight="5dip"
+        android:visibility="invisible" >
+    </ProgressBar>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnSync"
+        android:text="@string/activity_sync_items"/>
 
 </LinearLayout>
