@@ -27,6 +27,7 @@ import com.sandro.venta.bean.Client;
 import com.sandro.venta.bean.Product;
 import com.sandro.venta.bean.Sync;
 import com.sandro.venta.helper.DatabaseHelper;
+import com.sandro.venta.util.ObjectResponse;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -131,7 +132,8 @@ public class SyncActivity extends AppCompatActivity {
                 .show();
     }
 
-    private int syncProductosFromFile() {
+    private ObjectResponse syncProductosFromFile() {
+        ObjectResponse response = new ObjectResponse();
         BufferedReader bufferedReader;
         try {
             File downloadPath =
@@ -162,22 +164,25 @@ public class SyncActivity extends AppCompatActivity {
                     db.createProduct(newProduct);
                 }
                 Log.d(TAG, "newProducts:" + lstProducts.size());
-                return 0;
+                response.setError(false);
             }
 
         } catch (FileNotFoundException e) {
-            Toast.makeText(this, getResources().getString(R.string.activity_sync_no_found_file),
-                    Toast.LENGTH_SHORT).show();
             e.printStackTrace();
+            response.addMensaje(getResources().getString(R.string.activity_sync_no_found_file_producto));
+            response.setError(true);
+
         } catch (IOException e){
-            Toast.makeText(this, getResources().getString(R.string.activity_sync_no_read_line),
-                    Toast.LENGTH_SHORT).show();
             e.printStackTrace();
+            response.addMensaje(getResources().getString(R.string.activity_sync_no_read_line_producto));
+            response.setError(true);
+
         }
-        return -1;
+        return response;
     }
 
-    private int syncClientesFromFile() {
+    private ObjectResponse syncClientesFromFile() {
+        ObjectResponse response = new ObjectResponse();
         BufferedReader bufferedReader;
         try {
             File downloadPath =
@@ -208,22 +213,22 @@ public class SyncActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, "newClients:" + lstClients.size());
 
-                return 0;
+                response.setError(false);
             }
 
         } catch (FileNotFoundException e) {
-            Toast.makeText(this, getResources().getString(R.string.activity_sync_no_found_file),
-                    Toast.LENGTH_SHORT).show();
             e.printStackTrace();
+            response.addMensaje(getResources().getString(R.string.activity_sync_no_found_file_cliente));
+            response.setError(true);
         } catch (IOException e){
-            Toast.makeText(this, getResources().getString(R.string.activity_sync_no_read_line),
-                    Toast.LENGTH_SHORT).show();
             e.printStackTrace();
+            response.addMensaje(getResources().getString(R.string.activity_sync_no_found_file_cliente));
+            response.setError(true);
         }
-        return -1;
+        return response;
     }
 
-    class SyncFileTask extends AsyncTask<List<Integer>, Integer, Void> {
+    class SyncFileTask extends AsyncTask<List<Integer>, Integer, List<ObjectResponse>> {
         @Override
         protected void onPreExecute() {
             btnSync.setEnabled(false);
@@ -231,19 +236,22 @@ public class SyncActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Void doInBackground(List<Integer>... checkedItems) {
+        protected List<ObjectResponse> doInBackground(List<Integer>... checkedItems) {
+            List<ObjectResponse> response = new ArrayList<>();
             List<Integer> result = checkedItems[0];
             for (Integer i: result) {
                 if (i == PRODUCTOS) {
-                    syncProductosFromFile();
+                    ObjectResponse resultProducts = syncProductosFromFile();
+                    response.add(resultProducts);
                     publishProgress(20);
                 } else if (i == CLIENTES) {
-                    publishProgress(30);
-                    syncClientesFromFile();
+                    publishProgress(40);
+                    ObjectResponse resultClients = syncClientesFromFile();
+                    response.add(resultClients);
                     publishProgress(100);
                 }
             }
-            return null;
+            return response;
         }
 
         @Override
@@ -252,12 +260,28 @@ public class SyncActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Void nothing) {
+        protected void onPostExecute(List<ObjectResponse> results) {
             mProgressBar.setVisibility(ProgressBar.INVISIBLE);
             btnSync.setEnabled(true);
-            Toast.makeText(SyncActivity.this,
-                    getResources().getString(R.string.activity_sync_success),
-                    Toast.LENGTH_SHORT).show();
+            boolean error = false;
+            String mensajeError = "";
+            for (ObjectResponse response: results ) {
+                if(response.isError()){
+                    error = true;
+                }
+                mensajeError += response.getMensajesError();
+            }
+
+            if(error){
+                Toast.makeText(SyncActivity.this,
+                        mensajeError,
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(SyncActivity.this,
+                        getResources().getString(R.string.activity_sync_success),
+                        Toast.LENGTH_SHORT).show();
+            }
+
         }
 
     }

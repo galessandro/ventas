@@ -89,10 +89,20 @@
 
     <string name="activity_sync_items">Sincronizar</string>
     <string name="activity_sync_no_check_items">Seleccione un item a sincronizar</string>
-    <string name="activity_sync_no_found_file">No se encontro el archivo a sincronizar
-    en el telefono</string>
+
+    <string name="activity_sync_no_found_file">No se encontro el archivo
+        a sincronizar en el telefono</string>
     <string name="activity_sync_no_read_line">Ocurrio un error al intentar leer
     el archivo</string>
+
+    <string name="activity_sync_no_found_file_cliente">No se encontro el archivo de clientes
+        a sincronizar en el telefono</string>
+    <string name="activity_sync_no_read_line_cliente">Ocurrio un error al intentar leer
+    el archivo de clientes</string>
+    <string name="activity_sync_no_found_file_producto">No se encontro el archivo de productos
+        a sincronizar en el telefono</string>
+    <string name="activity_sync_no_read_line_producto">Ocurrio un error al intentar leer
+    el archivo de productos</string>
     <string name="activity_sync_warning">Se sincronizaran los items seleccionados\n
         ¿Esta seguro de continuar?</string>
     <string name="activity_sync_success">Se realizo la sincronizacion correctamente</string>
