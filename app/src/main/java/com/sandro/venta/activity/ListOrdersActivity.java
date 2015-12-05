@@ -85,9 +85,17 @@ public class ListOrdersActivity extends AppCompatActivity
         lstOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(ListOrdersActivity.this, "Ordenes", Toast.LENGTH_SHORT).show();
+
+                Order order = orderAdapter.getItem(position);
+                viewOrderDetail(order);
             }
         });
+    }
+
+    private void viewOrderDetail(Order order) {
+        Intent intent = new Intent(this, ViewOrderDetailActivity.class);
+        intent.putExtra("order", order);
+        startActivity(intent);
     }
 
     @Override

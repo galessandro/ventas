@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -39,6 +40,9 @@ public class SyncActivity extends AppCompatActivity {
     private SyncAdapter syncAdapter;
     private ListView lstSyncs;
 
+    private static final int PRODUCTOS = 0;
+    private static final int CLIENTES = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,15 @@ public class SyncActivity extends AppCompatActivity {
         syncAdapter = new SyncAdapter(this, getAllSyncs());
 
         lstSyncs = (ListView) findViewById(R.id.listSyncItems);
+
+        lstSyncs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                View v = lstSyncs.getChildAt(position);
+                CheckedTextView c = (CheckedTextView) v.findViewById(R.id.chkSyncItem);
+                c.setChecked(!c.isChecked());
+            }
+        });
 
         // Attach the adapter to this ListActivity's ListView
         lstSyncs.setAdapter(syncAdapter);
@@ -68,15 +81,36 @@ public class SyncActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sync_items:
-                confirmSync();
+                List<Integer> checkedItems = getSelectedItems();
+                if(checkedItems.size() <= 0){
+                    Toast.makeText(SyncActivity.this,
+                            getResources().getString(R.string.activity_sync_no_check_items)
+                            ,Toast.LENGTH_SHORT).show();
+                } else {
+                    confirmSync(checkedItems);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void confirmSync() {
-        new AlertDialog.Builder(this)
+    private List<Integer> getSelectedItems() {
+        SparseBooleanArray checkedItemPositions = lstSyncs.getCheckedItemPositions();
+        List<Integer> checkedItems = new ArrayList<>();
+
+        final int checkedItemCount = checkedItemPositions.size();
+        for (int i = 0; i < checkedItemCount; i++) {
+            int key = checkedItemPositions.keyAt(i);
+            if (checkedItemPositions.get(key)) {
+                checkedItems.add(key);
+            }
+        }
+        return checkedItems;
+    }
+
+    private void confirmSync(final List<Integer> checkedItems) {
+        new AlertDialog.Builder(getSupportActionBar().getThemedContext())
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle(getResources().getString(R.string.activity_back_title))
                 .setMessage(getResources().getString(R.string.activity_sync_warning))
@@ -84,8 +118,13 @@ public class SyncActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                syncProductosFromFile();
-                                syncClientesFromFile();
+                                for (Integer i: checkedItems) {
+                                    if (i == PRODUCTOS) {
+                                        syncProductosFromFile();
+                                    } else if (i == CLIENTES) {
+                                        syncClientesFromFile();
+                                    }
+                                }
                             }
                         })
                 .setNegativeButton(getResources().getString(R.string.activity_back_close_no),

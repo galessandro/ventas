@@ -122,12 +122,6 @@ public class SyncAdapter extends ArrayAdapter<Sync> {
         final Sync sync = getItem(position);
 
         holder.syncName.setText(sync.getName());
-        holder.syncName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((CheckedTextView)v).toggle();
-            }
-        });
         //holder.syncName.setSelected(mCheckedItem == position ? true : false);
         //holder.syncName.setCheckMarkDrawable(position == mCheckedItem ? R.drawable.btn_radio_off_holo_light
          //       : R.drawable.btn_radio_on_holo_light);
