@@ -18,7 +18,9 @@ import android.widget.Toast;
 import com.sandro.venta.R;
 import com.sandro.venta.adapter.ClientAdapter;
 import com.sandro.venta.bean.Client;
+import com.sandro.venta.bean.SalesMan;
 import com.sandro.venta.helper.DatabaseHelper;
+import com.sandro.venta.util.SessionManager;
 
 
 public class ClientsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,
@@ -28,6 +30,7 @@ public class ClientsActivity extends AppCompatActivity implements AdapterView.On
 
     DatabaseHelper db;
     ClientAdapter clientAdapter;
+    private SessionManager session;
     private final int REQUEST_CLIENT_CODE = 100;
 
 
@@ -36,10 +39,14 @@ public class ClientsActivity extends AppCompatActivity implements AdapterView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clients);
 
+        session = new SessionManager(getApplicationContext());
+        SalesMan salesMan = session.getUserDetails();
+
         db = new DatabaseHelper(getApplicationContext());
 
         // Create a new TodoListAdapter for this ListActivity's ListView
-        clientAdapter = new ClientAdapter(getApplicationContext(), db.getAllClients());
+        clientAdapter = new ClientAdapter(getApplicationContext(),
+                db.getAllClientsFromSeller(salesMan.getCodSeller()));
 
         ListView lstClientsView = (ListView) findViewById(R.id.lstClientsView);
 

@@ -17,18 +17,22 @@ public class Client implements Parcelable {
     private String address;
     private String ruc;
     private String dni;
+    private String codSeller;
     private Date dateReg;
 
     public Client() {
     }
 
-    public Client(int codClient, String firstName, String lastName, String address, String ruc, String dni) {
+    public Client(int codClient, String firstName, String lastName,
+                  String address, String ruc, String dni,
+                  String codSeller) {
         this.codClient = codClient;
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
         this.ruc = ruc;
         this.dni = dni;
+        this.codSeller = codSeller;
     }
 
     private Client(Parcel in) {
@@ -40,6 +44,15 @@ public class Client implements Parcelable {
         this.address = in.readString();
         this.ruc = in.readString();
         this.dni = in.readString();
+        this.codSeller = in.readString();
+    }
+
+    public String getCodSeller() {
+        return codSeller;
+    }
+
+    public void setCodSeller(String codSeller) {
+        this.codSeller = codSeller;
     }
 
     public int getId() {
@@ -124,6 +137,7 @@ public class Client implements Parcelable {
         parcel.writeString(getAddress());
         parcel.writeString(getRuc());
         parcel.writeString(getDni());
+        parcel.writeString(getCodSeller());
     }
 
     public static final Parcelable.Creator<Client> CREATOR = new Parcelable.Creator<Client>() {

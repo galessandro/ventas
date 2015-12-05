@@ -186,16 +186,15 @@ public class SyncActivity extends AppCompatActivity {
             bufferedReader = new BufferedReader(new FileReader(file));
             String read;
             List<Client> lstClients = new ArrayList<>();
-            int i = 0;
             while ((read = bufferedReader.readLine()) != null) {
                 Client client = new Client();
-                i++;
-                client.setCodClient(i);
-                client.setRuc(read.substring(4, 15));
-                client.setDni(read.substring(15, 23));
+                client.setCodClient(Integer.parseInt(read.substring(0, 8)));
+                client.setRuc(read.substring(8, 19));
+                client.setDni(read.substring(19, 27));
                 client.setFirstName("");
-                client.setLastName(read.substring(23, 113));
-                client.setAddress(read.substring(113, 193));
+                client.setLastName(read.substring(27, 117));
+                client.setAddress(read.substring(117, 197));
+                client.setCodSeller(read.substring(197, 199));
                 lstClients.add(client);
             }
 

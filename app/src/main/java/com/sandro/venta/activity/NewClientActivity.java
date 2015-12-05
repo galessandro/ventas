@@ -12,7 +12,9 @@ import android.widget.EditText;
 
 import com.sandro.venta.R;
 import com.sandro.venta.bean.Client;
+import com.sandro.venta.bean.SalesMan;
 import com.sandro.venta.helper.DatabaseHelper;
+import com.sandro.venta.util.SessionManager;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,11 +30,17 @@ public class NewClientActivity extends AppCompatActivity {
 
     // Database Helper
     DatabaseHelper db;
+    private SessionManager session;
+    private SalesMan salesMan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_client);
+
+        session = new SessionManager(getApplicationContext());
+        salesMan = session.getUserDetails();
+
         db = new DatabaseHelper(getApplicationContext());
 
         configureNewClient();
@@ -127,6 +135,7 @@ public class NewClientActivity extends AppCompatActivity {
         client.setAddress(txtClientAddress.getText().toString());
         client.setRuc(txtClientRuc.getText().toString());
         client.setDni(txtClientDni.getText().toString());
+        client.setCodSeller(salesMan.getCodSeller());
         client.setDateReg(new Date());
         return client;
     }

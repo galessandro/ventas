@@ -25,7 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
     // Database Version
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
 
     // Database Name
     private static final String DATABASE_NAME = "ventas";
@@ -48,6 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_CLIENT_ADDRESS = "address"; //80
     private static final String KEY_CLIENT_RUC = "ruc";//11
     private static final String KEY_CLIENT_DNI = "dni";//8
+    private static final String KEY_CLIENT_COD_SELLER = "codseller";//8
     private static final String KEY_CLIENT_MAX_COD = "maxcodclient";//8
 
     // Orders Table - column names
@@ -95,6 +96,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_CLIENT_FIRST_NAME + " TEXT," +
             KEY_CLIENT_LAST_NAME + " TEXT, " +
             KEY_CLIENT_ADDRESS + " TEXT," +
+            KEY_CLIENT_COD_SELLER + " TEXT," +
             KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP)";
 
     private static final String CREATE_TABLE_ORDERS = "CREATE TABLE "
@@ -203,10 +205,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<SalesMan> lstUsers = new ArrayList<>();
         for (int i = 0; i < 5; i++){
             SalesMan user = new SalesMan();
-            user.setCodSeller("V00" + (i+1));
+            user.setCodSeller("0" + (i+1));
             user.setName("Luis" + (i + 1));
             user.setPass("123");
-            user.setUser("V00" + (i+1));
+            user.setUser("V0" + (i+1));
             lstUsers.add(user);
         }
         return lstUsers;
@@ -222,6 +224,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_CLIENT_ADDRESS, client.getAddress());
         values.put(KEY_CLIENT_RUC, client.getRuc());
         values.put(KEY_CLIENT_DNI, client.getDni());
+        values.put(KEY_CLIENT_COD_SELLER, client.getCodSeller());
         values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
 
         return db.insert(TABLE_CLIENTS, null, values);
@@ -285,6 +288,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 client.setDni((c.getString(c.getColumnIndex(KEY_CLIENT_DNI))));
                 client.setDateReg(DateUtil.getDateTime(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
 
+                // adding to client list
+                clients.add(client);
+            } while (c.moveToNext());
+        }
+        return clients;
+    }
+
+    public List<Client> getAllClientsFromSeller(String codSeller) {
+        List<Client> clients = new ArrayList<>();
+        String selectQuery = "SELECT  * FROM " + TABLE_CLIENTS +
+                " WHERE " + KEY_CLIENT_COD_SELLER + " = ?";
+
+        Log.i(TAG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, new String[]{codSeller});
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                Client client = new Client();
+                client.setId(c.getInt(c.getColumnIndex(KEY_CLIENT_ID)));
+                client.setCodClient(c.getInt(c.getColumnIndex(KEY_CLIENT_COD_CLIENT)));
+                client.setFirstName((c.getString(c.getColumnIndex(KEY_CLIENT_FIRST_NAME))));
+                client.setLastName(c.getString(c.getColumnIndex(KEY_CLIENT_LAST_NAME)));
+                client.setAddress((c.getString(c.getColumnIndex(KEY_CLIENT_ADDRESS))));
+                client.setRuc((c.getString(c.getColumnIndex(KEY_CLIENT_RUC))));
+                client.setDni((c.getString(c.getColumnIndex(KEY_CLIENT_DNI))));
+                client.setCodSeller(c.getString(c.getColumnIndex(KEY_CLIENT_COD_SELLER)));
+                client.setDateReg(DateUtil.getDateTime(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
                 // adding to client list
                 clients.add(client);
             } while (c.moveToNext());

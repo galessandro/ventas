@@ -296,7 +296,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
 
 
         if(DateUtil.isDateOneLessThanTwo(DateUtil.getDate(txtOrderDate.getText().toString())
-                , DateUtil.getDate(txtOrderDate.getText().toString()))){
+                , DateUtil.getDate(txtOrderDeliveryDate.getText().toString()))){
             Toast.makeText(this, getResources().getString(R.string.order_error_date_error),
                     Toast.LENGTH_SHORT).show();
             return false;
