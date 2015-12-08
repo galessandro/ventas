@@ -8,7 +8,6 @@ import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,11 +31,9 @@ import com.sandro.venta.util.SessionManager;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -242,7 +239,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
             sb.append(StringUtils.leftPad(String.valueOf(order.getCodSale()), 8, "0"))
                     .append(StringUtils.leftPad(String.valueOf(order.getCodOrder()), 4, "0"))
                     .append(DateUtil.getFormatDate(order.getDateOrder(), DateUtil.dateSimpleFormat))
-                    .append(StringUtils.leftPad(String.valueOf(order.getClient().getCodClient()), 4, "0"))
+                    .append(StringUtils.leftPad(String.valueOf(order.getClient().getCodClient()), 8, "0"))
                     .append(order.getSeller().getCodSeller().substring(0, 2))
                     .append(DateUtil.getFormatDate(order.getDateDelivery(), DateUtil.dateSimpleFormat))
                     .append(DateUtil.getFormatDate(date, DateUtil.dateSimpleFormat))
@@ -321,7 +318,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
             if(resultCode == Activity.RESULT_OK){
                 Product productAdded = data.getParcelableExtra("productAdded");
                 if(!productAlreadyAdded(productAdded)) {
-                    int quantityAdded = data.getIntExtra("quantityAdded", 0);
+                    Double quantityAdded = data.getDoubleExtra("quantityAdded", 0d);
                     double priceAdded = data.getDoubleExtra("priceAdded", 0d);
                     Item item = new Item();
                     item.setProduct(productAdded);

@@ -26,8 +26,9 @@
         android:layout_weight="3"
         android:layout_height="wrap_content"
         android:textColor="@color/colorTextItemList"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:singleLine="true"
+        android:maxLength="6"
         android:id="@+id/order_item_quantity"/>
 
     <TextView

@@ -12,7 +12,7 @@ public class Item implements Parcelable{
 
     private Integer codSale;
     private Product product;
-    private Integer quantity;
+    private Double quantity;
     private Double price;
     private String typePrice;
     private Date dateReg;
@@ -25,7 +25,7 @@ public class Item implements Parcelable{
         super();
         this.codSale = in.readInt();
         this.product = in.readParcelable(Product.class.getClassLoader());
-        this.quantity = in.readInt();
+        this.quantity = in.readDouble();
         this.price = in.readDouble();
         this.typePrice = in.readString();
     }
@@ -46,11 +46,11 @@ public class Item implements Parcelable{
         this.product = product;
     }
 
-    public Integer getQuantity() {
+    public Double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(Double quantity) {
         this.quantity = quantity;
     }
 
@@ -87,7 +87,7 @@ public class Item implements Parcelable{
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeInt(getCodSale() == null ? 0 : getCodSale());
         parcel.writeParcelable(getProduct(), flags);
-        parcel.writeInt(getQuantity());
+        parcel.writeDouble(getQuantity());
         parcel.writeDouble(getPrice());
         parcel.writeString(getTypePrice());
     }

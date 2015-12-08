@@ -2,6 +2,7 @@ package com.sandro.venta.adapter;
 
 import android.content.Context;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.sandro.venta.R;
 import com.sandro.venta.activity.NewOrderActivity;
 import com.sandro.venta.bean.Item;
+import com.sandro.venta.util.DecimalDigitsInputFilter;
 
 import java.util.List;
 
@@ -132,6 +134,7 @@ public class ItemAdapter extends ArrayAdapter<Item> {
 
         final EditText txtOrderItemQuantity = (EditText) itemLayout.findViewById(R.id.order_item_quantity);
         txtOrderItemQuantity.setText(String.valueOf(item.getQuantity()));
+        txtOrderItemQuantity.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(1)});
 
         txtOrderItemQuantity.addTextChangedListener(new TextWatcher() {
             @Override
@@ -142,7 +145,7 @@ public class ItemAdapter extends ArrayAdapter<Item> {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String quantity = txtOrderItemQuantity.getText().toString();
                 quantity = quantity.equals("") ? "0" : quantity;
-                item.setQuantity(Integer.parseInt(quantity));
+                item.setQuantity(Double.parseDouble(quantity));
                 ((NewOrderActivity) mContext).updateTotalOrderAmount();
             }
 

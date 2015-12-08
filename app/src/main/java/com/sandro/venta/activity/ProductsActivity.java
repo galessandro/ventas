@@ -119,7 +119,7 @@ public class ProductsActivity extends AppCompatActivity
         if(requestCode == REQUEST_PRODUCT_CODE){
             if(resultCode == Activity.RESULT_OK){
                 Product productAdded = data.getParcelableExtra("productAdded");
-                int quantityAdded = data.getIntExtra("quantityAdded", 0);
+                double quantityAdded = data.getDoubleExtra("quantityAdded", 0D);
                 double priceAdded = data.getDoubleExtra("priceAdded", 0d);
                 Intent intent = new Intent();
                 intent.putExtra("productAdded", productAdded);

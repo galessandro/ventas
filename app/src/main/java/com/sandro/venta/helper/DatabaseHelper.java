@@ -115,7 +115,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_ORDER_ITEM_ID + " INTEGER PRIMARY KEY," +
             KEY_ORDER_ITEM_COD_SALE + " INTEGER, " +
             KEY_ORDER_ITEM_COD_PRODUCT + " TEXT," +
-            KEY_ORDER_ITEM_QUANTITY + " INTEGER, " +
+            KEY_ORDER_ITEM_QUANTITY + " REAL, " +
             KEY_ORDER_ITEM_PRICE + " REAL, " +
             KEY_ORDER_ITEM_TYPE_UNIT + " TEXT," +
             KEY_ORDER_ITEM_BOX_BY + " INTEGER," +
@@ -524,7 +524,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 Item item = new Item();
-                item.setQuantity(c.getInt(c.getColumnIndex(KEY_ORDER_ITEM_QUANTITY)));
+                item.setQuantity(c.getDouble(c.getColumnIndex(KEY_ORDER_ITEM_QUANTITY)));
                 item.setPrice(c.getDouble(c.getColumnIndex(KEY_ORDER_ITEM_PRICE)));
                 item.setTypePrice(c.getString(c.getColumnIndex(KEY_ORDER_ITEM_TYPE_PRICE)));
                 Product product = new Product();

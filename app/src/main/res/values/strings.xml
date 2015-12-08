@@ -31,6 +31,8 @@
 
     <string name="client_add_error_required_value">Este valor es requerido</string>
 
+    <string name="client_register_success">Se registro correctamente el cliente</string>
+
 
     <string name="activity_back_close_yes">Si</string>
     <string name="activity_back_close_no">No</string>

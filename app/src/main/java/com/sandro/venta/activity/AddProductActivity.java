@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.sandro.venta.R;
 import com.sandro.venta.bean.Product;
+import com.sandro.venta.util.DecimalDigitsInputFilter;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,7 +26,7 @@ public class AddProductActivity extends AppCompatActivity {
     private EditText txtQuantityProduct;
     private Button btnAddProduct;
     private Product selectedProduct;
-    private int quantity;
+    private double quantity;
     private double price;
 
     @Override
@@ -50,7 +52,9 @@ public class AddProductActivity extends AppCompatActivity {
         lblBoxByProduct = (TextView) findViewById(R.id.add_product_cajapor);
         lblPriceTwoProduct = (TextView) findViewById(R.id.add_product_preciodos);
         txtPriceProduct = (EditText) findViewById(R.id.add_product_precio);
+        txtPriceProduct.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(2)});
         txtQuantityProduct = (EditText) findViewById(R.id.add_product_cantidad);
+        txtQuantityProduct.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(1)});
         btnAddProduct = (Button) findViewById(R.id.add_product_btn_add);
         btnAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +84,7 @@ public class AddProductActivity extends AppCompatActivity {
             return false;
         }
 
-        if (Integer.parseInt(txtQuantityProduct.getText().toString()) <= 0){
+        if (Double.parseDouble(txtQuantityProduct.getText().toString()) <= 0d){
             txtQuantityProduct.setError(getResources().getString(R.string.product_add_error_zero));
             return false;
         }
@@ -98,7 +102,7 @@ public class AddProductActivity extends AppCompatActivity {
     }
 
     private void capturarDatosIngresados() {
-        quantity = Integer.parseInt(txtQuantityProduct.getText().toString());
+        quantity = Double.parseDouble(txtQuantityProduct.getText().toString());
         price = Double.parseDouble(txtPriceProduct.getText().toString());
     }
 

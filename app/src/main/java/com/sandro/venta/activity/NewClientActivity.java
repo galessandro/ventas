@@ -32,11 +32,14 @@ public class NewClientActivity extends AppCompatActivity {
     DatabaseHelper db;
     private SessionManager session;
     private SalesMan salesMan;
+    private Client client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_client);
+
+        client = new Client();
 
         session = new SessionManager(getApplicationContext());
         salesMan = session.getUserDetails();
@@ -58,8 +61,8 @@ public class NewClientActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (validateForm()) {
-                    Client client = loadClientFromActivity();
-                    saveClient(client);
+                    loadClientFromActivity();
+                    saveClient();
                 }
             }
         });
@@ -100,12 +103,25 @@ public class NewClientActivity extends AppCompatActivity {
         return true;
     }
 
-    private void saveClient(Client client) {
+    private void saveClient() {
         db.createClient(client);
-        Intent intent = new Intent();
-        intent.putExtra("clientAdded", client);
-        setResult(Activity.RESULT_OK, intent);
-        finish();
+
+        new AlertDialog.Builder(getSupportActionBar().getThemedContext())
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setTitle(getResources().getString(R.string.activity_back_title))
+                .setMessage(getResources().getString(R.string.client_register_success))
+                .setPositiveButton(
+                        getResources().getString(R.string.order_warning_save_accept),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent();
+                                intent.putExtra("clientAdded", client);
+                                setResult(Activity.RESULT_OK, intent);
+                                finish();
+                            }
+                        })
+                .show();
     }
 
     @Override
@@ -128,7 +144,6 @@ public class NewClientActivity extends AppCompatActivity {
     }
 
     private Client loadClientFromActivity() {
-        Client client = new Client();
         client.setCodClient(db.getMaxCodClient() + 1);
         client.setFirstName(txtClientFirstName.getText().toString());
         client.setLastName(txtClientLastName.getText().toString());

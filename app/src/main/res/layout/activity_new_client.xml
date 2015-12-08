@@ -61,9 +61,11 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
+            android:inputType="textMultiLine"
             android:ems="10"
             android:maxLength="80"
+            android:minLines="2"
+            android:maxLines="4"
             android:id="@+id/txtClientAddress" />
     </TableRow>
 
