@@ -3,8 +3,6 @@ package com.sandro.venta.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Date;
-
 /**
  * Created by t430 on 25/10/2015.
  */

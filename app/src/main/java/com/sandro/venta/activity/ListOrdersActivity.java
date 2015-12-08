@@ -1,6 +1,5 @@
 package com.sandro.venta.activity;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,25 +7,23 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AlertDialog;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.sandro.venta.R;
 import com.sandro.venta.adapter.OrderAdapter;
 import com.sandro.venta.bean.Order;
 import com.sandro.venta.helper.DatabaseHelper;
-import com.sandro.venta.util.SessionManager;
 
 public class ListOrdersActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

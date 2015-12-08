@@ -5,15 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Filter;
 import android.widget.TextView;
 
 import com.sandro.venta.R;
 import com.sandro.venta.bean.Order;
-import com.sandro.venta.bean.Product;
 import com.sandro.venta.util.DateUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

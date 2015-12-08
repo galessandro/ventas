@@ -1,7 +1,5 @@
 package com.sandro.venta.activity;
 
-import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;

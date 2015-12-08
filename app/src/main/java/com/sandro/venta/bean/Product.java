@@ -3,8 +3,6 @@ package com.sandro.venta.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.math.BigDecimal;
-
 /**
  * Creado por ggranados on 05/11/2015.
  */

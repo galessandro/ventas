@@ -1,8 +1,7 @@
 package com.sandro.venta.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.Button;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -10,7 +9,6 @@ import com.sandro.venta.R;
 import com.sandro.venta.adapter.ItemViewAdapter;
 import com.sandro.venta.bean.Order;
 import com.sandro.venta.util.DateUtil;
-import com.sandro.venta.util.SessionManager;
 
 public class ViewOrderDetailActivity extends AppCompatActivity {
 

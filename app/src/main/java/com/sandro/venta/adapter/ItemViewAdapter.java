@@ -1,21 +1,14 @@
 package com.sandro.venta.adapter;
 
 import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sandro.venta.R;
-import com.sandro.venta.activity.NewOrderActivity;
 import com.sandro.venta.bean.Item;
 
 import java.util.List;
