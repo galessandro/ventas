@@ -12,9 +12,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +50,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
     private TextView txtOrderCod;
     private TextView txtOrderClient;
     private TextView txtOrderSeller;
+    private Spinner spnOrderPaymentType;
     private Button txtOrderDate;
     private Button txtOrderDeliveryDate;
     private TextView txtOrderTotalAmount;
@@ -91,6 +94,10 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
         setListeners();
         updateSalesMan();
         txtOrderCod.setText(String.valueOf(codSale));
+        ArrayAdapter<CharSequence> paymentTypeAdapter = ArrayAdapter.createFromResource(
+                this, R.array.paymentTypes, R.layout.support_simple_spinner_dropdown_item
+        );
+        spnOrderPaymentType.setAdapter(paymentTypeAdapter);
 
     }
 
@@ -98,6 +105,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
         txtOrderCod = (TextView) findViewById(R.id.txtOrderCod);
         txtOrderClient = (TextView) findViewById(R.id.txtOrderClient);
         txtOrderSeller = (TextView) findViewById(R.id.txtOrderSeller);
+        spnOrderPaymentType = (Spinner) findViewById(R.id.spnOrderTypePayment);
         txtOrderDate = (Button) findViewById(R.id.txtOrderDate);
         txtOrderDeliveryDate  = (Button) findViewById(R.id.txtOrderDeliveryDate);
         txtOrderTotalAmount = (TextView) findViewById(R.id.txtOrderTotalAmount);
@@ -199,6 +207,10 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
         order.setCodSale(codSale);
         order.setDateDelivery(DateUtil.getDate(txtOrderDeliveryDate.getText().toString()));
         order.setDateOrder(DateUtil.getDate(txtOrderDate.getText().toString()));
+        order.setPaymentType(spnOrderPaymentType.getSelectedItem().toString().equals(
+                Order.PAYMENT_TYPE_DESC_CASH) ?
+                Order.PAYMENT_TYPE_CASH :
+                Order.PAYMENT_TYPE_CREDIT);
         db.createOrder(order);
         for (Item saveItem : order.getItems()) {
             db.createOrderItem(saveItem);
@@ -243,7 +255,8 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                     .append(order.getSeller().getCodSeller().substring(0, 2))
                     .append(DateUtil.getFormatDate(order.getDateDelivery(), DateUtil.dateSimpleFormat))
                     .append(DateUtil.getFormatDate(date, DateUtil.dateSimpleFormat))
-                    .append(DateUtil.getFormatDate(date, DateUtil.timeFormat));
+                    .append(DateUtil.getFormatDate(date, DateUtil.timeFormat))
+                    .append(String.valueOf(order.getPaymentType()));
 
             bufferedWriter = new BufferedWriter(new FileWriter(fileOrder,true));
             bufferedWriter.write(sb.toString() + "\n");

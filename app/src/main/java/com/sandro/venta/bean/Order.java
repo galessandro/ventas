@@ -12,6 +12,10 @@ import java.util.List;
  */
 public class Order implements Parcelable{
 
+    public static int PAYMENT_TYPE_CASH = 1;
+    public static int PAYMENT_TYPE_CREDIT = 2;
+    public static String PAYMENT_TYPE_DESC_CASH = "Contado";
+    public static String PAYMENT_TYPE_DESC_CREDIT = "Credito";
     private int codSale;
     private int codOrder;
     private Date dateOrder;
@@ -20,6 +24,7 @@ public class Order implements Parcelable{
     private Date dateDelivery;
     private List<Item> items;
     private Date dateReg;
+    private int paymentType;
 
     public Order (){
         items = new ArrayList<>();
@@ -35,6 +40,7 @@ public class Order implements Parcelable{
         this.dateDelivery = new Date(in.readLong());
         items = new ArrayList<>();
         in.readTypedList(items, Item.CREATOR);
+        this.paymentType = in.readInt();
     }
 
     public int getCodSale() {
@@ -101,6 +107,14 @@ public class Order implements Parcelable{
         this.dateReg = dateReg;
     }
 
+    public int getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(int paymentType) {
+        this.paymentType = paymentType;
+    }
+
     public Double getTotalAmount(){
         Double totalAmount = 0d;
         for (Item item : items) {
@@ -123,6 +137,7 @@ public class Order implements Parcelable{
         parcel.writeParcelable(getSeller(), flags);
         parcel.writeLong(getDateDelivery().getTime());
         parcel.writeTypedList(getItems());
+        parcel.writeInt(getPaymentType());
     }
 
     public static final Parcelable.Creator<Order> CREATOR = new Parcelable.Creator<Order>() {

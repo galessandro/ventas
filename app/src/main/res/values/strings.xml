@@ -45,6 +45,7 @@
     <string name="activity_order_cod_order">Orden:</string>
     <string name="activity_order_client">Cliente:</string>
     <string name="activity_order_seller">Vendedor:</string>
+    <string name="activity_order_type_payment">Forma de Pago:</string>
     <string name="activity_order_date">Fecha de pedido:</string>
     <string name="activity_order_delivery_date">Fecha de entrega:</string>
     <string name="activity_order_products">Items:</string>
@@ -59,6 +60,11 @@
     <string name="order_warning_save_cancel">Cancelar</string>
     <string name="order_register_success">Se registro correctamente el pedido</string>
     <string name="order_logout">¿Esta seguro que desea salir de la aplicacion?</string>
+
+    <string-array name="paymentTypes">
+        <item>Contado</item>
+        <item>Credito</item>
+    </string-array>
 
     <string name="activity_order_item_row_cod">Codigo</string>
     <string name="activity_order_item_row_name">Nombre</string>

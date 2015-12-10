@@ -25,7 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
     // Database Version
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
 
     // Database Name
     private static final String DATABASE_NAME = "ventas";
@@ -59,6 +59,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_ORDER_CLIENT_COD = "codclient";//4
     private static final String KEY_ORDER_SELLER_COD = "codseller";//2
     private static final String KEY_ORDER_DELIVERY_AT = "datedelivery";//8
+    private static final String KEY_ORDER_PAYMENT_TYPE = "paymenttype";
 
     // Orders item Table - column names
     private static final String KEY_ORDER_ITEM_ID = "id";
@@ -108,6 +109,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_ORDER_CLIENT_COD + " TEXT," +
             KEY_ORDER_SELLER_COD + " TEXT," +
             KEY_ORDER_DELIVERY_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP," +
+            KEY_ORDER_PAYMENT_TYPE + " INTEGER, " +
             KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP)";
 
     private static final String CREATE_TABLE_ORDERS_ITEM = "CREATE TABLE "
@@ -420,6 +422,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_ORDER_CLIENT_COD, order.getClient().getCodClient());
         values.put(KEY_ORDER_SELLER_COD, order.getSeller().getCodSeller());
         values.put(KEY_ORDER_DELIVERY_AT, DateUtil.getFormatDate(order.getDateDelivery()));
+        values.put(KEY_ORDER_PAYMENT_TYPE, order.getPaymentType());
         values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
 
         return db.insert(TABLE_ORDERS, null, values);
@@ -447,6 +450,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "O." + KEY_ORDER_COD_ORDER + "," +
                 "O." + KEY_ORDER_DATE_AT + "," +
                 "O." + KEY_ORDER_DELIVERY_AT + "," +
+                "O." + KEY_ORDER_PAYMENT_TYPE + "," +
                 "C." + KEY_CLIENT_COD_CLIENT + "," +
                 "C." + KEY_CLIENT_FIRST_NAME + "," +
                 "C." + KEY_CLIENT_LAST_NAME + "," +
@@ -479,6 +483,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         c.getColumnIndex(KEY_ORDER_DATE_AT))));
                 order.setDateDelivery(DateUtil.getDate(c.getString(
                         c.getColumnIndex(KEY_ORDER_DELIVERY_AT))));
+                order.setPaymentType(c.getInt(c.getColumnIndex(KEY_ORDER_PAYMENT_TYPE)));
                 Client client = new Client();
                 client.setCodClient(c.getInt(c.getColumnIndex(KEY_CLIENT_COD_CLIENT)));
                 client.setFirstName(c.getString(c.getColumnIndex(KEY_CLIENT_FIRST_NAME)));
