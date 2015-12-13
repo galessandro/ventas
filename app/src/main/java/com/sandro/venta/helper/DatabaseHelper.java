@@ -15,6 +15,7 @@ import com.sandro.venta.bean.SalesMan;
 import com.sandro.venta.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -467,11 +468,61 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
-        /*Cursor c = db.rawQuery(selectQuery, new String[]{
-                "datetime(date('now')||' 00:00:00')",
-                "datetime(date('now')||' 23:59:59')"
-        });*/
 
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                Order order = new Order();
+                order.setCodSale(c.getInt(c.getColumnIndex(KEY_ORDER_COD_SALE)));
+                order.setCodOrder(c.getInt(c.getColumnIndex(KEY_ORDER_COD_ORDER)));
+                order.setDateOrder(DateUtil.getDate(c.getString(
+                        c.getColumnIndex(KEY_ORDER_DATE_AT))));
+                order.setDateDelivery(DateUtil.getDate(c.getString(
+                        c.getColumnIndex(KEY_ORDER_DELIVERY_AT))));
+                order.setPaymentType(c.getInt(c.getColumnIndex(KEY_ORDER_PAYMENT_TYPE)));
+                Client client = new Client();
+                client.setCodClient(c.getInt(c.getColumnIndex(KEY_CLIENT_COD_CLIENT)));
+                client.setFirstName(c.getString(c.getColumnIndex(KEY_CLIENT_FIRST_NAME)));
+                client.setLastName(c.getString(c.getColumnIndex(KEY_CLIENT_LAST_NAME)));
+                SalesMan seller = new SalesMan();
+                seller.setCodSeller(c.getString(c.getColumnIndex(KEY_USER_COD_SELLER)));
+                seller.setName(c.getString(c.getColumnIndex(KEY_USER_NAME)));
+                order.setSeller(seller);
+                order.setClient(client);
+                order.setItems(getItemsFromOrder(order.getCodSale()));
+
+                orders.add(order);
+            } while (c.moveToNext());
+        }
+        return orders;
+    }
+
+    public List<Order> getOrdersFromARangeDate(Date fechaPedido){
+        List<Order> orders = new ArrayList<>();
+        String selectQuery = "SELECT  " +
+                "O." + KEY_ORDER_COD_SALE + ", " +
+                "O." + KEY_ORDER_COD_ORDER + "," +
+                "O." + KEY_ORDER_DATE_AT + "," +
+                "O." + KEY_ORDER_DELIVERY_AT + "," +
+                "O." + KEY_ORDER_PAYMENT_TYPE + "," +
+                "C." + KEY_CLIENT_COD_CLIENT + "," +
+                "C." + KEY_CLIENT_FIRST_NAME + "," +
+                "C." + KEY_CLIENT_LAST_NAME + "," +
+                "U." + KEY_USER_COD_SELLER + "," +
+                "U." + KEY_USER_NAME +
+                " FROM " + TABLE_ORDERS +
+                " O INNER JOIN " + TABLE_CLIENTS  + " C ON O." + KEY_ORDER_CLIENT_COD + " =" +
+                " C." + KEY_CLIENT_COD_CLIENT +
+                " INNER JOIN " + TABLE_USERS  + " U ON O." + KEY_ORDER_SELLER_COD + " =" +
+                " U." + KEY_USER_COD_SELLER +
+                " WHERE O." + KEY_CREATED_AT + " BETWEEN " +
+                "datetime(date('" + DateUtil.getFormatDate(fechaPedido) + "')||' 00:00:00') " +
+                "AND datetime(date('" + DateUtil.getFormatDate(fechaPedido) + "')||' 23:59:59')";
+
+        Log.i(TAG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
 
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
@@ -505,6 +556,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<Item> items = new ArrayList<>();
 
         String selectQuery = "SELECT  " +
+                "O." + KEY_ORDER_ITEM_COD_SALE + ", " +
                 "O." + KEY_ORDER_ITEM_QUANTITY + ", " +
                 "O." + KEY_ORDER_ITEM_PRICE + "," +
                 "O." + KEY_ORDER_ITEM_TYPE_PRICE + "," +
@@ -529,6 +581,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 Item item = new Item();
+                item.setCodSale(c.getInt(c.getColumnIndex(KEY_ORDER_ITEM_COD_SALE)));
                 item.setQuantity(c.getDouble(c.getColumnIndex(KEY_ORDER_ITEM_QUANTITY)));
                 item.setPrice(c.getDouble(c.getColumnIndex(KEY_ORDER_ITEM_PRICE)));
                 item.setTypePrice(c.getString(c.getColumnIndex(KEY_ORDER_ITEM_TYPE_PRICE)));

@@ -50,7 +50,8 @@
         <activity
             android:name=".activity.SelectClientActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.ViewOrderDetailActivity"></activity>
+        <activity android:name=".activity.ViewOrderDetailActivity" />
+        <activity android:name=".activity.ExportActivity"></activity>
     </application>
 
 </manifest>

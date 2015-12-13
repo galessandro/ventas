@@ -3,7 +3,7 @@
     <string name="app_name">Ventas Wilfredo</string>
     <string name="nav_menu_sync">Sincronizar</string>
     <string name="nav_menu_clientes">Clientes</string>
-    <string name="nav_menu_parametros">Configuracion</string>
+    <string name="nav_menu_exportar">Exportar</string>
     <string name="nav_menu_new_order">Nueva Orden</string>
     <string name="navigation_drawer_close">AA</string>
     <string name="navigation_drawer_open">BB</string>
@@ -119,5 +119,14 @@
     <string name="order_row_total_amount">Total</string>
     <string name="order_row_total_amount_with_symbol">S/. Total</string>
     <string name="order_row_delivery_date">Fec. entrega</string>
+
+
+    <string name="export_ini_date">Seleccione la fecha</string>
+    <string name="export_btn_export">Exportar</string>
+    <string name="export_result_no_order">No se encontro resultados para la fecha indicada</string>
+    <string name="export_result_success">Se genero correctamente las ordenes registradas el dia
+    %1$s</string>
+
+
 
 </resources>

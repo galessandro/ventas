@@ -141,6 +141,9 @@ public class ListOrdersActivity extends AppCompatActivity
         } else if (id == R.id.nav_sync) {
             intent.setClass(this, SyncActivity.class);
             startActivity(intent);
+        } else if (id == R.id.nav_export) {
+            intent.setClass(this, ExportActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
