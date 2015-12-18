@@ -23,7 +23,9 @@ import android.widget.ListView;
 import com.sandro.venta.R;
 import com.sandro.venta.adapter.OrderAdapter;
 import com.sandro.venta.bean.Order;
+import com.sandro.venta.bean.SalesMan;
 import com.sandro.venta.helper.DatabaseHelper;
+import com.sandro.venta.util.SessionManager;
 
 public class ListOrdersActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -31,6 +33,7 @@ public class ListOrdersActivity extends AppCompatActivity
     private static final int REQUEST_NEW_ORDER_CODE = 104;
     DatabaseHelper db;
     OrderAdapter orderAdapter;
+    private SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,12 +70,14 @@ public class ListOrdersActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        session = new SessionManager(getApplicationContext());
 
+        SalesMan salesMan = session.getUserDetails();
 
         db = new DatabaseHelper(getApplicationContext());
 
         // Create a new TodoListAdapter for this ListActivity's ListView
-        orderAdapter = new OrderAdapter(this, db.getOrdersFromToday());
+        orderAdapter = new OrderAdapter(this, db.getOrdersFromToday(salesMan.getCodSeller()));
 
         ListView lstOrders = (ListView) findViewById(R.id.lstRealOrders);
 

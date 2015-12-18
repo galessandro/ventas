@@ -391,7 +391,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void updateSalesMan(){
-        txtOrderSeller.setText(order.getSeller().getName());
+        txtOrderSeller.setText(order.getSeller().getCodSeller());
     }
 
 

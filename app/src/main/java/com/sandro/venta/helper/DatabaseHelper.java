@@ -26,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
     // Database Version
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
 
     // Database Name
     private static final String DATABASE_NAME = "ventas";
@@ -205,13 +205,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private List<SalesMan> getDefaultUsers(){
+
+        String [] arrayCodSellers =
+                new String [] {"02", "04", "10", "21", "22", "23", "24", "26"};
+        String [] arraySellers =
+                new String [] {"WILFREDO", "J.C. CACERES", "EDWIN HUANCA",
+                        "FLORO", "DEYSI", "MERCEDES",
+                        "CARLOS H. VIVAS", "MARIO OLIVERA ROBLES"};
         List<SalesMan> lstUsers = new ArrayList<>();
-        for (int i = 0; i < 5; i++){
+        for (int i = 0; i < 8; i++){
             SalesMan user = new SalesMan();
-            user.setCodSeller("0" + (i+1));
-            user.setName("Luis" + (i + 1));
+            user.setCodSeller(arrayCodSellers[i]);
+            user.setName(arraySellers[i]);
             user.setPass("123");
-            user.setUser("V0" + (i+1));
+            user.setUser("V" + arrayCodSellers[i]);
             lstUsers.add(user);
         }
         return lstUsers;
@@ -444,7 +451,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.insert(TABLE_ORDER_ITEMS, null, values);
     }
 
-    public List<Order> getOrdersFromToday(){
+    public List<Order> getOrdersFromToday(String codSeller){
         List<Order> orders = new ArrayList<>();
         String selectQuery = "SELECT  " +
                 "O." + KEY_ORDER_COD_SALE + ", " +
@@ -462,7 +469,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " C." + KEY_CLIENT_COD_CLIENT +
                 " INNER JOIN " + TABLE_USERS  + " U ON O." + KEY_ORDER_SELLER_COD + " =" +
                 " U." + KEY_USER_COD_SELLER +
-                " WHERE O." + KEY_CREATED_AT + " BETWEEN datetime(date('now', 'localtime')||' 00:00:00') AND datetime(date('now', 'localtime')||' 23:59:59')";
+                " WHERE " +
+                " U." + KEY_USER_COD_SELLER + " = '" + codSeller + "'" +
+                " AND O." + KEY_CREATED_AT + " BETWEEN " +
+                "datetime(date('now', 'localtime')||' 00:00:00') AND datetime(date('now', 'localtime')||' 23:59:59')";
 
         Log.i(TAG, selectQuery);
 
