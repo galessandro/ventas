@@ -132,7 +132,7 @@ public class ItemAdapter extends ArrayAdapter<Item> {
 
         final EditText txtOrderItemQuantity = (EditText) itemLayout.findViewById(R.id.order_item_quantity);
         txtOrderItemQuantity.setText(String.valueOf(item.getQuantity()));
-        txtOrderItemQuantity.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(1)});
+        txtOrderItemQuantity.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(2)});
 
         txtOrderItemQuantity.addTextChangedListener(new TextWatcher() {
             @Override

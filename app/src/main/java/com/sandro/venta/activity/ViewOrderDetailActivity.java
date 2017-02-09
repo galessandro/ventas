@@ -10,6 +10,8 @@ import com.sandro.venta.adapter.ItemViewAdapter;
 import com.sandro.venta.bean.Order;
 import com.sandro.venta.util.DateUtil;
 
+import java.text.DecimalFormat;
+
 
 public class ViewOrderDetailActivity extends AppCompatActivity {
 
@@ -24,6 +26,7 @@ public class ViewOrderDetailActivity extends AppCompatActivity {
     private TextView lblTotalProducts;
     private ListView lstItemsView;
     private ItemViewAdapter itemViewAdapter;
+    private DecimalFormat df = new DecimalFormat("#.##");
 
 
     @Override
@@ -49,7 +52,7 @@ public class ViewOrderDetailActivity extends AppCompatActivity {
         txtOrderDate.setText(DateUtil.getFormatDate(order.getDateOrder(), DateUtil.datePeruFormat));
         txtOrderDeliveryDate.setText(DateUtil.getFormatDate(order.getDateDelivery(),
                 DateUtil.datePeruFormat));
-        txtOrderTotalAmount.setText(String.valueOf(order.getTotalAmount()));
+        txtOrderTotalAmount.setText(df.format(order.getTotalAmount()));
         lblTotalProducts.setText(String.valueOf(order.getItems().size()));
     }
 

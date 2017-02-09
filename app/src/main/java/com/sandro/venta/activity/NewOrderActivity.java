@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -65,6 +66,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
 
     private static final int REQUEST_SEARCH_PRODUCT_CODE = 102;
     private static final int REQUEST_SEARCH_CLIENT_CODE = 103;
+    private DecimalFormat df = new DecimalFormat("#.##");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,11 +179,18 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                 startActivityForResult(i, REQUEST_SEARCH_PRODUCT_CODE);
                 return true;
             case R.id.order_save_order:
+                DateUtil.getDate(txtOrderDeliveryDate.getText().toString());
                 if (validateNewOrderForm()) {
                     new AlertDialog.Builder(getSupportActionBar().getThemedContext())
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .setTitle(getResources().getString(R.string.activity_back_title))
-                            .setMessage(getResources().getString(R.string.order_warning_save))
+                            .setMessage(getResources().getString(R.string.order_warning_save) +
+                                    "\n" + getResources().getString(
+                                    R.string.activity_order_type_payment) +
+                                    spnOrderPaymentType.getSelectedItem().toString() +
+                                    "\n" + getResources().getString(
+                                    R.string.activity_order_delivery_date) +
+                                    txtOrderDeliveryDate.getText().toString())
                             .setPositiveButton(
                                     getResources().getString(R.string.order_warning_save_accept),
                                     new DialogInterface.OnClickListener() {
@@ -383,7 +392,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
     public void updateTotalOrderAmount() {
         txtOrderTotalAmount.setText(
                 getResources().getString(R.string.simbolo_nuevo_sol).concat(
-                        String.valueOf(itemAdapter.getTotalAmount())));
+                        df.format(itemAdapter.getTotalAmount())));
     }
 
     public void updateClient(){

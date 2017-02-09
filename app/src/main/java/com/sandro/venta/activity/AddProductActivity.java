@@ -54,7 +54,7 @@ public class AddProductActivity extends AppCompatActivity {
         txtPriceProduct = (EditText) findViewById(R.id.add_product_precio);
         txtPriceProduct.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(2)});
         txtQuantityProduct = (EditText) findViewById(R.id.add_product_cantidad);
-        txtQuantityProduct.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(1)});
+        txtQuantityProduct.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(2)});
         btnAddProduct = (Button) findViewById(R.id.add_product_btn_add);
         btnAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override

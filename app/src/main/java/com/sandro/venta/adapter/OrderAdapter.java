@@ -11,6 +11,7 @@ import com.sandro.venta.R;
 import com.sandro.venta.bean.Order;
 import com.sandro.venta.util.DateUtil;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ public class OrderAdapter extends ArrayAdapter<Order> {
 
     private List<Order> orders;
     private Context mContext;
-
+    private DecimalFormat df = new DecimalFormat("#.##");
     private static final String TAG = "OrderAdapter";
 
     public OrderAdapter(Context mContext, List<Order> orders) {
@@ -125,7 +126,7 @@ public class OrderAdapter extends ArrayAdapter<Order> {
 
         holder.orderCod.setText(String.valueOf(order.getCodOrder()));
         holder.orderClient.setText(order.getClient().getBusinessName());
-        holder.orderTotalAmount.setText(order.getTotalAmount().toString());
+        holder.orderTotalAmount.setText(df.format(order.getTotalAmount()));
         holder.orderDeliveryDate.setText(DateUtil.getFormatDate(order.getDateDelivery(), DateUtil.datePeruFormat));
 
         // Return the View you just created
