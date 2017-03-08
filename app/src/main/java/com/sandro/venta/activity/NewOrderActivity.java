@@ -95,7 +95,11 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
         setDefaultDate();
         setListeners();
         updateSalesMan();
-        txtOrderCod.setText(String.valueOf(codSale));
+        String codOrder = String.valueOf(codSale);
+        if(codSale > 9999){
+            codOrder = String.valueOf(codSale - 9999);
+        }
+        txtOrderCod.setText(codOrder);
         ArrayAdapter<CharSequence> paymentTypeAdapter = ArrayAdapter.createFromResource(
                 this, R.array.paymentTypes, R.layout.support_simple_spinner_dropdown_item
         );
@@ -211,8 +215,12 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void saveNewOrder() {
+        int codOrder = codSale;
+        if(codSale > 9999){
+            codOrder = codSale - 9999;
+        }
         order.setItems(itemAdapter.getItems());
-        order.setCodOrder(codSale);
+        order.setCodOrder(codOrder);
         order.setCodSale(codSale);
         order.setDateDelivery(DateUtil.getDate(txtOrderDeliveryDate.getText().toString()));
         order.setDateOrder(DateUtil.getDate(txtOrderDate.getText().toString()));

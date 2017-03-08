@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Ventas Wilfredo</string>
+    <string name="app_name">Ventas Online</string>
     <string name="nav_menu_sync">Sincronizar</string>
     <string name="nav_menu_clientes">Clientes</string>
     <string name="nav_menu_exportar">Exportar</string>
