@@ -15,6 +15,7 @@ import com.sandro.venta.bean.SalesMan;
 import com.sandro.venta.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -360,7 +361,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c =  db.query(TABLE_ORDERS, new String[]{"MAX(codsale)"}, null, null, null, null, null);
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+
+        Cursor c =  db.query(TABLE_ORDERS, new String[]{"MAX(codsale)"}, "strftime('%Y', dateorder) = ?", new String[]{String.valueOf(year)}, null, null, null);
 
         if(c.moveToFirst()){
             maxOrder = c.getInt(0);
