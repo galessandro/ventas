@@ -30,6 +30,7 @@
     <string name="activity_client_btn_cancel">Cancelar</string>
 
     <string name="client_add_error_required_value">Este valor es requerido</string>
+    <string name="client_add_error_required_id_value">Ingrese el RUC o DNI</string>
 
     <string name="client_register_success">Se registro correctamente el cliente</string>
 

@@ -88,17 +88,13 @@ public class NewClientActivity extends AppCompatActivity {
             return false;
         }
 
-        if(StringUtils.isEmpty(txtClientRuc.getText().toString())){
+        if(StringUtils.isEmpty(txtClientRuc.getText().toString()) &&
+                StringUtils.isEmpty(txtClientDni.getText().toString())){
             txtClientRuc.setError(
-                    getResources().getString(R.string.client_add_error_required_value));
+                    getResources().getString(R.string.client_add_error_required_id_value));
             return false;
         }
 
-        if(StringUtils.isEmpty(txtClientDni.getText().toString())){
-            txtClientDni.setError(
-                    getResources().getString(R.string.client_add_error_required_value));
-            return false;
-        }
 
         return true;
     }
