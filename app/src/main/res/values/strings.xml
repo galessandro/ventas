@@ -11,11 +11,12 @@
     <string name="simbolo_nuevo_sol">S/.</string>
     <string name="zero_soles">S/. 0.0</string>
 
-    <string name="login_title">Ventas el Broster</string>
+    <string name="login_title">Ventas Online</string>
     <string name="login_user">Usuario:</string>
     <string name="login_pass">Clave:</string>
     <string name="login_button">Ingresar</string>
     <string name="login_user_error">Usuario y/o o clave son invalidos.</string>
+    <string name="login_version">0.1</string>
 
     <string name="activity_name_clients">Clientes</string>
     <string name="activity_client_lbl_search">Ingresar datos</string>

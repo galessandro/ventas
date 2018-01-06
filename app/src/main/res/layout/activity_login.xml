@@ -31,8 +31,7 @@
             android:layout_height="wrap_content"
             android:text="@string/login_user"
             android:id="@+id/lblLoginUser"
-            android:layout_below="@id/lblLoginPage"
-            android:singleLine="false" />
+            android:layout_below="@id/lblLoginPage" />
 
         <EditText
             android:layout_width="match_parent"
@@ -68,6 +67,12 @@
         android:id="@+id/btnLogin"
         android:layout_below="@id/txtLoginPass"
         android:layout_centerHorizontal="true"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:text="@string/login_version"
+        android:layout_below="@id/btnLogin"/>
 
 </TableLayout>
 </RelativeLayout>
