@@ -27,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
     // Database Version
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
 
     // Database Name
     private static final String DATABASE_NAME = "ventas";
@@ -207,19 +207,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private List<SalesMan> getDefaultUsers(){
 
-        String [] arrayCodSellers =
-                new String [] {"02", "04", "10", "21", "22", "23", "24", "26"};
-        String [] arraySellers =
-                new String [] {"WILFREDO", "J.C. CACERES", "EDWIN HUANCA",
-                        "FLORO", "DEYSI", "MERCEDES",
-                        "CARLOS H. VIVAS", "MARIO OLIVERA ROBLES"};
         List<SalesMan> lstUsers = new ArrayList<>();
-        for (int i = 0; i < 8; i++){
+
+        for (int i = 0; i < 99; i++){
             SalesMan user = new SalesMan();
-            user.setCodSeller(arrayCodSellers[i]);
-            user.setName(arraySellers[i]);
+            user.setCodSeller(i < 9 ? "0" + (i + 1) : ""+ (i + 1));
+            user.setName("Seller" + (i + 1));
             user.setPass("123");
-            user.setUser("V" + arrayCodSellers[i]);
+            user.setUser("V" + (i < 9 ? "0" + (i + 1) : ""+ (i + 1)));
             lstUsers.add(user);
         }
         return lstUsers;
