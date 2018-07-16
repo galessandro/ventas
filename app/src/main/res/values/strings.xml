@@ -21,7 +21,7 @@
     <string name="login_pass">Clave:</string>
     <string name="login_button">Ingresar</string>
     <string name="login_user_error">Usuario y/o o clave son invalidos.</string>
-    <string name="login_version">0.1</string>
+    <string name="login_version">2018-001</string>
 
     <string name="activity_name_clients">Clientes</string>
     <string name="activity_client_lbl_search">Ingresar datos</string>
