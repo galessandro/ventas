@@ -151,8 +151,8 @@ public class ItemAdapter extends ArrayAdapter<Item> {
                         item.getProduct().getFlagPrice().equals(Product.PRODUCT_FLAG_LEVELS_ENABLE)){
                     item.setPrice(item.getProduct().getPriceByQuantity(Double.parseDouble(quantity)));
                     item.setLevel(item.getProduct().getLevelByQuantity(Double.parseDouble(quantity)));
-                    item.setPriceLevelFrom(item.getProduct().getPriceLowByLevel(item.getLevel()));
-                    item.setPriceLevelTo(item.getProduct().getPriceHighByLevel(item.getLevel()));
+                    item.setLevelRangeFrom(item.getProduct().getLowLevelById(item.getLevel()));
+                    item.setLevelRangeTo(item.getProduct().getHighLevelById(item.getLevel()));
                     lblOrderItemPrice.setText(item.getPrice().toString());
                 }
                 ((NewOrderActivity) mContext).updateTotalOrderAmount();

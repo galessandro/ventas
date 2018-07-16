@@ -201,8 +201,8 @@ public class ExportActivity extends AppCompatActivity {
                         .append(DateUtil.getFormatDate(date, DateUtil.timeFormat))
                         .append(StringUtils.leftPad(String.valueOf(item.getPriceOfList()), 6, "0"))
                         .append(StringUtils.leftPad(String.valueOf(item.getLevel()), 6, "0"))
-                        .append(StringUtils.leftPad(String.valueOf(item.getPriceLevelFrom()), 10, " "))
-                        .append(StringUtils.leftPad(String.valueOf(item.getPriceLevelTo()), 10, " "))
+                        .append(StringUtils.leftPad(String.valueOf(item.getLevelRangeFrom()), 6, " "))
+                        .append(StringUtils.leftPad(String.valueOf(item.getLevelRangeTo()), 6, " "))
                 ;
                 bufferedWriter.write(sb.toString() + "\n");
             }

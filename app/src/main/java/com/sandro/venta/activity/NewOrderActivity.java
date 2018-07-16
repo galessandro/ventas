@@ -286,8 +286,8 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                         .append(DateUtil.getFormatDate(date, DateUtil.timeFormat))
                         .append(StringUtils.leftPad(String.valueOf(item.getPriceOfList()), 6, "0"))
                         .append(StringUtils.leftPad(String.valueOf(item.getLevel()), 6, "0"))
-                        .append(StringUtils.leftPad(String.valueOf(item.getPriceLevelFrom()), 10, " "))
-                        .append(StringUtils.leftPad(String.valueOf(item.getPriceLevelTo()), 10, " "));
+                        .append(StringUtils.leftPad(String.valueOf(item.getLevelRangeFrom()), 6, " "))
+                        .append(StringUtils.leftPad(String.valueOf(item.getLevelRangeTo()), 6, " "));
 
                 bufferedWriter.write(sb.toString() + "\n");
             }
@@ -358,8 +358,8 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                         item.setLevel(productAdded.getLevelByQuantity(quantityAdded));
                     }
                     item.setPriceOfList(productAdded.getPriceOfList());
-                    item.setPriceLevelFrom(productAdded.getPriceLowByLevel(item.getLevel()));
-                    item.setPriceLevelTo(productAdded.getPriceHighByLevel(item.getLevel()));
+                    item.setLevelRangeFrom(productAdded.getLowLevelById(item.getLevel()));
+                    item.setLevelRangeTo(productAdded.getHighLevelById(item.getLevel()));
                     itemAdapter.add(item);
                     updateTotalProducts();
                     updateTotalOrderAmount();

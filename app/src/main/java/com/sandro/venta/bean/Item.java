@@ -17,8 +17,8 @@ public class Item implements Parcelable{
     private String typePrice;
     private Date dateReg;
     private int level;
-    private Double priceLevelFrom;
-    private Double priceLevelTo;
+    private Double levelRangeFrom;
+    private Double levelRangeTo;
     private int priceOfList;
 
     public Item() {
@@ -33,8 +33,8 @@ public class Item implements Parcelable{
         this.price = in.readDouble();
         this.typePrice = in.readString();
         this.level = in.readInt();
-        this.priceLevelFrom = in.readDouble();
-        this.priceLevelTo = in.readDouble();
+        this.levelRangeFrom = in.readDouble();
+        this.levelRangeTo = in.readDouble();
         this.priceOfList = in.readInt();
     }
 
@@ -94,20 +94,20 @@ public class Item implements Parcelable{
         this.level = level;
     }
 
-    public Double getPriceLevelFrom() {
-        return priceLevelFrom;
+    public Double getLevelRangeFrom() {
+        return levelRangeFrom;
     }
 
-    public void setPriceLevelFrom(Double priceLevelFrom) {
-        this.priceLevelFrom = priceLevelFrom;
+    public void setLevelRangeFrom(Double priceLevelFrom) {
+        this.levelRangeFrom = priceLevelFrom;
     }
 
-    public Double getPriceLevelTo() {
-        return priceLevelTo;
+    public Double getLevelRangeTo() {
+        return levelRangeTo;
     }
 
-    public void setPriceLevelTo(Double priceLevelTo) {
-        this.priceLevelTo = priceLevelTo;
+    public void setLevelRangeTo(Double priceLevelTo) {
+        this.levelRangeTo = priceLevelTo;
     }
 
     public int getPriceOfList() {
@@ -132,8 +132,8 @@ public class Item implements Parcelable{
         parcel.writeDouble(getPrice());
         parcel.writeString(getTypePrice());
         parcel.writeInt(getLevel());
-        parcel.writeDouble(getPriceLevelFrom());
-        parcel.writeDouble(getPriceLevelTo());
+        parcel.writeDouble(getLevelRangeFrom());
+        parcel.writeDouble(getLevelRangeTo());
         parcel.writeInt(getPriceOfList());
     }
 

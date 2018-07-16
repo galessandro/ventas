@@ -28,7 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
     // Database Version
-    private static final int DATABASE_VERSION = 12;
+    private static final int DATABASE_VERSION = 13;
 
     // Database Name
     private static final String DATABASE_NAME = "ventas";
@@ -75,8 +75,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_ORDER_ITEM_TYPE_PRICE = "typeprice"; //1
     private static final String KEY_ORDER_ITEM_PRICE_LIST = "pricetlist"; //1
     private static final String KEY_ORDER_ITEM_PRODUCT_COD_LEVEL = "codlevel"; //1
-    private static final String KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_FROM = "pricefrom"; //1
-    private static final String KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_TO = "priceto"; //1
+    private static final String KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_FROM = "levelrangefrom"; //1
+    private static final String KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_TO = "levelrangeto"; //1
 
 
 
@@ -162,8 +162,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP," +
             KEY_ORDER_ITEM_PRICE_LIST + " INTEGER," +
             KEY_ORDER_ITEM_PRODUCT_COD_LEVEL + " INTEGER," +
-            KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_FROM + " REAL, " +
-            KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_TO + " REAL)"
+            KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_FROM + " REAL, " +
+            KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_TO + " REAL)"
             ;
 
     private static final String CREATE_TABLE_PRODUCTS = "CREATE TABLE "
@@ -583,8 +583,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
         values.put(KEY_ORDER_ITEM_PRICE_LIST, item.getPriceOfList());
         values.put(KEY_ORDER_ITEM_PRODUCT_COD_LEVEL, item.getLevel());
-        values.put(KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_FROM, item.getPriceLevelFrom());
-        values.put(KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_TO, item.getPriceLevelTo());
+        values.put(KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_FROM, item.getLevelRangeFrom());
+        values.put(KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_TO, item.getLevelRangeTo());
 
         return db.insert(TABLE_ORDER_ITEMS, null, values);
     }
@@ -714,8 +714,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "P." + KEY_PRODUCT_TYPE_UNIT + "," +
                 "O." + KEY_ORDER_ITEM_PRICE_LIST + "," +
                 "O." + KEY_ORDER_ITEM_PRODUCT_COD_LEVEL + "," +
-                "O." + KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_FROM + "," +
-                "O." + KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_TO +
+                "O." + KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_FROM + "," +
+                "O." + KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_TO +
                 " FROM " +
                 TABLE_ORDER_ITEMS +
                 " O INNER JOIN " + TABLE_PRODUCTS  + " P ON O." + KEY_ORDER_ITEM_COD_PRODUCT + " = " +
@@ -745,8 +745,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 item.setProduct(product);
                 item.setPriceOfList(c.getInt(c.getColumnIndex(KEY_ORDER_ITEM_PRICE_LIST)));
                 item.setLevel(c.getInt(c.getColumnIndex(KEY_ORDER_ITEM_PRODUCT_COD_LEVEL)));
-                item.setPriceLevelFrom(c.getDouble(c.getColumnIndex(KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_FROM)));
-                item.setPriceLevelTo(c.getDouble(c.getColumnIndex(KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_TO)));
+                item.setLevelRangeFrom(c.getDouble(c.getColumnIndex(KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_FROM)));
+                item.setLevelRangeTo(c.getDouble(c.getColumnIndex(KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_TO)));
                 // adding to product list
 
                 items.add(item);

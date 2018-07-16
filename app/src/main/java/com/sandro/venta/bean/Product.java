@@ -291,14 +291,24 @@ public class Product implements Parcelable {
         return priceLevelId;
     }
 
-    public Double getPriceLowByLevel(int levelId) {
-        Double priceByLevel = 0d;
+    public Double getLowLevelById(int levelId) {
+        Double lowLevel = 0d;
         for (PriceLevel level : getPriceLevelList()) {
             if (level.getLevel() == levelId) {
-                return level.getPriceFrom();
+                return level.getRangeFrom();
             }
         }
-        return priceByLevel;
+        return lowLevel;
+    }
+
+    public Double getHighLevelById(int levelId) {
+        Double highLevel = 0d;
+        for (PriceLevel level : getPriceLevelList()) {
+            if (level.getLevel() == levelId) {
+                return level.getRangeTo();
+            }
+        }
+        return highLevel;
     }
 
     public Double getPriceHighByLevel(int levelId) {
