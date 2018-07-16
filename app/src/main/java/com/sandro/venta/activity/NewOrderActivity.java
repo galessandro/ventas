@@ -353,7 +353,10 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                     item.setPrice(priceAdded);
                     item.setCodSale(codSale);
                     item.setTypePrice("P");
-                    item.setLevel(productAdded.getLevelByQuantity(quantityAdded));
+                    item.setLevel(0);
+                    if(productAdded.getFlagPrice().equals(Product.PRODUCT_FLAG_LEVELS_ENABLE)){
+                        item.setLevel(productAdded.getLevelByQuantity(quantityAdded));
+                    }
                     item.setPriceOfList(productAdded.getPriceOfList());
                     item.setPriceLevelFrom(productAdded.getPriceLowByLevel(item.getLevel()));
                     item.setPriceLevelTo(productAdded.getPriceHighByLevel(item.getLevel()));
