@@ -7,6 +7,7 @@
     <string name="nav_menu_clientes">Clientes</string>
     <string name="nav_menu_exportar">Exportar</string>
     <string name="nav_menu_new_order">Nueva Orden</string>
+    <string name="nav_menu_email_author">dimesandro@gmail.com</string>
     <string name="navigation_drawer_close">AA</string>
     <string name="navigation_drawer_open">BB</string>
     <string name="author">dimesandro@gmail.com</string>
