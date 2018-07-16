@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -201,36 +202,68 @@ public class Product implements Parcelable {
         parcel.writeDouble(getPriceTwo() == null ? 0d : getPriceTwo());
         parcel.writeDouble(getPriceThree() == null ? 0d : getPriceThree());
 
-        parcel.writeInt(getPriceLevelList().get(0).getLevel());
-        parcel.writeDouble(getPriceLevelList().get(0).getRangeFrom() == null ? 0d : getPriceLevelList().get(0).getRangeFrom());
-        parcel.writeDouble(getPriceLevelList().get(0).getRangeTo() == null ? 0d : getPriceLevelList().get(0).getRangeTo());
-        parcel.writeDouble(getPriceLevelList().get(0).getPriceFrom() == null ? 0d : getPriceLevelList().get(0).getPriceFrom());
-        parcel.writeDouble(getPriceLevelList().get(0).getPriceTo() == null ? 0d : getPriceLevelList().get(0).getPriceTo());
+        if(getPriceLevelList() != null) {
+            parcel.writeInt(getPriceLevelList().get(0).getLevel());
+            parcel.writeDouble(getPriceLevelList().get(0).getRangeFrom() == null ? 0d : getPriceLevelList().get(0).getRangeFrom());
+            parcel.writeDouble(getPriceLevelList().get(0).getRangeTo() == null ? 0d : getPriceLevelList().get(0).getRangeTo());
+            parcel.writeDouble(getPriceLevelList().get(0).getPriceFrom() == null ? 0d : getPriceLevelList().get(0).getPriceFrom());
+            parcel.writeDouble(getPriceLevelList().get(0).getPriceTo() == null ? 0d : getPriceLevelList().get(0).getPriceTo());
 
-        parcel.writeInt(getPriceLevelList().get(1).getLevel());
-        parcel.writeDouble(getPriceLevelList().get(1).getRangeFrom() == null ? 0d : getPriceLevelList().get(1).getRangeFrom());
-        parcel.writeDouble(getPriceLevelList().get(1).getRangeTo() == null ? 0d : getPriceLevelList().get(1).getRangeTo());
-        parcel.writeDouble(getPriceLevelList().get(1).getPriceFrom() == null ? 0d : getPriceLevelList().get(1).getPriceFrom());
-        parcel.writeDouble(getPriceLevelList().get(1).getPriceTo() == null ? 0d : getPriceLevelList().get(1).getPriceTo());
+            parcel.writeInt(getPriceLevelList().get(1).getLevel());
+            parcel.writeDouble(getPriceLevelList().get(1).getRangeFrom() == null ? 0d : getPriceLevelList().get(1).getRangeFrom());
+            parcel.writeDouble(getPriceLevelList().get(1).getRangeTo() == null ? 0d : getPriceLevelList().get(1).getRangeTo());
+            parcel.writeDouble(getPriceLevelList().get(1).getPriceFrom() == null ? 0d : getPriceLevelList().get(1).getPriceFrom());
+            parcel.writeDouble(getPriceLevelList().get(1).getPriceTo() == null ? 0d : getPriceLevelList().get(1).getPriceTo());
 
-        parcel.writeInt(getPriceLevelList().get(2).getLevel());
-        parcel.writeDouble(getPriceLevelList().get(2).getRangeFrom() == null ? 0d : getPriceLevelList().get(2).getRangeFrom());
-        parcel.writeDouble(getPriceLevelList().get(2).getRangeTo() == null ? 0d : getPriceLevelList().get(2).getRangeTo());
-        parcel.writeDouble(getPriceLevelList().get(2).getPriceFrom() == null ? 0d : getPriceLevelList().get(2).getPriceFrom());
-        parcel.writeDouble(getPriceLevelList().get(2).getPriceTo() == null ? 0d : getPriceLevelList().get(2).getPriceTo());
+            parcel.writeInt(getPriceLevelList().get(2).getLevel());
+            parcel.writeDouble(getPriceLevelList().get(2).getRangeFrom() == null ? 0d : getPriceLevelList().get(2).getRangeFrom());
+            parcel.writeDouble(getPriceLevelList().get(2).getRangeTo() == null ? 0d : getPriceLevelList().get(2).getRangeTo());
+            parcel.writeDouble(getPriceLevelList().get(2).getPriceFrom() == null ? 0d : getPriceLevelList().get(2).getPriceFrom());
+            parcel.writeDouble(getPriceLevelList().get(2).getPriceTo() == null ? 0d : getPriceLevelList().get(2).getPriceTo());
 
-        parcel.writeInt(getPriceLevelList().get(3).getLevel());
-        parcel.writeDouble(getPriceLevelList().get(3).getRangeFrom() == null ? 0d : getPriceLevelList().get(3).getRangeFrom());
-        parcel.writeDouble(getPriceLevelList().get(3).getRangeTo() == null ? 0d : getPriceLevelList().get(3).getRangeTo());
-        parcel.writeDouble(getPriceLevelList().get(3).getPriceFrom() == null ? 0d : getPriceLevelList().get(3).getPriceFrom());
-        parcel.writeDouble(getPriceLevelList().get(3).getPriceTo() == null ? 0d : getPriceLevelList().get(3).getPriceTo());
+            parcel.writeInt(getPriceLevelList().get(3).getLevel());
+            parcel.writeDouble(getPriceLevelList().get(3).getRangeFrom() == null ? 0d : getPriceLevelList().get(3).getRangeFrom());
+            parcel.writeDouble(getPriceLevelList().get(3).getRangeTo() == null ? 0d : getPriceLevelList().get(3).getRangeTo());
+            parcel.writeDouble(getPriceLevelList().get(3).getPriceFrom() == null ? 0d : getPriceLevelList().get(3).getPriceFrom());
+            parcel.writeDouble(getPriceLevelList().get(3).getPriceTo() == null ? 0d : getPriceLevelList().get(3).getPriceTo());
 
-        parcel.writeInt(getPriceLevelList().get(4).getLevel());
-        parcel.writeDouble(getPriceLevelList().get(4).getRangeFrom() == null ? 0d : getPriceLevelList().get(4).getRangeFrom());
-        parcel.writeDouble(getPriceLevelList().get(4).getRangeTo() == null ? 0d : getPriceLevelList().get(4).getRangeTo());
-        parcel.writeDouble(getPriceLevelList().get(4).getPriceFrom() == null ? 0d : getPriceLevelList().get(4).getPriceFrom());
-        parcel.writeDouble(getPriceLevelList().get(4).getPriceTo() == null ? 0d : getPriceLevelList().get(4).getPriceTo());
+            parcel.writeInt(getPriceLevelList().get(4).getLevel());
+            parcel.writeDouble(getPriceLevelList().get(4).getRangeFrom() == null ? 0d : getPriceLevelList().get(4).getRangeFrom());
+            parcel.writeDouble(getPriceLevelList().get(4).getRangeTo() == null ? 0d : getPriceLevelList().get(4).getRangeTo());
+            parcel.writeDouble(getPriceLevelList().get(4).getPriceFrom() == null ? 0d : getPriceLevelList().get(4).getPriceFrom());
+            parcel.writeDouble(getPriceLevelList().get(4).getPriceTo() == null ? 0d : getPriceLevelList().get(4).getPriceTo());
+        } else {
+            parcel.writeInt(0);
+            parcel.writeDouble(0d);
+            parcel.writeDouble(0d);
+            parcel.writeDouble(0d);
+            parcel.writeDouble(0d);
 
+            parcel.writeInt(0);
+            parcel.writeDouble(0d);
+            parcel.writeDouble(0d);
+            parcel.writeDouble(0d);
+            parcel.writeDouble(0d);
+
+            parcel.writeInt(0);
+            parcel.writeDouble(0d);
+            parcel.writeDouble(0d);
+            parcel.writeDouble(0d);
+            parcel.writeDouble(0d);
+
+            parcel.writeInt(0);
+            parcel.writeDouble(0d);
+            parcel.writeDouble(0d);
+            parcel.writeDouble(0d);
+            parcel.writeDouble(0d);
+
+            parcel.writeInt(0);
+            parcel.writeDouble(0d);
+            parcel.writeDouble(0d);
+            parcel.writeDouble(0d);
+            parcel.writeDouble(0d);
+
+        }
 
         parcel.writeInt(getBoxBy());
         parcel.writeString(getTypeUnit());

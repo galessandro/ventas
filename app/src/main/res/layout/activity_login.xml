@@ -32,14 +32,6 @@
         android:textStyle="bold"
         android:textAlignment="center" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/login_version"
-        android:textStyle="bold"
-        android:textAlignment="center" />
-
     <TableRow>
         <TextView
             android:layout_width="wrap_content"
