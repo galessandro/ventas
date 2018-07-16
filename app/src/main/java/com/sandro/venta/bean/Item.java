@@ -16,6 +16,10 @@ public class Item implements Parcelable{
     private Double price;
     private String typePrice;
     private Date dateReg;
+    private int level;
+    private Double priceLevelFrom;
+    private Double priceLevelTo;
+    private int priceOfList;
 
     public Item() {
 
@@ -28,6 +32,10 @@ public class Item implements Parcelable{
         this.quantity = in.readDouble();
         this.price = in.readDouble();
         this.typePrice = in.readString();
+        this.level = in.readInt();
+        this.priceLevelFrom = in.readDouble();
+        this.priceLevelTo = in.readDouble();
+        this.priceOfList = in.readInt();
     }
 
     public Integer getCodSale() {
@@ -62,11 +70,11 @@ public class Item implements Parcelable{
         this.typePrice = typePrice;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -77,6 +85,39 @@ public class Item implements Parcelable{
     public void setDateReg(Date dateReg) {
         this.dateReg = dateReg;
     }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public Double getPriceLevelFrom() {
+        return priceLevelFrom;
+    }
+
+    public void setPriceLevelFrom(Double priceLevelFrom) {
+        this.priceLevelFrom = priceLevelFrom;
+    }
+
+    public Double getPriceLevelTo() {
+        return priceLevelTo;
+    }
+
+    public void setPriceLevelTo(Double priceLevelTo) {
+        this.priceLevelTo = priceLevelTo;
+    }
+
+    public int getPriceOfList() {
+        return priceOfList;
+    }
+
+    public void setPriceOfList(int priceOfList) {
+        this.priceOfList = priceOfList;
+    }
+
 
     @Override
     public int describeContents() {
@@ -90,6 +131,10 @@ public class Item implements Parcelable{
         parcel.writeDouble(getQuantity());
         parcel.writeDouble(getPrice());
         parcel.writeString(getTypePrice());
+        parcel.writeInt(getLevel());
+        parcel.writeDouble(getPriceLevelFrom());
+        parcel.writeDouble(getPriceLevelTo());
+        parcel.writeInt(getPriceOfList());
     }
 
     public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {

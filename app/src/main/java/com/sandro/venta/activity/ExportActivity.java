@@ -198,7 +198,12 @@ public class ExportActivity extends AppCompatActivity {
                                 item.getProduct().getBoxBy()), 8, "0"))
                         .append(item.getProduct().getTypeUnit())
                         .append(DateUtil.getFormatDate(date, DateUtil.dateSimpleFormat))
-                        .append(DateUtil.getFormatDate(date, DateUtil.timeFormat));
+                        .append(DateUtil.getFormatDate(date, DateUtil.timeFormat))
+                        .append(StringUtils.leftPad(String.valueOf(item.getPriceOfList()), 6, "0"))
+                        .append(StringUtils.leftPad(String.valueOf(item.getLevel()), 6, "0"))
+                        .append(StringUtils.leftPad(String.valueOf(item.getPriceLevelFrom()), 10, " "))
+                        .append(StringUtils.leftPad(String.valueOf(item.getPriceLevelTo()), 10, " "))
+                ;
                 bufferedWriter.write(sb.toString() + "\n");
             }
             bufferedWriter.close();

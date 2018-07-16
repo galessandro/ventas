@@ -283,7 +283,12 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                                 item.getProduct().getBoxBy()), 8, "0"))
                         .append(item.getProduct().getTypeUnit())
                         .append(DateUtil.getFormatDate(date, DateUtil.dateSimpleFormat))
-                        .append(DateUtil.getFormatDate(date, DateUtil.timeFormat));
+                        .append(DateUtil.getFormatDate(date, DateUtil.timeFormat))
+                        .append(StringUtils.leftPad(String.valueOf(item.getPriceOfList()), 6, "0"))
+                        .append(StringUtils.leftPad(String.valueOf(item.getLevel()), 6, "0"))
+                        .append(StringUtils.leftPad(String.valueOf(item.getPriceLevelFrom()), 10, " "))
+                        .append(StringUtils.leftPad(String.valueOf(item.getPriceLevelTo()), 10, " "));
+
                 bufferedWriter.write(sb.toString() + "\n");
             }
             bufferedWriter.close();
@@ -348,6 +353,10 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                     item.setPrice(priceAdded);
                     item.setCodSale(codSale);
                     item.setTypePrice("P");
+                    item.setLevel(productAdded.getLevelByQuantity(quantityAdded));
+                    item.setPriceOfList(productAdded.getPriceOfList());
+                    item.setPriceLevelFrom(productAdded.getPriceLowByLevel(item.getLevel()));
+                    item.setPriceLevelTo(productAdded.getPriceHighByLevel(item.getLevel()));
                     itemAdapter.add(item);
                     updateTotalProducts();
                     updateTotalOrderAmount();

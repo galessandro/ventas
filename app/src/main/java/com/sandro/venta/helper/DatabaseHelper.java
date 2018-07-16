@@ -10,6 +10,7 @@ import android.util.Log;
 import com.sandro.venta.bean.Client;
 import com.sandro.venta.bean.Item;
 import com.sandro.venta.bean.Order;
+import com.sandro.venta.bean.PriceLevel;
 import com.sandro.venta.bean.Product;
 import com.sandro.venta.bean.SalesMan;
 import com.sandro.venta.util.DateUtil;
@@ -27,7 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
     // Database Version
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 12;
 
     // Database Name
     private static final String DATABASE_NAME = "ventas";
@@ -72,6 +73,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_ORDER_ITEM_TYPE_UNIT = "typeunit"; //1
     private static final String KEY_ORDER_ITEM_BOX_BY = "boxby"; //8
     private static final String KEY_ORDER_ITEM_TYPE_PRICE = "typeprice"; //1
+    private static final String KEY_ORDER_ITEM_PRICE_LIST = "pricetlist"; //1
+    private static final String KEY_ORDER_ITEM_PRODUCT_COD_LEVEL = "codlevel"; //1
+    private static final String KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_FROM = "pricefrom"; //1
+    private static final String KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_TO = "priceto"; //1
+
+
 
     // Product Table - column names
     private static final String KEY_PRODUCT_ID = "id";
@@ -79,8 +86,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_PRODUCT_NAME = "name"; //80
     private static final String KEY_PRODUCT_PRICE_ONE = "priceone"; //10
     private static final String KEY_PRODUCT_PRICE_TWO = "pricetwo"; //10
+    private static final String KEY_PRODUCT_PRICE_THREE = "pricethree"; //10
+    private static final String KEY_PRODUCT_PRICE_RANGE_NAME_ONE = "pricerangenameone"; //1
+    private static final String KEY_PRODUCT_PRICE_RANGE_FROM_ONE = "pricerangefromone"; //6
+    private static final String KEY_PRODUCT_PRICE_RANGE_TO_ONE = "pricerangetoone"; //6
+    private static final String KEY_PRODUCT_PRICE_VALUE_FROM_ONE = "pricevaluefromone"; //10
+    private static final String KEY_PRODUCT_PRICE_VALUE_TO_ONE = "pricevaluetoone"; //10
+    private static final String KEY_PRODUCT_PRICE_RANGE_NAME_TWO = "pricerangenametwo"; //1
+    private static final String KEY_PRODUCT_PRICE_RANGE_FROM_TWO = "pricerangefromtwo"; //6
+    private static final String KEY_PRODUCT_PRICE_RANGE_TO_TWO = "pricerangetotwo"; //6
+    private static final String KEY_PRODUCT_PRICE_VALUE_FROM_TWO = "pricevaluefromtwo"; //10
+    private static final String KEY_PRODUCT_PRICE_VALUE_TO_TWO = "pricevaluetotwo"; //10
+    private static final String KEY_PRODUCT_PRICE_RANGE_NAME_THREE = "pricerangenamethree"; //1
+    private static final String KEY_PRODUCT_PRICE_RANGE_FROM_THREE = "pricerangefromthree"; //6
+    private static final String KEY_PRODUCT_PRICE_RANGE_TO_THREE = "pricerangetothree"; //6
+    private static final String KEY_PRODUCT_PRICE_VALUE_FROM_THREE = "pricevaluefromthree"; //10
+    private static final String KEY_PRODUCT_PRICE_VALUE_TO_THREE = "pricevaluetothree"; //10
+    private static final String KEY_PRODUCT_PRICE_RANGE_NAME_FOUR = "pricerangenamefour"; //1
+    private static final String KEY_PRODUCT_PRICE_RANGE_FROM_FOUR = "pricerangefromfour"; //6
+    private static final String KEY_PRODUCT_PRICE_RANGE_TO_FOUR = "pricerangetofour"; //6
+    private static final String KEY_PRODUCT_PRICE_VALUE_FROM_FOUR = "pricevaluefromfour"; //10
+    private static final String KEY_PRODUCT_PRICE_VALUE_TO_FOUR = "pricevaluetofour"; //10
+    private static final String KEY_PRODUCT_PRICE_RANGE_NAME_FIVE = "pricerangenamefive"; //1
+    private static final String KEY_PRODUCT_PRICE_RANGE_FROM_FIVE = "pricerangefromfive"; //6
+    private static final String KEY_PRODUCT_PRICE_RANGE_TO_FIVE = "pricerangetofive"; //6
+    private static final String KEY_PRODUCT_PRICE_VALUE_FROM_FIVE = "pricevaluefromfive"; //10
+    private static final String KEY_PRODUCT_PRICE_VALUE_TO_FIVE = "pricevaluetofive"; //10
     private static final String KEY_PRODUCT_BOX_BY = "boxby"; //8
     private static final String KEY_PRODUCT_TYPE_UNIT = "typeunit"; //1
+    private static final String KEY_PRODUCT_PRICE_OF_LIST = "priceoflist"; //6
+    private static final String KEY_PRODUCT_FLAG_PRICE = "flagprice"; //1
 
     // User Table - column names
     private static final String KEY_USER_ID = "id";
@@ -124,7 +159,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_ORDER_ITEM_TYPE_UNIT + " TEXT," +
             KEY_ORDER_ITEM_BOX_BY + " INTEGER," +
             KEY_ORDER_ITEM_TYPE_PRICE + " TEXT," +
-            KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP)";
+            KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP," +
+            KEY_ORDER_ITEM_PRICE_LIST + " INTEGER," +
+            KEY_ORDER_ITEM_PRODUCT_COD_LEVEL + " INTEGER," +
+            KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_FROM + " REAL, " +
+            KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_TO + " REAL)"
+            ;
 
     private static final String CREATE_TABLE_PRODUCTS = "CREATE TABLE "
             + TABLE_PRODUCTS + "(" +
@@ -133,8 +173,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_PRODUCT_NAME + " TEXT, " +
             KEY_PRODUCT_PRICE_ONE + " REAL," +
             KEY_PRODUCT_PRICE_TWO + " REAL, " +
+            KEY_PRODUCT_PRICE_THREE + " REAL, " +
+            KEY_PRODUCT_PRICE_RANGE_NAME_ONE + " INTEGER, " +
+            KEY_PRODUCT_PRICE_RANGE_FROM_ONE + " REAL, " +
+            KEY_PRODUCT_PRICE_RANGE_TO_ONE + " REAL, " +
+            KEY_PRODUCT_PRICE_VALUE_FROM_ONE + " REAL, " +
+            KEY_PRODUCT_PRICE_VALUE_TO_ONE + " REAL, " +
+            KEY_PRODUCT_PRICE_RANGE_NAME_TWO + " INTEGER, " +
+            KEY_PRODUCT_PRICE_RANGE_FROM_TWO + " REAL, " +
+            KEY_PRODUCT_PRICE_RANGE_TO_TWO + " REAL, " +
+            KEY_PRODUCT_PRICE_VALUE_FROM_TWO + " REAL, " +
+            KEY_PRODUCT_PRICE_VALUE_TO_TWO + " REAL, " +
+            KEY_PRODUCT_PRICE_RANGE_NAME_THREE + " INTEGER, " +
+            KEY_PRODUCT_PRICE_RANGE_FROM_THREE + " REAL, " +
+            KEY_PRODUCT_PRICE_RANGE_TO_THREE + " REAL, " +
+            KEY_PRODUCT_PRICE_VALUE_FROM_THREE + " REAL, " +
+            KEY_PRODUCT_PRICE_VALUE_TO_THREE + " REAL, " +
+            KEY_PRODUCT_PRICE_RANGE_NAME_FOUR + " INTEGER, " +
+            KEY_PRODUCT_PRICE_RANGE_FROM_FOUR + " REAL, " +
+            KEY_PRODUCT_PRICE_RANGE_TO_FOUR + " REAL, " +
+            KEY_PRODUCT_PRICE_VALUE_FROM_FOUR + " REAL, " +
+            KEY_PRODUCT_PRICE_VALUE_TO_FOUR + " REAL, " +
+            KEY_PRODUCT_PRICE_RANGE_NAME_FIVE + " INTEGER, " +
+            KEY_PRODUCT_PRICE_RANGE_FROM_FIVE + " REAL, " +
+            KEY_PRODUCT_PRICE_RANGE_TO_FIVE + " REAL, " +
+            KEY_PRODUCT_PRICE_VALUE_FROM_FIVE + " REAL, " +
+            KEY_PRODUCT_PRICE_VALUE_TO_FIVE + " REAL, " +
             KEY_PRODUCT_BOX_BY + " INTEGER, " +
-            KEY_PRODUCT_TYPE_UNIT + " TEXT" + ")";
+            KEY_PRODUCT_TYPE_UNIT + " TEXT," +
+            KEY_PRODUCT_PRICE_OF_LIST + " INTEGER," +
+            KEY_PRODUCT_FLAG_PRICE + " TEXT" +
+            ")";
 
 
     private static final String CREATE_TABLE_USERS = "CREATE TABLE "
@@ -385,9 +454,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 product.setName(c.getString(c.getColumnIndex(KEY_PRODUCT_NAME)));
                 product.setPriceOne(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_ONE)));
                 product.setPriceTwo(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_TWO)));
+                product.setPriceThree(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_THREE)));
+                List<PriceLevel> priceLevels = new ArrayList<>();
+                PriceLevel priceLevel = new PriceLevel();
+                priceLevel.setLevel(c.getInt(c.getColumnIndex(KEY_PRODUCT_PRICE_RANGE_NAME_ONE)));
+                priceLevel.setRangeFrom(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_RANGE_FROM_ONE)));
+                priceLevel.setRangeTo(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_RANGE_TO_ONE)));
+                priceLevel.setPriceFrom(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_VALUE_FROM_ONE)));
+                priceLevel.setPriceTo(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_VALUE_TO_ONE)));
+                priceLevels.add(priceLevel);
+                priceLevel = new PriceLevel();
+                priceLevel.setLevel(c.getInt(c.getColumnIndex(KEY_PRODUCT_PRICE_RANGE_NAME_TWO)));
+                priceLevel.setRangeFrom(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_RANGE_FROM_TWO)));
+                priceLevel.setRangeTo(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_RANGE_TO_TWO)));
+                priceLevel.setPriceFrom(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_VALUE_FROM_TWO)));
+                priceLevel.setPriceTo(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_VALUE_TO_TWO)));
+                priceLevels.add(priceLevel);
+                priceLevel = new PriceLevel();
+                priceLevel.setLevel(c.getInt(c.getColumnIndex(KEY_PRODUCT_PRICE_RANGE_NAME_THREE)));
+                priceLevel.setRangeFrom(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_RANGE_FROM_THREE)));
+                priceLevel.setRangeTo(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_RANGE_TO_THREE)));
+                priceLevel.setPriceFrom(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_VALUE_FROM_THREE)));
+                priceLevel.setPriceTo(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_VALUE_TO_THREE)));
+                priceLevels.add(priceLevel);
+                priceLevel = new PriceLevel();
+                priceLevel.setLevel(c.getInt(c.getColumnIndex(KEY_PRODUCT_PRICE_RANGE_NAME_FOUR)));
+                priceLevel.setRangeFrom(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_RANGE_FROM_FOUR)));
+                priceLevel.setRangeTo(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_RANGE_TO_FOUR)));
+                priceLevel.setPriceFrom(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_VALUE_FROM_FOUR)));
+                priceLevel.setPriceTo(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_VALUE_TO_FOUR)));
+                priceLevels.add(priceLevel);
+                priceLevel = new PriceLevel();
+                priceLevel.setLevel(c.getInt(c.getColumnIndex(KEY_PRODUCT_PRICE_RANGE_NAME_FIVE)));
+                priceLevel.setRangeFrom(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_RANGE_FROM_FIVE)));
+                priceLevel.setRangeTo(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_RANGE_TO_FIVE)));
+                priceLevel.setPriceFrom(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_VALUE_FROM_FIVE)));
+                priceLevel.setPriceTo(c.getDouble(c.getColumnIndex(KEY_PRODUCT_PRICE_VALUE_TO_FIVE)));
+                priceLevels.add(priceLevel);
+                product.setPriceLevelList(priceLevels);
                 product.setBoxBy(c.getInt(c.getColumnIndex(KEY_PRODUCT_BOX_BY)));
                 product.setTypeUnit(c.getString(c.getColumnIndex(KEY_PRODUCT_TYPE_UNIT)));
-                // adding to client list
+                product.setPriceOfList(c.getInt(c.getColumnIndex(KEY_PRODUCT_PRICE_OF_LIST)));
+                product.setFlagPrice(c.getString(c.getColumnIndex(KEY_PRODUCT_FLAG_PRICE)));
                 products.add(product);
             } while (c.moveToNext());
         }
@@ -413,8 +521,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_PRODUCT_NAME, product.getName());
         values.put(KEY_PRODUCT_PRICE_ONE, product.getPriceOne());
         values.put(KEY_PRODUCT_PRICE_TWO, product.getPriceTwo());
+        values.put(KEY_PRODUCT_PRICE_THREE, product.getPriceThree());
+        values.put(KEY_PRODUCT_PRICE_RANGE_NAME_ONE, product.getPriceLevelList().get(0).getLevel());
+        values.put(KEY_PRODUCT_PRICE_RANGE_FROM_ONE, product.getPriceLevelList().get(0).getRangeFrom());
+        values.put(KEY_PRODUCT_PRICE_RANGE_TO_ONE, product.getPriceLevelList().get(0).getRangeTo());
+        values.put(KEY_PRODUCT_PRICE_VALUE_FROM_ONE, product.getPriceLevelList().get(0).getPriceFrom());
+        values.put(KEY_PRODUCT_PRICE_VALUE_TO_ONE, product.getPriceLevelList().get(0).getPriceTo());
+        values.put(KEY_PRODUCT_PRICE_RANGE_NAME_TWO, product.getPriceLevelList().get(1).getLevel());
+        values.put(KEY_PRODUCT_PRICE_RANGE_FROM_TWO, product.getPriceLevelList().get(1).getRangeFrom());
+        values.put(KEY_PRODUCT_PRICE_RANGE_TO_TWO, product.getPriceLevelList().get(1).getRangeTo());
+        values.put(KEY_PRODUCT_PRICE_VALUE_FROM_TWO, product.getPriceLevelList().get(1).getPriceFrom());
+        values.put(KEY_PRODUCT_PRICE_VALUE_TO_TWO, product.getPriceLevelList().get(1).getPriceTo());
+        values.put(KEY_PRODUCT_PRICE_RANGE_NAME_THREE, product.getPriceLevelList().get(2).getLevel());
+        values.put(KEY_PRODUCT_PRICE_RANGE_FROM_THREE, product.getPriceLevelList().get(2).getRangeFrom());
+        values.put(KEY_PRODUCT_PRICE_RANGE_TO_THREE, product.getPriceLevelList().get(2).getRangeTo());
+        values.put(KEY_PRODUCT_PRICE_VALUE_FROM_THREE, product.getPriceLevelList().get(2).getPriceFrom());
+        values.put(KEY_PRODUCT_PRICE_VALUE_TO_THREE, product.getPriceLevelList().get(2).getPriceTo());
+        values.put(KEY_PRODUCT_PRICE_RANGE_NAME_FOUR, product.getPriceLevelList().get(3).getLevel());
+        values.put(KEY_PRODUCT_PRICE_RANGE_FROM_FOUR, product.getPriceLevelList().get(3).getRangeFrom());
+        values.put(KEY_PRODUCT_PRICE_RANGE_TO_FOUR, product.getPriceLevelList().get(3).getRangeTo());
+        values.put(KEY_PRODUCT_PRICE_VALUE_FROM_FOUR, product.getPriceLevelList().get(3).getPriceFrom());
+        values.put(KEY_PRODUCT_PRICE_VALUE_TO_FOUR, product.getPriceLevelList().get(3).getPriceTo());
+        values.put(KEY_PRODUCT_PRICE_RANGE_NAME_FIVE, product.getPriceLevelList().get(4).getLevel());
+        values.put(KEY_PRODUCT_PRICE_RANGE_FROM_FIVE, product.getPriceLevelList().get(4).getRangeFrom());
+        values.put(KEY_PRODUCT_PRICE_RANGE_TO_FIVE, product.getPriceLevelList().get(4).getRangeTo());
+        values.put(KEY_PRODUCT_PRICE_VALUE_FROM_FIVE, product.getPriceLevelList().get(4).getPriceFrom());
+        values.put(KEY_PRODUCT_PRICE_VALUE_TO_FIVE, product.getPriceLevelList().get(4).getPriceTo());
         values.put(KEY_PRODUCT_BOX_BY, product.getBoxBy());
         values.put(KEY_PRODUCT_TYPE_UNIT, product.getTypeUnit());
+        values.put(KEY_PRODUCT_PRICE_OF_LIST, product.getPriceOfList());
+        values.put(KEY_PRODUCT_FLAG_PRICE, product.getFlagPrice());
 
         return db.insert(TABLE_PRODUCTS, null, values);
     }
@@ -445,6 +581,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_ORDER_ITEM_BOX_BY, item.getProduct().getBoxBy());
         values.put(KEY_ORDER_ITEM_TYPE_PRICE, item.getTypePrice());
         values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
+        values.put(KEY_ORDER_ITEM_PRICE_LIST, item.getPriceOfList());
+        values.put(KEY_ORDER_ITEM_PRODUCT_COD_LEVEL, item.getLevel());
+        values.put(KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_FROM, item.getPriceLevelFrom());
+        values.put(KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_TO, item.getPriceLevelTo());
 
         return db.insert(TABLE_ORDER_ITEMS, null, values);
     }
@@ -571,7 +711,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "P." + KEY_PRODUCT_COD + "," +
                 "P." + KEY_PRODUCT_NAME + "," +
                 "P." + KEY_PRODUCT_BOX_BY + "," +
-                "P." + KEY_PRODUCT_TYPE_UNIT +
+                "P." + KEY_PRODUCT_TYPE_UNIT + "," +
+                "O." + KEY_ORDER_ITEM_PRICE_LIST + "," +
+                "O." + KEY_ORDER_ITEM_PRODUCT_COD_LEVEL + "," +
+                "O." + KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_FROM + "," +
+                "O." + KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_TO +
                 " FROM " +
                 TABLE_ORDER_ITEMS +
                 " O INNER JOIN " + TABLE_PRODUCTS  + " P ON O." + KEY_ORDER_ITEM_COD_PRODUCT + " = " +
@@ -599,7 +743,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 product.setBoxBy(c.getInt(c.getColumnIndex(KEY_PRODUCT_BOX_BY)));
                 product.setTypeUnit(c.getString(c.getColumnIndex(KEY_PRODUCT_TYPE_UNIT)));
                 item.setProduct(product);
+                item.setPriceOfList(c.getInt(c.getColumnIndex(KEY_ORDER_ITEM_PRICE_LIST)));
+                item.setLevel(c.getInt(c.getColumnIndex(KEY_ORDER_ITEM_PRODUCT_COD_LEVEL)));
+                item.setPriceLevelFrom(c.getDouble(c.getColumnIndex(KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_FROM)));
+                item.setPriceLevelTo(c.getDouble(c.getColumnIndex(KEY_ORDER_ITEM_PRODUCT_LEVEL_PRICE_TO)));
                 // adding to product list
+
                 items.add(item);
             } while (c.moveToNext());
         }

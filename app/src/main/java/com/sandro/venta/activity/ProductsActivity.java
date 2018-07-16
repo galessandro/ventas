@@ -67,23 +67,6 @@ public class ProductsActivity extends AppCompatActivity
 
     }
 
-    public List<Product> getProductos(){
-        List<Product> listaProductos = new ArrayList<>();
-        for (int i = 0; i <= 20; i++){
-            Product p = new Product();
-            p.setId(i);
-            p.setCodProduct("CX10" + i);
-            p.setPriceOne(100d);
-            p.setPriceTwo(200d);
-            p.setName("Galletas saladitas" + i);
-            p.setBoxBy(1);
-            p.setTypeUnit("U");
-
-            listaProductos.add(p);
-        }
-        return listaProductos;
-    }
-
     /**
      * Callback method to be invoked when an item in this AdapterView has
      * been clicked.

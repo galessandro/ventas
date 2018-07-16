@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,12 +40,40 @@ public class AddProductActivity extends AppCompatActivity {
         loadProductOnView(selectedProduct);
     }
 
-    private void loadProductOnView(Product selectedProduct) {
+    private void loadProductOnView(final Product selectedProduct) {
         lblCodProduct.setText(selectedProduct.getCodProduct());
         lblNameProduct.setText(selectedProduct.getName());
         lblBoxByProduct.setText(String.valueOf(selectedProduct.getBoxBy()));
         lblPriceTwoProduct.setText(selectedProduct.getPriceTwo().toString());
         txtPriceProduct.setText(selectedProduct.getPriceTwo().toString());
+        txtPriceProduct.setEnabled(true);
+        if(selectedProduct.getFlagPrice() != null && selectedProduct.getFlagPrice().equals(Product.PRODUCT_FLAG_LEVELS_ENABLE)){
+            String quantity = txtQuantityProduct.getText().toString().equals("")? "0" :
+                    txtQuantityProduct.getText().toString();
+            txtPriceProduct.setEnabled(false);
+            txtPriceProduct.setText(
+                    selectedProduct.getPriceByQuantity(Double.parseDouble(quantity)).toString());
+            txtQuantityProduct.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    String quantity = txtQuantityProduct.getText().toString().equals("")? "0" :
+                            txtQuantityProduct.getText().toString();
+                    txtPriceProduct.setText(
+                            selectedProduct.getPriceByQuantity(Double.parseDouble(quantity)).toString()
+                    );
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                }
+            });
+        }
+
     }
 
     private void configureAddProduct() {

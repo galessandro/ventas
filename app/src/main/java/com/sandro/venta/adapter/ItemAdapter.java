@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.sandro.venta.R;
 import com.sandro.venta.activity.NewOrderActivity;
 import com.sandro.venta.bean.Item;
+import com.sandro.venta.bean.Product;
 import com.sandro.venta.util.DecimalDigitsInputFilter;
 
 import java.util.List;
@@ -134,6 +135,8 @@ public class ItemAdapter extends ArrayAdapter<Item> {
         txtOrderItemQuantity.setText(String.valueOf(item.getQuantity()));
         txtOrderItemQuantity.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(2)});
 
+        final TextView lblOrderItemPrice =  (TextView) itemLayout.findViewById(R.id.order_item_price);
+
         txtOrderItemQuantity.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -144,7 +147,16 @@ public class ItemAdapter extends ArrayAdapter<Item> {
                 String quantity = txtOrderItemQuantity.getText().toString();
                 quantity = quantity.equals("") ? "0" : quantity;
                 item.setQuantity(Double.parseDouble(quantity));
+                if(item.getProduct().getFlagPrice() != null &&
+                        item.getProduct().getFlagPrice().equals(Product.PRODUCT_FLAG_LEVELS_ENABLE)){
+                    item.setPrice(item.getProduct().getPriceByQuantity(Double.parseDouble(quantity)));
+                    item.setLevel(item.getProduct().getLevelByQuantity(Double.parseDouble(quantity)));
+                    item.setPriceLevelFrom(item.getProduct().getPriceLowByLevel(item.getLevel()));
+                    item.setPriceLevelTo(item.getProduct().getPriceHighByLevel(item.getLevel()));
+                    lblOrderItemPrice.setText(item.getPrice().toString());
+                }
                 ((NewOrderActivity) mContext).updateTotalOrderAmount();
+
             }
 
             @Override

@@ -9,6 +9,8 @@
     <string name="nav_menu_new_order">Nueva Orden</string>
     <string name="navigation_drawer_close">AA</string>
     <string name="navigation_drawer_open">BB</string>
+    <string name="author">dimesandro@gmail.com</string>
+
 
     <string name="simbolo_nuevo_sol">S/.</string>
     <string name="zero_soles">S/. 0.0</string>
