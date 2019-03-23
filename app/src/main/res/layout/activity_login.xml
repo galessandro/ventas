@@ -41,13 +41,14 @@
             android:layout_below="@id/lblLoginPage" />
 
         <EditText
+            android:id="@+id/txtLoginUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:ems="10"
-            android:id="@+id/txtLoginUser"
+            android:layout_below="@id/lblLoginPage"
             android:layout_toEndOf="@id/lblLoginUser"
-            android:layout_below="@id/lblLoginPage"/>
+            android:ems="10"
+            android:inputType="textPersonName"
+            />
         </TableRow>
 
     <TableRow>
@@ -61,7 +62,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
+            android:inputType="numberPassword"
             android:ems="10"
             android:id="@+id/txtLoginPass"
             android:layout_below="@id/txtLoginUser"

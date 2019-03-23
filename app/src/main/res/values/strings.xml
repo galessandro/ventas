@@ -131,9 +131,16 @@
     <string name="export_ini_date">Seleccione la fecha</string>
     <string name="export_btn_export">Exportar</string>
     <string name="export_result_no_order">No se encontro resultados para la fecha indicada</string>
-    <string name="export_result_success">Se genero correctamente las ordenes registradas el dia
-    %1$s</string>
-
-
+    <string name="export_result_success">Se genero correctamente las ordenes registradas el dia %1$s</string>
+    <string name="permission_storage_rationale">Se necesita permiso para acceder a los archivos de productos y clientes.</string>
+    <string name="ok">OK</string>
+    <string name="permissions_not_granted">No cuenta con los permisos necesarios.</string>
+    <string name="permision_available_storage">Se concedio permiso para acceder a los archivos.</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab 3</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 
 </resources>

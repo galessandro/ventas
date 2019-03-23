@@ -1,9 +1,14 @@
 package com.sandro.venta.activity;
 
+import android.Manifest;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -45,11 +50,20 @@ public class SyncActivity extends AppCompatActivity {
     private static final int PRODUCTOS = 0;
     private static final int CLIENTES = 1;
 
+    private static final int REQUEST_STORAGE = 0;
+
+    private static String[] PERMISSIONS_CONTACT = {Manifest.permission.READ_EXTERNAL_STORAGE,
+    Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+    private View mLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sync);
+
+        mLayout = findViewById(R.id.main_layout);
 
         btnSync = (Button) findViewById(R.id.btnSync);
 
@@ -105,14 +119,18 @@ public class SyncActivity extends AppCompatActivity {
     }
 
     private void confirmSync(final List<Integer> checkedItems) {
-        new AlertDialog.Builder(getSupportActionBar().getThemedContext())
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setTitle(getResources().getString(R.string.activity_back_title))
-                .setMessage(getResources().getString(R.string.activity_sync_warning))
-                .setPositiveButton(getResources().getString(R.string.activity_back_close_yes),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestStoragePermission();
+        } else {
+            new AlertDialog.Builder(getSupportActionBar().getThemedContext())
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle(getResources().getString(R.string.activity_back_title))
+                    .setMessage(getResources().getString(R.string.activity_sync_warning))
+                    .setPositiveButton(getResources().getString(R.string.activity_back_close_yes),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
                                 /*for (Integer i: checkedItems) {
                                     if (i == PRODUCTOS) {
                                         syncProductosFromFile();
@@ -120,13 +138,76 @@ public class SyncActivity extends AppCompatActivity {
                                         syncClientesFromFile();
                                     }
                                 }*/
-                                new SyncFileTask().execute(checkedItems);
-                            }
-                        })
-                .setNegativeButton(getResources().getString(R.string.activity_back_close_no),
-                        null)
-                .show();
+                                    new SyncFileTask().execute(checkedItems);
+                                }
+                            })
+                    .setNegativeButton(getResources().getString(R.string.activity_back_close_no),
+                            null)
+                    .show();
+        }
     }
+
+    private void requestStoragePermission() {
+        Log.i(TAG, "Storage permission has NOT been granted. Requesting permission.");
+
+        // BEGIN_INCLUDE(camera_permission_request)
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            // Provide an additional rationale to the user if the permission was not granted
+            // and the user would benefit from additional context for the use of the permission.
+            // For example if the user has previously denied the permission.
+            Log.i(TAG,
+                    "Displaying storage permission rationale to provide additional context.");
+            Snackbar.make(mLayout, R.string.permission_storage_rationale,
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.ok, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ActivityCompat.requestPermissions(SyncActivity.this,
+                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                    REQUEST_STORAGE);
+                        }
+                    })
+                    .show();
+        } else {
+
+            // Camera permission has not been granted yet. Request it directly.
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    REQUEST_STORAGE);
+        }
+        // END_INCLUDE(camera_permission_request)
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        if (requestCode == REQUEST_STORAGE) {
+            // BEGIN_INCLUDE(permission_result)
+            // Received permission result for camera permission.
+            Log.i(TAG, "Received response for Storage permission request.");
+
+            // Check if the only required permission has been granted
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Camera permission has been granted, preview can be displayed
+                Log.i(TAG, "Storage permission has now been granted. Showing preview.");
+                Snackbar.make(mLayout, R.string.permision_available_storage,
+                        Snackbar.LENGTH_SHORT).show();
+            } else {
+                Log.i(TAG, "Storage permission was NOT granted.");
+                Snackbar.make(mLayout, R.string.permissions_not_granted,
+                        Snackbar.LENGTH_SHORT).show();
+
+            }
+            // END_INCLUDE(permission_result)
+
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+
 
     private ObjectResponse syncProductosFromFile() {
         ObjectResponse response = new ObjectResponse();
