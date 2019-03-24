@@ -14,11 +14,15 @@ import com.sandro.venta.bean.SalesMan;
 import com.sandro.venta.helper.DatabaseHelper;
 import com.sandro.venta.util.SessionManager;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText txtLoginUser;
-    private EditText txtLoginPass;
-    private Button btnLogin;
+    @BindView(R.id.txtLoginUser) EditText txtLoginUser;
+    @BindView(R.id.txtLoginPass) EditText txtLoginPass;
+    @BindView(R.id.btnLogin) Button btnLogin;
     DatabaseHelper db;
     private SessionManager session;
 
@@ -26,11 +30,11 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
         configActivity();
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
-
         db = new DatabaseHelper(getApplicationContext());
     }
 
@@ -47,25 +51,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void configActivity() {
-        txtLoginUser = (EditText) findViewById(R.id.txtLoginUser);
-        txtLoginPass = (EditText) findViewById(R.id.txtLoginPass);
-
         InputFilter[] editFilters = txtLoginUser.getFilters();
         InputFilter[] newFilters = new InputFilter[editFilters.length + 1];
         System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
         newFilters[editFilters.length] = new InputFilter.AllCaps();
         txtLoginUser.setFilters(newFilters);
-
-        btnLogin = (Button) findViewById(R.id.btnLogin);
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                logIn();
-            }
-        });
     }
 
-    private void logIn(){
+    @OnClick(R.id.btnLogin)
+    public void logIn(){
         SalesMan user= db.validateUser(
                 txtLoginUser.getText().toString(),
                 txtLoginPass.getText().toString());
@@ -73,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         if( user != null ){
             session.logoutUser();
             session.createLoginSession(user.getName(), user.getCodSeller());
-            Intent intent = new Intent(LoginActivity.this, ListOrdersActivity.class);
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
         } else {
             Toast.makeText(this, R.string.login_user_error, Toast.LENGTH_SHORT).show();
