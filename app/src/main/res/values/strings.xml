@@ -21,7 +21,7 @@
     <string name="login_pass">Clave:</string>
     <string name="login_button">Ingresar</string>
     <string name="login_user_error">Usuario y/o o clave son invalidos.</string>
-    <string name="login_version">2018-001</string>
+    <string name="login_version">2019-001</string>
 
     <string name="activity_name_clients">Clientes</string>
     <string name="activity_client_lbl_search">Ingresar datos</string>
@@ -137,9 +137,8 @@
     <string name="permissions_not_granted">No cuenta con los permisos necesarios.</string>
     <string name="permision_available_storage">Se concedio permiso para acceder a los archivos.</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
-    <string name="tab_text_3">Tab 3</string>
+    <string name="tab_main_clientes">Clientes</string>
+    <string name="tab_main_pedidos">Pedidos</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
