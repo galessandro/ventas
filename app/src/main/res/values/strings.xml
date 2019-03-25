@@ -24,7 +24,7 @@
     <string name="login_version">2019-001</string>
 
     <string name="activity_name_clients">Clientes</string>
-    <string name="activity_client_lbl_search">Ingresar datos</string>
+    <string name="activity_client_lbl_search">Ingresar datos cliente</string>
     <string name="activity_client_lbl_id">Cod. Cliente:</string>
     <string name="activity_client_lbl_name">Nombres:</string>
     <string name="activity_client_lbl_first_name">Nombres:</string>
