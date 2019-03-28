@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.sandro.venta.R;
 import com.sandro.venta.bean.ListClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -56,5 +57,11 @@ public class ListClientAdapter extends RecyclerView.Adapter<ListClientAdapter.Vi
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public void setFilter(List<ListClient> listClients){
+        this.lstClients = new ArrayList<>();
+        this.lstClients.addAll(listClients);
+        notifyDataSetChanged();
     }
 }
