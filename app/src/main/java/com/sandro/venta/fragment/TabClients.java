@@ -1,7 +1,9 @@
 package com.sandro.venta.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sandro.venta.R;
+import com.sandro.venta.activity.ViewClientActivity;
 import com.sandro.venta.adapter.ListClientAdapter;
 import com.sandro.venta.bean.Client;
 import com.sandro.venta.bean.ListClient;
@@ -27,7 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class TabClients extends Fragment implements SearchView.OnQueryTextListener{
+public class TabClients extends Fragment implements SearchView.OnQueryTextListener, ListClientAdapter.OnClientListener {
 
     @BindView(R.id.rcyViewClients)
     RecyclerView recyclerView;
@@ -35,7 +38,7 @@ public class TabClients extends Fragment implements SearchView.OnQueryTextListen
 
     Unbinder unbinder;
 
-    private List<ListClient> listClients;
+    private List<Client> listClients;
 
     DatabaseHelper db;
     private SessionManager session;
@@ -54,20 +57,10 @@ public class TabClients extends Fragment implements SearchView.OnQueryTextListen
 
         db = new DatabaseHelper(this.getContext());
 
-        List<Client> clientList = db.getAllClientsFromSeller(salesMan.getCodSeller());
+        listClients = db.getAllClientsFromSeller(salesMan.getCodSeller());
 
 
-        listClients = new ArrayList<>();
-
-        for (Client client : clientList){
-            ListClient listClient = new ListClient(
-                    client.getDni(),
-                    client.getBusinessName()
-            );
-            listClients.add(listClient);
-        }
-
-        adapter = new ListClientAdapter(listClients, this.getContext());
+        adapter = new ListClientAdapter(listClients, this.getContext(), this);
         recyclerView.setAdapter(adapter);
 
         return rootView;
@@ -90,18 +83,34 @@ public class TabClients extends Fragment implements SearchView.OnQueryTextListen
 
     @Override
     public boolean onQueryTextChange(String s) {
-        List<ListClient> listClientsFiltered  = filter(listClients, s);
+        List<Client> listClientsFiltered  = filter(listClients, s);
         adapter.setFilter(listClientsFiltered);
         return false;
     }
 
-    private List<ListClient> filter(List<ListClient> listClientsFull, String nombre){
-        List<ListClient> listClientsFiltered = new ArrayList<>();
-        for (ListClient client: listClientsFull) {
-            if(client.getName().toLowerCase().contains(nombre.toLowerCase())){
+    private List<Client> filter(List<Client> listClientsFull, String nombre){
+        List<Client> listClientsFiltered = new ArrayList<>();
+        for (Client client: listClientsFull) {
+            if(client.getBusinessName().toLowerCase().contains(nombre.toLowerCase())){
                 listClientsFiltered.add(client);
             }
         }
         return listClientsFiltered;
+    }
+
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @Override
+    public void onClientClick(int position) {
+        Client client = listClients.get(position);
+
+        if (client != null) {
+            Intent intent = new Intent(this.getContext(), ViewClientActivity.class);
+            intent.putExtra("selectedClient", client);
+            startActivity(intent);
+        }
     }
 }
