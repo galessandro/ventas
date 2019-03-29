@@ -91,10 +91,17 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
         // Attach the adapter to this ListActivity's ListView
         lstProductsView.setAdapter(itemAdapter);
 
+        Intent intent = new Intent(getIntent());
+        Client selectedClient = intent.getParcelableExtra("selectedClient");
+        order.setClient(selectedClient);
+
         findViewsById();
         setDefaultDate();
         setListeners();
         updateSalesMan();
+
+        updateClient();
+
         txtOrderCod.setText(String.valueOf(codSale));
         ArrayAdapter<CharSequence> paymentTypeAdapter = ArrayAdapter.createFromResource(
                 this, R.array.paymentTypes, R.layout.support_simple_spinner_dropdown_item
@@ -170,10 +177,6 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i;
         switch (item.getItemId()) {
-            case R.id.order_set_cliente:
-                i = new Intent(this, SelectClientActivity.class);
-                startActivityForResult(i, REQUEST_SEARCH_CLIENT_CODE);
-                return true;
             case R.id.order_add_product:
                 i = new Intent(this, ProductsActivity.class);
                 startActivityForResult(i, REQUEST_SEARCH_PRODUCT_CODE);
@@ -306,18 +309,12 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private boolean validateNewOrderForm() {
-        if(order.getClient() == null){
-            Toast.makeText(this, getResources().getString(R.string.order_error_no_client),
-                    Toast.LENGTH_SHORT).show();
-            return false;
-        }
 
         if(itemAdapter.getCount() <= 0){
             Toast.makeText(this, getResources().getString(R.string.order_error_no_product),
                     Toast.LENGTH_SHORT).show();
             return false;
         }
-
 
         if(DateUtil.isDateOneLessThanTwo(DateUtil.getDate(txtOrderDate.getText().toString())
                 , DateUtil.getDate(txtOrderDeliveryDate.getText().toString()))){
@@ -368,14 +365,6 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                             getResources().getString(R.string.product_add_error_product_duplicate),
                             Toast.LENGTH_SHORT).show();
                 }
-            } else if (resultCode == Activity.RESULT_CANCELED){
-            }
-        }else if(requestCode == REQUEST_SEARCH_CLIENT_CODE){
-            if(resultCode == Activity.RESULT_OK){
-                Client clientAdded = data.getParcelableExtra("selectedClient");
-                order.setClient(clientAdded);
-                updateClient();
-            } else if (resultCode == Activity.RESULT_CANCELED){
             }
         }
     }

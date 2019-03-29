@@ -105,7 +105,7 @@ public class TabClients extends Fragment implements SearchView.OnQueryTextListen
 
     @Override
     public void onClientClick(int position) {
-        Client client = listClients.get(position);
+        Client client = adapter.getItem(position);
 
         if (client != null) {
             Intent intent = new Intent(this.getContext(), ViewClientActivity.class);

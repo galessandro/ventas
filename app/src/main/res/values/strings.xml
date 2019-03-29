@@ -23,7 +23,7 @@
     <string name="login_user_error">Usuario y/o o clave son invalidos.</string>
     <string name="login_version">2019-001</string>
 
-    <string name="activity_name_clients">Clientes</string>
+    <string name="activity_name_clients">Cliente</string>
     <string name="activity_client_lbl_search">Ingresar datos cliente</string>
     <string name="activity_client_lbl_id">Cod. Cliente:</string>
     <string name="activity_client_lbl_name">Nombres:</string>
@@ -143,5 +143,6 @@
     <string name="section_format">Hello World from section: %1$d</string>
 
     <string name="action_search">Buscar</string>
+    <string name="action_client_btn_new_order">Realizar pedido</string>
 
 </resources>

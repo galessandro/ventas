@@ -6,11 +6,6 @@
         android:title="@string/activity_order_menu_add_product"
         app:showAsAction="always" />
 
-    <item android:id="@+id/order_set_cliente"
-        android:icon="@mipmap/ic_menu_friendslist"
-        android:title="@string/activity_order_menu_add_cliente"
-        app:showAsAction="always" />
-
     <item android:id="@+id/order_save_order"
         android:icon="@mipmap/ic_menu_save"
         android:title="@string/activity_order_menu_save_order"

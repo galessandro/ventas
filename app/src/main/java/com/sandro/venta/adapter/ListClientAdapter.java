@@ -45,6 +45,10 @@ public class ListClientAdapter extends RecyclerView.Adapter<ListClientAdapter.Vi
         holder.tvName.setText(client.getBusinessName());
     }
 
+    public Client getItem(int position){
+        return lstClients.get(position);
+    }
+
     @Override
     public int getItemCount() {
         return lstClients.size();
