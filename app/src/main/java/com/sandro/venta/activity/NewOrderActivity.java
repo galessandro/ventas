@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +23,9 @@ import android.widget.Toast;
 
 import com.sandro.venta.R;
 import com.sandro.venta.adapter.ItemAdapter;
+import com.sandro.venta.api.RetrofitClient;
+import com.sandro.venta.api.model.OrderPost;
+import com.sandro.venta.api.service.PostOrderService;
 import com.sandro.venta.bean.Client;
 import com.sandro.venta.bean.Item;
 import com.sandro.venta.bean.Order;
@@ -43,6 +47,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class NewOrderActivity extends AppCompatActivity implements View.OnClickListener {
 
     private DatabaseHelper db;
@@ -52,6 +60,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
     private TextView txtOrderClient;
     private TextView txtOrderSeller;
     private Spinner spnOrderPaymentType;
+    private Spinner spnOrderPaymentVoucherType;
     private Button txtOrderDate;
     private Button txtOrderDeliveryDate;
     private TextView txtOrderTotalAmount;
@@ -65,7 +74,6 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
     DatePickerDialog datePickerDeliveryDialog;
 
     private static final int REQUEST_SEARCH_PRODUCT_CODE = 102;
-    private static final int REQUEST_SEARCH_CLIENT_CODE = 103;
     private DecimalFormat df = new DecimalFormat("#.##");
 
     @Override
@@ -108,6 +116,11 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
         );
         spnOrderPaymentType.setAdapter(paymentTypeAdapter);
 
+        ArrayAdapter<CharSequence> paymentVoucherTypeAdapter = ArrayAdapter.createFromResource(
+                this, R.array.paymentVoucherTypes, R.layout.support_simple_spinner_dropdown_item
+        );
+        spnOrderPaymentVoucherType.setAdapter(paymentVoucherTypeAdapter);
+
     }
 
     private void findViewsById() {
@@ -115,6 +128,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
         txtOrderClient = (TextView) findViewById(R.id.txtOrderClient);
         txtOrderSeller = (TextView) findViewById(R.id.txtOrderSeller);
         spnOrderPaymentType = (Spinner) findViewById(R.id.spnOrderTypePayment);
+        spnOrderPaymentVoucherType = (Spinner) findViewById(R.id.spnOrderTypePaymentVoucher);
         txtOrderDate = (Button) findViewById(R.id.txtOrderDate);
         txtOrderDeliveryDate  = (Button) findViewById(R.id.txtOrderDeliveryDate);
         txtOrderTotalAmount = (TextView) findViewById(R.id.txtOrderTotalAmount);
@@ -123,7 +137,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void setListeners() {
-        datePickerOrderDialog = new DatePickerDialog(getSupportActionBar().getThemedContext(),
+        datePickerOrderDialog = new DatePickerDialog(this,
                 new DatePickerDialog.OnDateSetListener() {
 
                     public void onDateSet(DatePicker view, int year,
@@ -138,7 +152,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                 DateUtil.getCurrentMonth(),
                 DateUtil.getCurrentDay());
 
-        datePickerDeliveryDialog = new DatePickerDialog(getSupportActionBar().getThemedContext(),
+        datePickerDeliveryDialog = new DatePickerDialog(this,
                 new DatePickerDialog.OnDateSetListener() {
 
                     public void onDateSet(DatePicker view, int year,
@@ -223,12 +237,24 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                 Order.PAYMENT_TYPE_DESC_CASH) ?
                 Order.PAYMENT_TYPE_CASH :
                 Order.PAYMENT_TYPE_CREDIT);
+        String selectedPaymentVoucher = spnOrderPaymentVoucherType.getSelectedItem().toString();
+        int paymentVoucher = 0;
+        if(selectedPaymentVoucher.equals(Order.PAYMENT_TYPE_VOUCHER_DESC_BOLETA)){
+            paymentVoucher = Order.PAYMENT_TYPE_VOUCHER_BOLETA;
+        } else if(selectedPaymentVoucher.equals(Order.PAYMENT_TYPE_VOUCHER_DESC_FACTURA)){
+            paymentVoucher = Order.PAYMENT_TYPE_VOUCHER_FACTURA;
+        } else {
+            paymentVoucher = Order.PAYMENT_TYPE_VOUCHER_NOTA_PEDIDO;
+        }
+        order.setPaymentVoucherType(paymentVoucher);
         db.createOrder(order);
         for (Item saveItem : order.getItems()) {
             db.createOrderItem(saveItem);
         }
 
         saveOrderToFile(order);
+
+        saveOrderNube(order);
 
 
         new AlertDialog.Builder(getSupportActionBar().getThemedContext())
@@ -247,6 +273,22 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                             }
                         })
                 .show();
+    }
+
+    private void saveOrderNube(Order order) {
+        PostOrderService orderService = RetrofitClient.getRetrofitClient().create(PostOrderService.class);
+        Call<OrderPost> call = orderService.createOrder(order.orderToPostOrder());
+        call.enqueue(new Callback<OrderPost>() {
+            @Override
+            public void onResponse(Call<OrderPost> call, Response<OrderPost> response) {
+                Log.i("GGRANADOS","success");
+            }
+
+            @Override
+            public void onFailure(Call<OrderPost> call, Throwable t) {
+                Log.i("GGRANADOS", "failed");
+            }
+        });
     }
 
     private void saveOrderToFile(Order order) {

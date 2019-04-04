@@ -3,6 +3,9 @@ package com.sandro.venta.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.sandro.venta.api.model.CustomerResponse;
+import com.sandro.venta.api.model.ProductResponse;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -324,5 +327,25 @@ public class Product implements Parcelable {
 
     public Double getPriceByQuantity(Double quantity) {
         return getPriceHighByLevel(getLevelByQuantity(quantity));
+    }
+
+    public static List<Product> toProductList(List<ProductResponse> productResponseList) {
+        if (productResponseList == null) return null;
+        List<Product> productList = new ArrayList<>();
+        for (ProductResponse productResponse: productResponseList) {
+            Product product = new Product();
+            product.setId(productResponse.getId());
+            product.setBoxBy(productResponse.getBoxby());
+            product.setCodProduct(productResponse.getCodproduct());
+            product.setFlagPrice(productResponse.getFlagprice());
+            product.setName(productResponse.getName());
+            product.setPriceOfList(productResponse.getPriceoflist());
+            product.setPriceOne(productResponse.getPriceone());
+            product.setPriceTwo(productResponse.getPricetwo());
+            product.setPriceThree(productResponse.getPricethree());
+            product.setTypeUnit(productResponse.getTypeunit());
+            productList.add(product);
+        }
+        return productList;
     }
 }

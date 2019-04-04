@@ -3,9 +3,17 @@ package com.sandro.venta.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.sandro.venta.api.model.ItemPost;
+import com.sandro.venta.api.model.OrderPost;
+import com.sandro.venta.util.DateUtil;
+
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import retrofit2.http.POST;
 
 /**
  * Creado por ggranados on 25/10/2015.
@@ -14,8 +22,14 @@ public class Order implements Parcelable{
 
     public static int PAYMENT_TYPE_CASH = 1;
     public static int PAYMENT_TYPE_CREDIT = 2;
+    public static int PAYMENT_TYPE_VOUCHER_BOLETA = 1;
+    public static int PAYMENT_TYPE_VOUCHER_FACTURA = 2;
+    public static int PAYMENT_TYPE_VOUCHER_NOTA_PEDIDO = 11;
     public static String PAYMENT_TYPE_DESC_CASH = "Contado";
     public static String PAYMENT_TYPE_DESC_CREDIT = "Credito";
+    public static String PAYMENT_TYPE_VOUCHER_DESC_BOLETA = "Boleta";
+    public static String PAYMENT_TYPE_VOUCHER_DESC_FACTURA = "Factura";
+    public static String PAYMENT_TYPE_VOUCHER_DESC_NOTA = "Nota Pedido";
     private int codSale;
     private int codOrder;
     private Date dateOrder;
@@ -25,6 +39,7 @@ public class Order implements Parcelable{
     private List<Item> items;
     private Date dateReg;
     private int paymentType;
+    private int paymentVoucherType;
 
     public Order (){
         items = new ArrayList<>();
@@ -41,6 +56,7 @@ public class Order implements Parcelable{
         items = new ArrayList<>();
         in.readTypedList(items, Item.CREATOR);
         this.paymentType = in.readInt();
+        this.paymentVoucherType = in.readInt();
     }
 
     public int getCodSale() {
@@ -115,6 +131,14 @@ public class Order implements Parcelable{
         this.paymentType = paymentType;
     }
 
+    public int getPaymentVoucherType() {
+        return paymentVoucherType;
+    }
+
+    public void setPaymentVoucherType(int paymentVoucherType) {
+        this.paymentVoucherType = paymentVoucherType;
+    }
+
     public Double getTotalAmount(){
         Double totalAmount = 0d;
         for (Item item : items) {
@@ -138,6 +162,7 @@ public class Order implements Parcelable{
         parcel.writeLong(getDateDelivery().getTime());
         parcel.writeTypedList(getItems());
         parcel.writeInt(getPaymentType());
+        parcel.writeInt(getPaymentVoucherType());
     }
 
     public static final Parcelable.Creator<Order> CREATOR = new Parcelable.Creator<Order>() {
@@ -149,4 +174,42 @@ public class Order implements Parcelable{
             return new Order[size];
         }
     };
+
+    public OrderPost orderToPostOrder(){
+        OrderPost post = new OrderPost();
+        post.setCodsale(StringUtils.leftPad(String.valueOf(this.getCodSale()), 8, "0"));
+        post.setCodorder(StringUtils.leftPad(String.valueOf(this.getCodOrder()), 4, "0"));
+        post.setDateorder(DateUtil.getFormatDate(this.getDateOrder(), DateUtil.dateSimpleFormat));
+        //post.setCustomerId(this.getClient().getCodClient());
+        post.setCustomerId(1);
+        //post.setSellerId(Integer.parseInt(this.getSeller().getCodSeller()));
+        post.setSellerId(2);
+        post.setDatedelivery(DateUtil.getFormatDate(this.getDateDelivery(), DateUtil.dateSimpleFormat));
+        post.setPaymenttype(String.valueOf(this.getPaymentType()));
+        post.setReceiptType(String.valueOf(this.getPaymentVoucherType()));
+        post.setImei("20000000000");
+        post.setLatitude(-11.893204);
+        post.setLongitude(-77.022548);
+        post.setStatusDownloaded("1");
+        post.setSemaphore("V");
+        List<ItemPost> itemPostList = new ArrayList<>();
+
+        for (Item item: this.getItems()) {
+            ItemPost itemPost = new ItemPost();
+            itemPost.setCodsale(post.getCodsale());
+            //itemPost.setProductId(item.getProduct().getId());
+            itemPost.setProductId(1);
+            itemPost.setQuantity(item.getQuantity());
+            itemPost.setPrice(item.getPrice());
+            itemPost.setTypeprice(item.getTypePrice());
+            itemPost.setBoxby(item.getProduct().getBoxBy());
+            itemPost.setPricetlist(item.getPriceOfList());
+            itemPost.setCodlevel(item.getLevel());
+            itemPost.setLevelrangefrom(item.getLevelRangeFrom());
+            itemPost.setLevelrangeto(item.getLevelRangeTo());
+            itemPostList.add(itemPost);
+        }
+        post.setItemPosts(itemPostList);
+        return post;
+    }
 }

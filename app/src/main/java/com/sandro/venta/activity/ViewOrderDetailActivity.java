@@ -20,6 +20,7 @@ public class ViewOrderDetailActivity extends AppCompatActivity {
     private TextView txtOrderClient;
     private TextView txtOrderSeller;
     private TextView txtOrderPaymentTypeView;
+    private TextView txtOrderPaymentVoucherTypeView;
     private TextView txtOrderDate;
     private TextView txtOrderDeliveryDate;
     private TextView txtOrderTotalAmount;
@@ -49,6 +50,16 @@ public class ViewOrderDetailActivity extends AppCompatActivity {
         txtOrderSeller.setText(order.getSeller().getCodSeller());
         txtOrderPaymentTypeView.setText(order.getPaymentType() == Order.PAYMENT_TYPE_CASH ?
         Order.PAYMENT_TYPE_DESC_CASH : Order.PAYMENT_TYPE_DESC_CREDIT);
+        int codPaymentVoucherType = order.getPaymentVoucherType();
+        String codPaymentVoucherTypeDesc = "";
+        if(codPaymentVoucherType == Order.PAYMENT_TYPE_VOUCHER_BOLETA){
+            codPaymentVoucherTypeDesc = Order.PAYMENT_TYPE_VOUCHER_DESC_BOLETA;
+        } else if(codPaymentVoucherType == Order.PAYMENT_TYPE_VOUCHER_FACTURA){
+            codPaymentVoucherTypeDesc = Order.PAYMENT_TYPE_VOUCHER_DESC_FACTURA;
+        } else {
+            codPaymentVoucherTypeDesc = Order.PAYMENT_TYPE_VOUCHER_DESC_NOTA;
+        }
+        txtOrderPaymentVoucherTypeView.setText(codPaymentVoucherTypeDesc);
         txtOrderDate.setText(DateUtil.getFormatDate(order.getDateOrder(), DateUtil.datePeruFormat));
         txtOrderDeliveryDate.setText(DateUtil.getFormatDate(order.getDateDelivery(),
                 DateUtil.datePeruFormat));
@@ -61,6 +72,7 @@ public class ViewOrderDetailActivity extends AppCompatActivity {
         txtOrderClient = (TextView) findViewById(R.id.txtOrderClientView);
         txtOrderSeller = (TextView) findViewById(R.id.txtOrderSellerView);
         txtOrderPaymentTypeView = (TextView) findViewById(R.id.txtOrderPaymentTypeView);
+        txtOrderPaymentVoucherTypeView = (TextView) findViewById(R.id.txtOrderPaymentVoucherTypeView);
         txtOrderDate = (TextView) findViewById(R.id.txtOrderDateView);
         txtOrderDeliveryDate  = (TextView) findViewById(R.id.txtOrderDeliveryDateView);
         txtOrderTotalAmount = (TextView) findViewById(R.id.txtOrderTotalAmountView);

@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.sandro.venta.bean.Client;
+import com.sandro.venta.bean.Control;
 import com.sandro.venta.bean.Item;
 import com.sandro.venta.bean.Order;
 import com.sandro.venta.bean.PriceLevel;
@@ -28,7 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
     // Database Version
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 19;
 
     // Database Name
     private static final String DATABASE_NAME = "ventas";
@@ -39,6 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_ORDER_ITEMS= "orders_item";
     private static final String TABLE_PRODUCTS = "products";
     private static final String TABLE_USERS = "users";
+    private static final String TABLE_CONTROLS = "controls";
 
     // Common column names
     private static final String KEY_CREATED_AT = "createdat"; //16
@@ -63,6 +65,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_ORDER_SELLER_COD = "codseller";//2
     private static final String KEY_ORDER_DELIVERY_AT = "datedelivery";//8
     private static final String KEY_ORDER_PAYMENT_TYPE = "paymenttype";
+    private static final String KEY_ORDER_PAYMENT_VOUCHER_TYPE = "paymentVouchertype";
 
     // Orders item Table - column names
     private static final String KEY_ORDER_ITEM_ID = "id";
@@ -78,9 +81,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_FROM = "levelrangefrom"; //1
     private static final String KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_TO = "levelrangeto"; //1
 
-
-
-    // Product Table - column names
+    // ProductResponse Table - column names
     private static final String KEY_PRODUCT_ID = "id";
     private static final String KEY_PRODUCT_COD = "codproduct"; //9
     private static final String KEY_PRODUCT_NAME = "name"; //80
@@ -123,6 +124,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_USER_PASS = "pass";
     private static final String KEY_USER_COD_SELLER = "codseller";
     private static final String KEY_USER_NAME = "name";
+    private static final String KEY_USER_CONTROL_ID = "control_id";
+    private static final String KEY_USER_IMEI = "imei";
+
+    private static final String KEY_CONTROL_ID = "id";
+    private static final String KEY_CONTROL_TABLE = "tabla";//4
 
     // Table Create Statements
     private static final String CREATE_TABLE_CLIENTS = "CREATE TABLE "
@@ -147,6 +153,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_ORDER_SELLER_COD + " TEXT," +
             KEY_ORDER_DELIVERY_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP," +
             KEY_ORDER_PAYMENT_TYPE + " INTEGER, " +
+            KEY_ORDER_PAYMENT_VOUCHER_TYPE + " INTEGER, " +
             KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP)";
 
     private static final String CREATE_TABLE_ORDERS_ITEM = "CREATE TABLE "
@@ -212,7 +219,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_USER_USER + " TEXT, " +
             KEY_USER_PASS + " TEXT, " +
             KEY_USER_COD_SELLER + " TEXT," +
+            KEY_USER_IMEI + " TEXT," +
+            KEY_USER_CONTROL_ID + " INTEGER," +
             KEY_USER_NAME + " TEXT)";
+
+
+    private static final String CREATE_TABLE_CONTROLS = "CREATE TABLE "
+            + TABLE_CONTROLS + "(" +
+            KEY_CONTROL_ID + " INTEGER PRIMARY KEY," +
+            KEY_CONTROL_TABLE + " TEXT," +
+            KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP)";
 
 
     public DatabaseHelper(Context context) {
@@ -227,9 +243,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_PRODUCTS);
         db.execSQL(CREATE_TABLE_ORDERS);
         db.execSQL(CREATE_TABLE_ORDERS_ITEM);
-
-        crearUsuariosDefecto(db);
-
+        db.execSQL(CREATE_TABLE_CONTROLS);
+        //crearUsuariosDefecto(db);
     }
 
     public SalesMan validateUser(String user, String pass){
@@ -257,8 +272,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private void crearUsuariosDefecto(SQLiteDatabase db) {
         for(SalesMan seller : getDefaultUsers()){
-            createUser(seller, db);
+            createUser(seller);
         }
+    }
+
+    public long createControl(Control control){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_CONTROL_ID, control.getId());
+        values.put(KEY_CONTROL_TABLE, control.getTable());
+
+        return db.insert(TABLE_CONTROLS, null, values);
+    }
+
+
+
+    public int getMaxIdControlTable(String table){
+        int maxControlId = 1;
+        String selectQuery = "SELECT ifnull(max(" + KEY_CONTROL_ID + "), 0) " +
+                "FROM " + TABLE_CONTROLS + " " +
+                "WHERE " + KEY_CONTROL_TABLE + " = ? ";
+
+        Log.i(TAG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, new String[]{table});
+
+        if(c.moveToFirst()){
+            maxControlId = c.getInt(0);
+        }
+
+        return maxControlId;
+
+
     }
 
     @Override
@@ -269,6 +315,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRODUCTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDER_ITEMS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTROLS);
 
         // create new tables
         onCreate(db);
@@ -305,14 +352,200 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.insert(TABLE_CLIENTS, null, values);
     }
 
-    public long createUser(SalesMan user, SQLiteDatabase db){
+    public void createClientBatch(List<Client> clientList) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            for (Client client : clientList) {
+
+                ContentValues values = new ContentValues();
+                values.put(KEY_CLIENT_COD_CLIENT, client.getCodClient());
+                values.put(KEY_CLIENT_FIRST_NAME, client.getFirstName());
+                values.put(KEY_CLIENT_LAST_NAME, client.getLastName());
+                values.put(KEY_CLIENT_ADDRESS, client.getAddress());
+                values.put(KEY_CLIENT_RUC, client.getRuc());
+                values.put(KEY_CLIENT_DNI, client.getDni());
+                values.put(KEY_CLIENT_COD_SELLER, client.getCodSeller());
+                values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
+                values.put(KEY_CLIENT_ID, client.getId());
+                db.insert(TABLE_CLIENTS, null, values);
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e){
+            Log.e(TAG, e.toString());
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public void createProductBatch(List<Product> productList) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            for (Product product : productList) {
+                ContentValues values = new ContentValues();
+                values.put(KEY_PRODUCT_COD, product.getCodProduct());
+                values.put(KEY_PRODUCT_NAME, product.getName());
+                values.put(KEY_PRODUCT_PRICE_ONE, product.getPriceOne());
+                values.put(KEY_PRODUCT_PRICE_TWO, product.getPriceTwo());
+                values.put(KEY_PRODUCT_PRICE_THREE, product.getPriceThree());
+                values.put(KEY_PRODUCT_PRICE_RANGE_NAME_ONE, product.getPriceLevelList().get(0).getLevel());
+                values.put(KEY_PRODUCT_PRICE_RANGE_FROM_ONE, product.getPriceLevelList().get(0).getRangeFrom());
+                values.put(KEY_PRODUCT_PRICE_RANGE_TO_ONE, product.getPriceLevelList().get(0).getRangeTo());
+                values.put(KEY_PRODUCT_PRICE_VALUE_FROM_ONE, product.getPriceLevelList().get(0).getPriceFrom());
+                values.put(KEY_PRODUCT_PRICE_VALUE_TO_ONE, product.getPriceLevelList().get(0).getPriceTo());
+                values.put(KEY_PRODUCT_PRICE_RANGE_NAME_TWO, product.getPriceLevelList().get(1).getLevel());
+                values.put(KEY_PRODUCT_PRICE_RANGE_FROM_TWO, product.getPriceLevelList().get(1).getRangeFrom());
+                values.put(KEY_PRODUCT_PRICE_RANGE_TO_TWO, product.getPriceLevelList().get(1).getRangeTo());
+                values.put(KEY_PRODUCT_PRICE_VALUE_FROM_TWO, product.getPriceLevelList().get(1).getPriceFrom());
+                values.put(KEY_PRODUCT_PRICE_VALUE_TO_TWO, product.getPriceLevelList().get(1).getPriceTo());
+                values.put(KEY_PRODUCT_PRICE_RANGE_NAME_THREE, product.getPriceLevelList().get(2).getLevel());
+                values.put(KEY_PRODUCT_PRICE_RANGE_FROM_THREE, product.getPriceLevelList().get(2).getRangeFrom());
+                values.put(KEY_PRODUCT_PRICE_RANGE_TO_THREE, product.getPriceLevelList().get(2).getRangeTo());
+                values.put(KEY_PRODUCT_PRICE_VALUE_FROM_THREE, product.getPriceLevelList().get(2).getPriceFrom());
+                values.put(KEY_PRODUCT_PRICE_VALUE_TO_THREE, product.getPriceLevelList().get(2).getPriceTo());
+                values.put(KEY_PRODUCT_PRICE_RANGE_NAME_FOUR, product.getPriceLevelList().get(3).getLevel());
+                values.put(KEY_PRODUCT_PRICE_RANGE_FROM_FOUR, product.getPriceLevelList().get(3).getRangeFrom());
+                values.put(KEY_PRODUCT_PRICE_RANGE_TO_FOUR, product.getPriceLevelList().get(3).getRangeTo());
+                values.put(KEY_PRODUCT_PRICE_VALUE_FROM_FOUR, product.getPriceLevelList().get(3).getPriceFrom());
+                values.put(KEY_PRODUCT_PRICE_VALUE_TO_FOUR, product.getPriceLevelList().get(3).getPriceTo());
+                values.put(KEY_PRODUCT_PRICE_RANGE_NAME_FIVE, product.getPriceLevelList().get(4).getLevel());
+                values.put(KEY_PRODUCT_PRICE_RANGE_FROM_FIVE, product.getPriceLevelList().get(4).getRangeFrom());
+                values.put(KEY_PRODUCT_PRICE_RANGE_TO_FIVE, product.getPriceLevelList().get(4).getRangeTo());
+                values.put(KEY_PRODUCT_PRICE_VALUE_FROM_FIVE, product.getPriceLevelList().get(4).getPriceFrom());
+                values.put(KEY_PRODUCT_PRICE_VALUE_TO_FIVE, product.getPriceLevelList().get(4).getPriceTo());
+                values.put(KEY_PRODUCT_BOX_BY, product.getBoxBy());
+                values.put(KEY_PRODUCT_TYPE_UNIT, product.getTypeUnit());
+                values.put(KEY_PRODUCT_PRICE_OF_LIST, product.getPriceOfList());
+                values.put(KEY_PRODUCT_FLAG_PRICE, product.getFlagPrice());
+
+                db.insert(TABLE_PRODUCTS, null, values);
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e){
+            Log.e(TAG, e.toString());
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public void clientBatchUpdate(List<Client> clientList){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            for (Client client : clientList) {
+                ContentValues values = new ContentValues();
+                values.put(KEY_CLIENT_COD_CLIENT, client.getCodClient());
+                values.put(KEY_CLIENT_FIRST_NAME, client.getFirstName());
+                values.put(KEY_CLIENT_LAST_NAME, client.getLastName());
+                values.put(KEY_CLIENT_ADDRESS, client.getAddress());
+                values.put(KEY_CLIENT_RUC, client.getRuc());
+                values.put(KEY_CLIENT_DNI, client.getDni());
+                values.put(KEY_CLIENT_COD_SELLER, client.getCodSeller());
+                values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
+                values.put(KEY_CLIENT_ID, client.getId());
+                int id = (int) db.insertWithOnConflict(TABLE_CLIENTS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+                if (id == -1) {
+                    db.update(TABLE_CLIENTS, values, "id=?", new String[] {String.valueOf(client.getId())});
+                }
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e){
+            Log.e(TAG, e.toString());
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public void productBatchUpdate(List<Product> productList) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            for (Product product : productList) {
+                ContentValues values = new ContentValues();
+                values.put(KEY_PRODUCT_COD, product.getCodProduct());
+                values.put(KEY_PRODUCT_NAME, product.getName());
+                values.put(KEY_PRODUCT_PRICE_ONE, product.getPriceOne());
+                values.put(KEY_PRODUCT_PRICE_TWO, product.getPriceTwo());
+                values.put(KEY_PRODUCT_PRICE_THREE, product.getPriceThree());
+                values.put(KEY_PRODUCT_PRICE_RANGE_NAME_ONE, product.getPriceLevelList().get(0).getLevel());
+                values.put(KEY_PRODUCT_PRICE_RANGE_FROM_ONE, product.getPriceLevelList().get(0).getRangeFrom());
+                values.put(KEY_PRODUCT_PRICE_RANGE_TO_ONE, product.getPriceLevelList().get(0).getRangeTo());
+                values.put(KEY_PRODUCT_PRICE_VALUE_FROM_ONE, product.getPriceLevelList().get(0).getPriceFrom());
+                values.put(KEY_PRODUCT_PRICE_VALUE_TO_ONE, product.getPriceLevelList().get(0).getPriceTo());
+                values.put(KEY_PRODUCT_PRICE_RANGE_NAME_TWO, product.getPriceLevelList().get(1).getLevel());
+                values.put(KEY_PRODUCT_PRICE_RANGE_FROM_TWO, product.getPriceLevelList().get(1).getRangeFrom());
+                values.put(KEY_PRODUCT_PRICE_RANGE_TO_TWO, product.getPriceLevelList().get(1).getRangeTo());
+                values.put(KEY_PRODUCT_PRICE_VALUE_FROM_TWO, product.getPriceLevelList().get(1).getPriceFrom());
+                values.put(KEY_PRODUCT_PRICE_VALUE_TO_TWO, product.getPriceLevelList().get(1).getPriceTo());
+                values.put(KEY_PRODUCT_PRICE_RANGE_NAME_THREE, product.getPriceLevelList().get(2).getLevel());
+                values.put(KEY_PRODUCT_PRICE_RANGE_FROM_THREE, product.getPriceLevelList().get(2).getRangeFrom());
+                values.put(KEY_PRODUCT_PRICE_RANGE_TO_THREE, product.getPriceLevelList().get(2).getRangeTo());
+                values.put(KEY_PRODUCT_PRICE_VALUE_FROM_THREE, product.getPriceLevelList().get(2).getPriceFrom());
+                values.put(KEY_PRODUCT_PRICE_VALUE_TO_THREE, product.getPriceLevelList().get(2).getPriceTo());
+                values.put(KEY_PRODUCT_PRICE_RANGE_NAME_FOUR, product.getPriceLevelList().get(3).getLevel());
+                values.put(KEY_PRODUCT_PRICE_RANGE_FROM_FOUR, product.getPriceLevelList().get(3).getRangeFrom());
+                values.put(KEY_PRODUCT_PRICE_RANGE_TO_FOUR, product.getPriceLevelList().get(3).getRangeTo());
+                values.put(KEY_PRODUCT_PRICE_VALUE_FROM_FOUR, product.getPriceLevelList().get(3).getPriceFrom());
+                values.put(KEY_PRODUCT_PRICE_VALUE_TO_FOUR, product.getPriceLevelList().get(3).getPriceTo());
+                values.put(KEY_PRODUCT_PRICE_RANGE_NAME_FIVE, product.getPriceLevelList().get(4).getLevel());
+                values.put(KEY_PRODUCT_PRICE_RANGE_FROM_FIVE, product.getPriceLevelList().get(4).getRangeFrom());
+                values.put(KEY_PRODUCT_PRICE_RANGE_TO_FIVE, product.getPriceLevelList().get(4).getRangeTo());
+                values.put(KEY_PRODUCT_PRICE_VALUE_FROM_FIVE, product.getPriceLevelList().get(4).getPriceFrom());
+                values.put(KEY_PRODUCT_PRICE_VALUE_TO_FIVE, product.getPriceLevelList().get(4).getPriceTo());
+                values.put(KEY_PRODUCT_BOX_BY, product.getBoxBy());
+                values.put(KEY_PRODUCT_TYPE_UNIT, product.getTypeUnit());
+                values.put(KEY_PRODUCT_PRICE_OF_LIST, product.getPriceOfList());
+                values.put(KEY_PRODUCT_FLAG_PRICE, product.getFlagPrice());
+                values.put(KEY_PRODUCT_ID, product.getId());
+                int id = (int) db.insertWithOnConflict(TABLE_PRODUCTS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+                if (id == -1) {
+                    db.update(TABLE_PRODUCTS, values, "id=?", new String[] {String.valueOf(product.getId())});
+                }
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e){
+            Log.e(TAG, e.toString());
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public long createUser(SalesMan user){
+        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_USER_COD_SELLER, user.getCodSeller());
         values.put(KEY_USER_NAME, user.getName());
         values.put(KEY_USER_USER, user.getUser());
         values.put(KEY_USER_PASS, user.getPass());
+        values.put(KEY_USER_IMEI, user.getImei());
+        values.put(KEY_USER_CONTROL_ID, user.getControlId());
 
         return db.insert(TABLE_USERS, null, values);
+    }
+
+    public void createUserBatch(List<SalesMan> listUsers){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            for (SalesMan user : listUsers) {
+                ContentValues values = new ContentValues();
+                values.put(KEY_USER_COD_SELLER, user.getCodSeller());
+                values.put(KEY_USER_NAME, user.getName());
+                values.put(KEY_USER_USER, user.getUser());
+                values.put(KEY_USER_PASS, user.getPass());
+                values.put(KEY_USER_IMEI, user.getImei());
+                values.put(KEY_USER_CONTROL_ID, user.getControlId());
+                values.put(KEY_USER_ID, user.getId());
+
+                db.insert(TABLE_USERS, null, values);
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e){
+            Log.e(TAG, e.toString());
+        } finally {
+            db.endTransaction();
+        }
     }
 
     public Client getClient(int id){
@@ -368,6 +601,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } while (c.moveToNext());
         }
         return clients;
+    }
+
+    public void sellerBatchUpdate(List<SalesMan> salesManList){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            for (SalesMan user : salesManList) {
+                ContentValues values = new ContentValues();
+                values.put(KEY_USER_COD_SELLER, user.getCodSeller());
+                values.put(KEY_USER_NAME, user.getName());
+                values.put(KEY_USER_USER, user.getUser());
+                values.put(KEY_USER_PASS, user.getPass());
+                values.put(KEY_USER_IMEI, user.getImei());
+                values.put(KEY_USER_CONTROL_ID, user.getControlId());
+                values.put(KEY_USER_ID, user.getId());
+                int id = (int) db.insertWithOnConflict(TABLE_USERS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+                if (id == -1) {
+                    db.update(TABLE_USERS, values, "id=?", new String[] {String.valueOf(user.getId())});
+                }
+
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e){
+            Log.e(TAG, e.toString());
+        } finally {
+            db.endTransaction();
+        }
     }
 
     public List<Client> getAllClientsFromSeller(String codSeller) {
@@ -565,6 +825,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_ORDER_SELLER_COD, order.getSeller().getCodSeller());
         values.put(KEY_ORDER_DELIVERY_AT, DateUtil.getFormatDate(order.getDateDelivery()));
         values.put(KEY_ORDER_PAYMENT_TYPE, order.getPaymentType());
+        values.put(KEY_ORDER_PAYMENT_VOUCHER_TYPE, order.getPaymentVoucherType());
         values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
 
         return db.insert(TABLE_ORDERS, null, values);
@@ -597,6 +858,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "O." + KEY_ORDER_DATE_AT + "," +
                 "O." + KEY_ORDER_DELIVERY_AT + "," +
                 "O." + KEY_ORDER_PAYMENT_TYPE + "," +
+                "O." + KEY_ORDER_PAYMENT_VOUCHER_TYPE + "," +
                 "C." + KEY_CLIENT_COD_CLIENT + "," +
                 "C." + KEY_CLIENT_FIRST_NAME + "," +
                 "C." + KEY_CLIENT_LAST_NAME + "," +
@@ -628,6 +890,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 order.setDateDelivery(DateUtil.getDate(c.getString(
                         c.getColumnIndex(KEY_ORDER_DELIVERY_AT))));
                 order.setPaymentType(c.getInt(c.getColumnIndex(KEY_ORDER_PAYMENT_TYPE)));
+                order.setPaymentVoucherType(c.getInt(c.getColumnIndex(KEY_ORDER_PAYMENT_VOUCHER_TYPE)));
                 Client client = new Client();
                 client.setCodClient(c.getInt(c.getColumnIndex(KEY_CLIENT_COD_CLIENT)));
                 client.setFirstName(c.getString(c.getColumnIndex(KEY_CLIENT_FIRST_NAME)));
@@ -653,6 +916,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "O." + KEY_ORDER_DATE_AT + "," +
                 "O." + KEY_ORDER_DELIVERY_AT + "," +
                 "O." + KEY_ORDER_PAYMENT_TYPE + "," +
+                "O." + KEY_ORDER_PAYMENT_VOUCHER_TYPE + "," +
                 "C." + KEY_CLIENT_COD_CLIENT + "," +
                 "C." + KEY_CLIENT_FIRST_NAME + "," +
                 "C." + KEY_CLIENT_LAST_NAME + "," +
@@ -683,6 +947,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 order.setDateDelivery(DateUtil.getDate(c.getString(
                         c.getColumnIndex(KEY_ORDER_DELIVERY_AT))));
                 order.setPaymentType(c.getInt(c.getColumnIndex(KEY_ORDER_PAYMENT_TYPE)));
+                order.setPaymentVoucherType(c.getInt(c.getColumnIndex(KEY_ORDER_PAYMENT_VOUCHER_TYPE)));
                 Client client = new Client();
                 client.setCodClient(c.getInt(c.getColumnIndex(KEY_CLIENT_COD_CLIENT)));
                 client.setFirstName(c.getString(c.getColumnIndex(KEY_CLIENT_FIRST_NAME)));

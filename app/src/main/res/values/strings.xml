@@ -53,6 +53,7 @@
     <string name="activity_order_client">Cliente:</string>
     <string name="activity_order_seller">Vendedor:</string>
     <string name="activity_order_type_payment">Forma de Pago:</string>
+    <string name="activity_order_type_payment_voucher">Comprobante:</string>
     <string name="activity_order_date">Fecha de pedido:</string>
     <string name="activity_order_delivery_date">Fecha de entrega:</string>
     <string name="activity_order_products">Items:</string>
@@ -71,6 +72,12 @@
     <string-array name="paymentTypes">
         <item>Contado</item>
         <item>Credito</item>
+    </string-array>
+
+    <string-array name="paymentVoucherTypes">
+        <item>Boleta</item>
+        <item>Factura</item>
+        <item>Nota Pedido</item>
     </string-array>
 
     <string name="activity_order_item_row_cod">Codigo</string>
@@ -118,7 +125,7 @@
         a sincronizar en el telefono</string>
     <string name="activity_sync_no_read_line_producto">Ocurrio un error al intentar leer
     el archivo de productos</string>
-    <string name="activity_sync_warning">Se sincronizaran los items seleccionados\n
+    <string name="activity_sync_warning">Se sincronizaran los itemPosts seleccionados\n
         ¿Esta seguro de continuar?</string>
     <string name="activity_sync_success">Se realizo la sincronizacion correctamente</string>
     <string name="order_row_cod_order">Cod.</string>

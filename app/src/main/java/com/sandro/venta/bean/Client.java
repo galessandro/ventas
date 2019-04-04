@@ -3,7 +3,11 @@ package com.sandro.venta.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.sandro.venta.api.model.CustomerResponse;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Creado por gg on 25/10/2015.
@@ -149,4 +153,23 @@ public class Client implements Parcelable {
             return new Client[size];
         }
     };
+
+    public static List<Client> toClientList(List<CustomerResponse> customerResponseList) {
+        if (customerResponseList == null) return null;
+        List<Client> clientList = new ArrayList<>();
+        for (CustomerResponse customerResponse: customerResponseList) {
+            Client client = new Client();
+            client.setId(customerResponse.getId());
+            client.setAddress(customerResponse.getUBIGEOCOMPLETO());
+            client.setId(customerResponse.getId());
+            client.setDni(customerResponse.getDNI());
+            client.setRuc(customerResponse.getRUC());
+            client.setFirstName(customerResponse.getNOMBRE());
+            client.setLastName(customerResponse.getNOMBRE());
+            client.setCodSeller(customerResponse.getCODVEN());
+            client.setCodClient(Integer.parseInt(customerResponse.getCODCLI()));
+            clientList.add(client);
+        }
+        return clientList;
+    }
 }
