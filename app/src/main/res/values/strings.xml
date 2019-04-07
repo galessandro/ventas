@@ -140,6 +140,7 @@
     <string name="export_result_no_order">No se encontro resultados para la fecha indicada</string>
     <string name="export_result_success">Se genero correctamente las ordenes registradas el dia %1$s</string>
     <string name="permission_storage_rationale">Se necesita permiso para acceder a los archivos de productos y clientes.</string>
+    <string name="permission_storage_save">Se necesita permiso para registrar las ordenes.</string>
     <string name="ok">OK</string>
     <string name="permissions_not_granted">No cuenta con los permisos necesarios.</string>
     <string name="permision_available_storage">Se concedio permiso para acceder a los archivos.</string>

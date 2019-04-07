@@ -92,11 +92,11 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i(TAG, String.valueOf(controlResponse.getId()));
 
                 if(maxIdControlSeller == 0) {
-                    db.createControl(Control.toControl(controlResponse));
-                    getAllSellers();
+                    //db.createControl(Control.toControl(controlResponse));
+                    getAllSellers(controlResponse);
                 }else if(controlResponse.getId() > maxIdControlSeller){
-                    db.createControl(Control.toControl(controlResponse));
-                    updateSelers(controlResponse.getId());
+                    //db.createControl(Control.toControl(controlResponse));
+                    updateSelers(controlResponse);
                 }
             }
 
@@ -124,11 +124,11 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i(TAG, String.valueOf(controlResponse.getId()));
 
                 if(maxIdControlCustomer == 0) {
-                    db.createControl(Control.toControl(controlResponse));
-                    getAllCustomers();
+//                    db.createControl(Control.toControl(controlResponse));
+                    getAllCustomers(controlResponse);
                 }else if(controlResponse.getId() > maxIdControlCustomer){
-                    db.createControl(Control.toControl(controlResponse));
-                    updateCustomers(controlResponse.getId());
+//                    db.createControl(Control.toControl(controlResponse));
+                    updateCustomers(controlResponse);
                 }
             }
 
@@ -156,11 +156,11 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i(TAG, String.valueOf(controlResponse.getId()));
 
                 if(maxIdControlProduct == 0) {
-                    db.createControl(Control.toControl(controlResponse));
-                    getAllProducts();
+                    //db.createControl(Control.toControl(controlResponse));
+                    getAllProducts(controlResponse);
                 }else if(controlResponse.getId() > maxIdControlProduct){
-                    db.createControl(Control.toControl(controlResponse));
-                    updateProducts(controlResponse.getId());
+                    //db.createControl(Control.toControl(controlResponse));
+                    updateProducts(controlResponse);
                 }
             }
 
@@ -172,7 +172,7 @@ public class LoginActivity extends AppCompatActivity {
         cProduct.getMaxIdControl("T003");
     }
 
-    private void updateProducts(Integer id) {
+    private void updateProducts(ControlResponse controlResponse) {
         ProductServicePresenter c = new ProductServicePresenter(new ProductServiceInterface() {
             @Override
             public void displayProgressBar() {
@@ -188,6 +188,7 @@ public class LoginActivity extends AppCompatActivity {
             public void displayProducts(List<ProductResponse> productResponseList) {
                 Log.i(TAG, "displayProducts" + productResponseList.size());
                 db.productBatchUpdate(Product.toProductList(productResponseList));
+                db.createControl(Control.toControl(controlResponse));
             }
 
             @Override
@@ -195,9 +196,10 @@ public class LoginActivity extends AppCompatActivity {
                 Log.e(TAG, String.valueOf(errorMessage));
             }
         });
+        c.getProductsByControlId(controlResponse.getId());
     }
 
-    private void updateCustomers(Integer id) {
+    private void updateCustomers(ControlResponse controlResponse) {
         CustomerServicePresenter c = new CustomerServicePresenter(new CustomerServiceInterface() {
             @Override
             public void displayProgressBar() {
@@ -213,6 +215,7 @@ public class LoginActivity extends AppCompatActivity {
             public void displayCustomers(List<CustomerResponse> customerResponseList) {
                 Log.i(TAG, "displayCustomers" + customerResponseList.size());
                 db.clientBatchUpdate(Client.toClientList(customerResponseList));
+                db.createControl(Control.toControl(controlResponse));
             }
 
             @Override
@@ -220,10 +223,10 @@ public class LoginActivity extends AppCompatActivity {
                 Log.e(TAG, String.valueOf(errorMessage));
             }
         });
-        c.getCustomersByControlId(id);
+        c.getCustomersByControlId(controlResponse.getId());
     }
 
-    private void getAllCustomers() {
+    private void getAllCustomers(ControlResponse controlResponse) {
         CustomerServicePresenter c = new CustomerServicePresenter(new CustomerServiceInterface() {
             @Override
             public void displayProgressBar() {
@@ -239,6 +242,7 @@ public class LoginActivity extends AppCompatActivity {
             public void displayCustomers(List<CustomerResponse> customerResponse) {
                 Log.i(TAG, String.valueOf(customerResponse.size()));
                 db.createClientBatch(Client.toClientList(customerResponse));
+                db.createControl(Control.toControl(controlResponse));
             }
 
             @Override
@@ -249,7 +253,7 @@ public class LoginActivity extends AppCompatActivity {
         c.getCustomers();
     }
 
-    private void getAllProducts() {
+    private void getAllProducts(ControlResponse controlResponse) {
         ProductServicePresenter c = new ProductServicePresenter(new ProductServiceInterface() {
             @Override
             public void displayProgressBar() {
@@ -265,6 +269,7 @@ public class LoginActivity extends AppCompatActivity {
             public void displayProducts(List<ProductResponse> productResponseList) {
                 Log.i(TAG, String.valueOf(productResponseList.size()));
                 db.createProductBatch(Product.toProductList(productResponseList));
+                db.createControl(Control.toControl(controlResponse));
             }
 
             @Override
@@ -275,7 +280,7 @@ public class LoginActivity extends AppCompatActivity {
         c.getProducts();
     }
 
-    public void getAllSellers(){
+    public void getAllSellers(ControlResponse controlResponse){
         SellerServicePresenter s = new SellerServicePresenter(new SellerServiceInterface() {
             @Override
             public void displayProgressBar() {
@@ -291,6 +296,7 @@ public class LoginActivity extends AppCompatActivity {
             public void displaySellers(List<SellerResponse> sellerResponse) {
                 Log.i(TAG, String.valueOf(sellerResponse.size()));
                 db.createUserBatch(SalesMan.toSalesManList(sellerResponse));
+                db.createControl(Control.toControl(controlResponse));
             }
 
             @Override
@@ -301,7 +307,7 @@ public class LoginActivity extends AppCompatActivity {
         s.getSellers();
     }
 
-    public void updateSelers(Integer controlId){
+    public void updateSelers(ControlResponse controlResponse){
         SellerServicePresenter s = new SellerServicePresenter(new SellerServiceInterface() {
             @Override
             public void displayProgressBar() {
@@ -315,7 +321,9 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void displaySellers(List<SellerResponse> sellerResponse) {
+                Log.i(TAG, "displaySellers:" + sellerResponse.size());
                 db.sellerBatchUpdate(SalesMan.toSalesManList(sellerResponse));
+                db.createControl(Control.toControl(controlResponse));
             }
 
             @Override
@@ -323,7 +331,7 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
-        s.getSellersByControlId(controlId);
+        s.getSellersByControlId(controlResponse.getId());
     }
 
     @Override
