@@ -33,6 +33,7 @@ public class SalesMan implements Parcelable {
         this.pass = in.readString();
         this.imei = in.readString();
         this.controlId = in.readInt();
+        this.id = in.readInt();
     }
 
     public int getControlId() {
@@ -104,6 +105,7 @@ public class SalesMan implements Parcelable {
         parcel.writeString(getPass());
         parcel.writeString(getImei());
         parcel.writeInt(getControlId());
+        parcel.writeInt(getId());
     }
 
     public static final Parcelable.Creator<SalesMan> CREATOR = new Parcelable.Creator<SalesMan>() {

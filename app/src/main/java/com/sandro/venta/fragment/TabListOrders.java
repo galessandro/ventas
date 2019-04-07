@@ -56,7 +56,7 @@ public class TabListOrders extends Fragment implements ListOrderAdapter.OnListOr
 
         db = new DatabaseHelper(this.getContext());
 
-        listOrders = db.getOrdersFromToday(salesMan.getCodSeller());
+        listOrders = db.getOrdersFromToday(salesMan.getId());
 
         adapter = new ListOrderAdapter(listOrders, this.getContext(), this);
         recyclerView.setAdapter(adapter);

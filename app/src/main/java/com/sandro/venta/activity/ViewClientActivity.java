@@ -1,9 +1,15 @@
 package com.sandro.venta.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +30,7 @@ public class ViewClientActivity extends AppCompatActivity {
     @BindView(R.id.txtViewClientAddress) TextView txtClientAddress;
     @BindView(R.id.txtViewClientRuc) TextView txtClientRuc;
     @BindView(R.id.txtViewClientDni) TextView txtClientDni;
+    @BindView(R.id.imgViewSemaphore) ImageView imgViewSemaphore;
     private Client client;
     private static final int REQUEST_NEW_ORDER_CODE = 104;
 
@@ -43,6 +50,19 @@ public class ViewClientActivity extends AppCompatActivity {
         txtClientAddress.setText(client.getAddress());
         txtClientRuc.setText(client.getRuc());
         txtClientDni.setText(client.getDni());
+
+        GradientDrawable shape = (GradientDrawable) getResources().getDrawable(R.drawable.circle);
+        int color = Color.RED;
+
+        if(client.getSemaphore().equals("A")){
+            color = Color.rgb(255, 191, 0);
+        } else if(client.getSemaphore().equals("V")){
+            color = Color.GREEN;
+        }
+
+        shape.setColor(color);
+
+        imgViewSemaphore.setImageDrawable(shape);
     }
 
     @OnClick(R.id.btnNewOrder)

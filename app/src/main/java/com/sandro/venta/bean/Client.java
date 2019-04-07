@@ -22,6 +22,7 @@ public class Client implements Parcelable {
     private String ruc;
     private String dni;
     private String codSeller;
+    private String semaphore;
     private Date dateReg;
 
     public Client() {
@@ -49,6 +50,7 @@ public class Client implements Parcelable {
         this.ruc = in.readString();
         this.dni = in.readString();
         this.codSeller = in.readString();
+        this.semaphore = in.readString();
     }
 
     public String getCodSeller() {
@@ -127,6 +129,14 @@ public class Client implements Parcelable {
         this.dateReg = dateReg;
     }
 
+    public String getSemaphore() {
+        return semaphore;
+    }
+
+    public void setSemaphore(String semaphore) {
+        this.semaphore = semaphore;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -142,6 +152,7 @@ public class Client implements Parcelable {
         parcel.writeString(getRuc());
         parcel.writeString(getDni());
         parcel.writeString(getCodSeller());
+        parcel.writeString(getSemaphore());
     }
 
     public static final Parcelable.Creator<Client> CREATOR = new Parcelable.Creator<Client>() {
@@ -168,6 +179,7 @@ public class Client implements Parcelable {
             client.setLastName(customerResponse.getNOMBRE());
             client.setCodSeller(customerResponse.getCODVEN());
             client.setCodClient(Integer.parseInt(customerResponse.getCODCLI()));
+            client.setSemaphore(customerResponse.getSEMAFORO());
             clientList.add(client);
         }
         return clientList;

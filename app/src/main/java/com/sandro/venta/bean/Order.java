@@ -40,6 +40,10 @@ public class Order implements Parcelable{
     private Date dateReg;
     private int paymentType;
     private int paymentVoucherType;
+    private String imei;
+    private double latitude;
+    private double longitude;
+    private String semaphore;
 
     public Order (){
         items = new ArrayList<>();
@@ -57,6 +61,38 @@ public class Order implements Parcelable{
         in.readTypedList(items, Item.CREATOR);
         this.paymentType = in.readInt();
         this.paymentVoucherType = in.readInt();
+    }
+
+    public String getImei() {
+        return imei;
+    }
+
+    public void setImei(String imei) {
+        this.imei = imei;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getSemaphore() {
+        return semaphore;
+    }
+
+    public void setSemaphore(String semaphore) {
+        this.semaphore = semaphore;
     }
 
     public int getCodSale() {
@@ -175,30 +211,31 @@ public class Order implements Parcelable{
         }
     };
 
-    public OrderPost orderToPostOrder(){
+    public OrderPost toPostOrder(){
         OrderPost post = new OrderPost();
         post.setCodsale(StringUtils.leftPad(String.valueOf(this.getCodSale()), 8, "0"));
         post.setCodorder(StringUtils.leftPad(String.valueOf(this.getCodOrder()), 4, "0"));
         post.setDateorder(DateUtil.getFormatDate(this.getDateOrder(), DateUtil.dateSimpleFormat));
-        //post.setCustomerId(this.getClient().getCodClient());
-        post.setCustomerId(1);
-        //post.setSellerId(Integer.parseInt(this.getSeller().getCodSeller()));
-        post.setSellerId(2);
+        post.setCustomerId(this.getClient().getId());
+        //post.setCustomerId(1);
+        post.setSellerId(this.getSeller().getId());
+        //post.setSellerId(2);
         post.setDatedelivery(DateUtil.getFormatDate(this.getDateDelivery(), DateUtil.dateSimpleFormat));
         post.setPaymenttype(String.valueOf(this.getPaymentType()));
         post.setReceiptType(String.valueOf(this.getPaymentVoucherType()));
-        post.setImei("20000000000");
-        post.setLatitude(-11.893204);
-        post.setLongitude(-77.022548);
+        post.setImei(this.getImei());
+        post.setLatitude(this.getLatitude());
+        post.setLongitude(this.getLongitude());
         post.setStatusDownloaded("1");
-        post.setSemaphore("V");
+        post.setSemaphore(this.getClient().getSemaphore());
         List<ItemPost> itemPostList = new ArrayList<>();
 
         for (Item item: this.getItems()) {
             ItemPost itemPost = new ItemPost();
             itemPost.setCodsale(post.getCodsale());
-            //itemPost.setProductId(item.getProduct().getId());
-            itemPost.setProductId(1);
+            itemPost.setProductId(item.getProduct().getId());
+            //itemPost.setProductId(1);
+            itemPost.setTypeunit(item.getProduct().getTypeUnit());
             itemPost.setQuantity(item.getQuantity());
             itemPost.setPrice(item.getPrice());
             itemPost.setTypeprice(item.getTypePrice());

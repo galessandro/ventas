@@ -96,5 +96,4 @@
         app:layout_constraintStart_toStartOf="@+id/lblLoginPass"
         app:layout_constraintTop_toBottomOf="@+id/txtLoginPass" />
 
-
 </android.support.constraint.ConstraintLayout>

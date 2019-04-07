@@ -152,5 +152,9 @@
 
     <string name="action_search">Buscar</string>
     <string name="action_client_btn_new_order">Realizar pedido</string>
+    <string name="permission_imei_read">Se necesita permiso para acceder al estado del telefono</string>
+
+    <string name="imagen_semaforo_desc">Semaforo</string>
+
 
 </resources>

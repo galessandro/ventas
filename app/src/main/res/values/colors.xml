@@ -10,4 +10,5 @@
 
     <color name="order_item_text_color">#ffffff</color>
 
+    <color name="placeholder_bg">#dddddd</color>
 </resources>

@@ -1,18 +1,16 @@
 package com.sandro.venta.activity;
 
-import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,6 +36,7 @@ import com.sandro.venta.bean.Product;
 import com.sandro.venta.bean.SalesMan;
 import com.sandro.venta.helper.DatabaseHelper;
 import com.sandro.venta.util.DateUtil;
+import com.sandro.venta.util.LocationTrack;
 import com.sandro.venta.util.SessionManager;
 
 import org.apache.commons.lang3.StringUtils;
@@ -82,7 +81,12 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
     private DecimalFormat df = new DecimalFormat("#.##");
 
     private static final int REQUEST_STORAGE = 0;
+    private static final int REQUEST_IMEI = 1;
     private String TAG = "GGRANADOS-NEWORDER";
+
+    TelephonyManager telephonyManager;
+    LocationTrack locationTrack;
+
 
     private View mLayout;
 
@@ -90,6 +94,10 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_order);
+
+        telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+
+        locationTrack = new LocationTrack(NewOrderActivity.this);
 
         session = new SessionManager(getApplicationContext());
 
@@ -140,9 +148,9 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
         spnOrderPaymentType = (Spinner) findViewById(R.id.spnOrderTypePayment);
         spnOrderPaymentVoucherType = (Spinner) findViewById(R.id.spnOrderTypePaymentVoucher);
         txtOrderDate = (Button) findViewById(R.id.txtOrderDate);
-        txtOrderDeliveryDate  = (Button) findViewById(R.id.txtOrderDeliveryDate);
+        txtOrderDeliveryDate = (Button) findViewById(R.id.txtOrderDeliveryDate);
         txtOrderTotalAmount = (TextView) findViewById(R.id.txtOrderTotalAmount);
-        lblTotalProducts  = (TextView) findViewById(R.id.lblTotalProducts);
+        lblTotalProducts = (TextView) findViewById(R.id.lblTotalProducts);
         lblTotalProducts.setText(String.valueOf(itemAdapter.getCount()));
         mLayout = findViewById(R.id.layout_new_order);
     }
@@ -186,7 +194,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         if (v == txtOrderDate) {
             datePickerOrderDialog.show();
-        }else if (v == txtOrderDeliveryDate){
+        } else if (v == txtOrderDeliveryDate) {
             datePickerDeliveryDialog.show();
         }
     }
@@ -238,8 +246,20 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    @SuppressLint("MissingPermission")
     private void saveNewOrder() {
+        double latitude = 0d;
+        double longitude = 0d;
+        if (locationTrack.canGetLocation()) {
+            longitude = locationTrack.getLongitude();
+            latitude = locationTrack.getLatitude();
+        } else {
+            locationTrack.showSettingsAlert();
+        }
+        order.setLatitude(latitude);
+        order.setLongitude(longitude);
         order.setItems(itemAdapter.getItems());
+        order.setImei(telephonyManager.getDeviceId());
         order.setCodOrder(codSale);
         order.setCodSale(codSale);
         order.setDateDelivery(DateUtil.getDate(txtOrderDeliveryDate.getText().toString()));
@@ -263,15 +283,8 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
             db.createOrderItem(saveItem);
         }
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestStoragePermission();
-        } else{
-            saveOrderToFile(order);
-        }
-
+        saveOrderToFile(order);
         saveOrderNube(order);
-
 
         new AlertDialog.Builder(getSupportActionBar().getThemedContext())
                 .setIcon(android.R.drawable.ic_dialog_info)
@@ -293,11 +306,16 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
 
     private void saveOrderNube(Order order) {
         PostOrderService orderService = RetrofitClient.getRetrofitClient().create(PostOrderService.class);
-        Call<OrderPost> call = orderService.createOrder(order.orderToPostOrder());
+        Call<OrderPost> call = orderService.createOrder(order.toPostOrder());
         call.enqueue(new Callback<OrderPost>() {
             @Override
             public void onResponse(Call<OrderPost> call, Response<OrderPost> response) {
-                Log.i("GGRANADOS","success save");
+                if(response.isSuccessful()){
+                    Log.i("GGRANADOS","success save");
+                } else {
+                    Log.i("GGRANADOS", "failed save:" + response.errorBody());
+                }
+
             }
 
             @Override
@@ -487,69 +505,5 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                         null)
                 .show();
     }
-
-    private void requestStoragePermission() {
-        Log.i(TAG, "Storage permission has NOT been granted. Requesting permission.");
-
-        // BEGIN_INCLUDE(camera_permission_request)
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            // Provide an additional rationale to the user if the permission was not granted
-            // and the user would benefit from additional context for the use of the permission.
-            // For example if the user has previously denied the permission.
-            Log.i(TAG,
-                    "Displaying storage permission rationale to provide additional context.");
-            Snackbar.make(mLayout, R.string.permission_storage_save,
-                    Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.ok, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            ActivityCompat.requestPermissions(NewOrderActivity.this,
-                                    new String[]{
-                                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                            Manifest.permission.READ_EXTERNAL_STORAGE},
-                                    REQUEST_STORAGE);
-                        }
-                    })
-                    .show();
-        } else {
-
-            // Camera permission has not been granted yet. Request it directly.
-            ActivityCompat.requestPermissions(this, new String[]{
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE},
-                    REQUEST_STORAGE);
-        }
-        // END_INCLUDE(camera_permission_request)
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-
-        if (requestCode == REQUEST_STORAGE) {
-            // BEGIN_INCLUDE(permission_result)
-            // Received permission result for camera permission.
-            Log.i(TAG, "Received response for Storage permission request.");
-
-            // Check if the only required permission has been granted
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Camera permission has been granted, preview can be displayed
-                Log.i(TAG, "Storage permission has now been granted. Showing preview.");
-                Snackbar.make(mLayout, R.string.permision_available_storage,
-                        Snackbar.LENGTH_SHORT).show();
-            } else {
-                Log.i(TAG, "Storage permission was NOT granted.");
-                Snackbar.make(mLayout, R.string.permissions_not_granted,
-                        Snackbar.LENGTH_SHORT).show();
-
-            }
-            // END_INCLUDE(permission_result)
-
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
-
 
 }

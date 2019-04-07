@@ -29,7 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
     // Database Version
-    private static final int DATABASE_VERSION = 19;
+    private static final int DATABASE_VERSION = 27;
 
     // Database Name
     private static final String DATABASE_NAME = "ventas";
@@ -55,6 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_CLIENT_DNI = "dni";//8
     private static final String KEY_CLIENT_COD_SELLER = "codseller";//8
     private static final String KEY_CLIENT_MAX_COD = "maxcodclient";//8
+    private static final String KEY_CLIENT_SEMAPHORE = "semaphore";//8
 
     // Orders Table - column names
     private static final String KEY_ORDER_ID = "id";
@@ -66,6 +67,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_ORDER_DELIVERY_AT = "datedelivery";//8
     private static final String KEY_ORDER_PAYMENT_TYPE = "paymenttype";
     private static final String KEY_ORDER_PAYMENT_VOUCHER_TYPE = "paymentVouchertype";
+    private static final String KEY_ORDER_IMEI = "imei";
+    private static final String KEY_ORDER_SEMAPHORE = "semaphore";
+    private static final String KEY_ORDER_LATITUDE = "latitude";
+    private static final String KEY_ORDER_LONGITUDE = "longitude";
+
 
     // Orders item Table - column names
     private static final String KEY_ORDER_ITEM_ID = "id";
@@ -141,6 +147,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_CLIENT_LAST_NAME + " TEXT, " +
             KEY_CLIENT_ADDRESS + " TEXT," +
             KEY_CLIENT_COD_SELLER + " TEXT," +
+            KEY_CLIENT_SEMAPHORE + " TEXT," +
             KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP)";
 
     private static final String CREATE_TABLE_ORDERS = "CREATE TABLE "
@@ -149,18 +156,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_ORDER_COD_SALE + " INTEGER, " +
             KEY_ORDER_COD_ORDER + " INTEGER," +
             KEY_ORDER_DATE_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-            KEY_ORDER_CLIENT_COD + " TEXT," +
-            KEY_ORDER_SELLER_COD + " TEXT," +
+            KEY_ORDER_CLIENT_COD + " INTEGER," +
+            KEY_ORDER_SELLER_COD + " INTEGER," +
+            KEY_ORDER_IMEI + " TEXT," +
+            KEY_ORDER_SEMAPHORE + " TEXT," +
             KEY_ORDER_DELIVERY_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP," +
             KEY_ORDER_PAYMENT_TYPE + " INTEGER, " +
             KEY_ORDER_PAYMENT_VOUCHER_TYPE + " INTEGER, " +
-            KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP)";
+            KEY_ORDER_LATITUDE + " REAL, " +
+            KEY_ORDER_LONGITUDE + " REAL, " +
+            KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+            "FOREIGN KEY(" + KEY_ORDER_CLIENT_COD + ") REFERENCES " + TABLE_CLIENTS + "("+ KEY_CLIENT_ID +"), " +
+            "FOREIGN KEY(" + KEY_ORDER_SELLER_COD + ") REFERENCES " + TABLE_USERS + "("+ KEY_USER_ID +"))";
+
 
     private static final String CREATE_TABLE_ORDERS_ITEM = "CREATE TABLE "
             + TABLE_ORDER_ITEMS + "(" +
             KEY_ORDER_ITEM_ID + " INTEGER PRIMARY KEY," +
             KEY_ORDER_ITEM_COD_SALE + " INTEGER, " +
-            KEY_ORDER_ITEM_COD_PRODUCT + " TEXT," +
+            KEY_ORDER_ITEM_COD_PRODUCT + " INTEGER," +
             KEY_ORDER_ITEM_QUANTITY + " REAL, " +
             KEY_ORDER_ITEM_PRICE + " REAL, " +
             KEY_ORDER_ITEM_TYPE_UNIT + " TEXT," +
@@ -170,7 +184,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_ORDER_ITEM_PRICE_LIST + " INTEGER," +
             KEY_ORDER_ITEM_PRODUCT_COD_LEVEL + " INTEGER," +
             KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_FROM + " REAL, " +
-            KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_TO + " REAL)"
+            KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_TO + " REAL, " +
+            "FOREIGN KEY(" + KEY_ORDER_ITEM_COD_PRODUCT + ") REFERENCES " + TABLE_PRODUCTS + "("+ KEY_PRODUCT_ID +"))";
             ;
 
     private static final String CREATE_TABLE_PRODUCTS = "CREATE TABLE "
@@ -236,6 +251,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+        db.setForeignKeyConstraintsEnabled(true);
+    }
+
+    @Override
     public void onCreate(SQLiteDatabase db) {
         // creating required tables
         db.execSQL(CREATE_TABLE_USERS);
@@ -265,6 +286,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             seller.setPass((c.getString(c.getColumnIndex(KEY_USER_PASS))));
             seller.setCodSeller((c.getString(c.getColumnIndex(KEY_USER_COD_SELLER))));
             seller.setName((c.getString(c.getColumnIndex(KEY_USER_NAME))));
+            seller.setId(c.getInt(c.getColumnIndex(KEY_USER_ID)));
         }
 
         return seller;
@@ -347,6 +369,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_CLIENT_RUC, client.getRuc());
         values.put(KEY_CLIENT_DNI, client.getDni());
         values.put(KEY_CLIENT_COD_SELLER, client.getCodSeller());
+        values.put(KEY_CLIENT_SEMAPHORE, client.getSemaphore());
         values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
 
         return db.insert(TABLE_CLIENTS, null, values);
@@ -366,6 +389,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values.put(KEY_CLIENT_RUC, client.getRuc());
                 values.put(KEY_CLIENT_DNI, client.getDni());
                 values.put(KEY_CLIENT_COD_SELLER, client.getCodSeller());
+                values.put(KEY_CLIENT_SEMAPHORE, client.getSemaphore());
                 values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
                 values.put(KEY_CLIENT_ID, client.getId());
                 db.insert(TABLE_CLIENTS, null, values);
@@ -442,6 +466,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values.put(KEY_CLIENT_RUC, client.getRuc());
                 values.put(KEY_CLIENT_DNI, client.getDni());
                 values.put(KEY_CLIENT_COD_SELLER, client.getCodSeller());
+                values.put(KEY_CLIENT_SEMAPHORE, client.getSemaphore());
                 values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
                 values.put(KEY_CLIENT_ID, client.getId());
                 int id = (int) db.insertWithOnConflict(TABLE_CLIENTS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
@@ -569,6 +594,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             client.setRuc((c.getString(c.getColumnIndex(KEY_CLIENT_RUC))));
             client.setDni((c.getString(c.getColumnIndex(KEY_CLIENT_DNI))));
             client.setDateReg(DateUtil.getDateTime(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
+            client.setSemaphore(c.getString(c.getColumnIndex(KEY_CLIENT_SEMAPHORE)));
         }
 
         return client;
@@ -595,7 +621,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 client.setRuc((c.getString(c.getColumnIndex(KEY_CLIENT_RUC))));
                 client.setDni((c.getString(c.getColumnIndex(KEY_CLIENT_DNI))));
                 client.setDateReg(DateUtil.getDateTime(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
-
+                client.setSemaphore(c.getString(c.getColumnIndex(KEY_CLIENT_SEMAPHORE)));
                 // adding to client list
                 clients.add(client);
             } while (c.moveToNext());
@@ -653,6 +679,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 client.setDni((c.getString(c.getColumnIndex(KEY_CLIENT_DNI))));
                 client.setCodSeller(c.getString(c.getColumnIndex(KEY_CLIENT_COD_SELLER)));
                 client.setDateReg(DateUtil.getDateTime(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
+                client.setSemaphore(c.getString(c.getColumnIndex(KEY_CLIENT_SEMAPHORE)));
                 // adding to client list
                 clients.add(client);
             } while (c.moveToNext());
@@ -821,12 +848,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_ORDER_COD_SALE, order.getCodSale());
         values.put(KEY_ORDER_COD_ORDER, order.getCodOrder());
         values.put(KEY_ORDER_DATE_AT, DateUtil.getFormatDate(order.getDateOrder()));
-        values.put(KEY_ORDER_CLIENT_COD, order.getClient().getCodClient());
-        values.put(KEY_ORDER_SELLER_COD, order.getSeller().getCodSeller());
+        values.put(KEY_ORDER_CLIENT_COD, order.getClient().getId());
+        values.put(KEY_ORDER_SELLER_COD, order.getSeller().getId());
         values.put(KEY_ORDER_DELIVERY_AT, DateUtil.getFormatDate(order.getDateDelivery()));
         values.put(KEY_ORDER_PAYMENT_TYPE, order.getPaymentType());
         values.put(KEY_ORDER_PAYMENT_VOUCHER_TYPE, order.getPaymentVoucherType());
         values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
+        values.put(KEY_ORDER_IMEI, order.getImei());
+        values.put(KEY_ORDER_SEMAPHORE, order.getClient().getSemaphore());
+        values.put(KEY_ORDER_LATITUDE, order.getLatitude());
+        values.put(KEY_ORDER_LONGITUDE, order.getLongitude());
 
         return db.insert(TABLE_ORDERS, null, values);
     }
@@ -835,7 +866,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_ORDER_ITEM_COD_SALE, item.getCodSale());
-        values.put(KEY_ORDER_ITEM_COD_PRODUCT, item.getProduct().getCodProduct());
+        values.put(KEY_ORDER_ITEM_COD_PRODUCT, item.getProduct().getId());
         values.put(KEY_ORDER_ITEM_QUANTITY, item.getQuantity());
         values.put(KEY_ORDER_ITEM_PRICE, item.getPrice());
         values.put(KEY_ORDER_ITEM_TYPE_UNIT, item.getProduct().getTypeUnit());
@@ -848,6 +879,64 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_TO, item.getLevelRangeTo());
 
         return db.insert(TABLE_ORDER_ITEMS, null, values);
+    }
+
+    public List<Order> getOrdersFromToday(Integer sellerId){
+        List<Order> orders = new ArrayList<>();
+        String selectQuery = "SELECT  " +
+                "O." + KEY_ORDER_COD_SALE + ", " +
+                "O." + KEY_ORDER_COD_ORDER + "," +
+                "O." + KEY_ORDER_DATE_AT + "," +
+                "O." + KEY_ORDER_DELIVERY_AT + "," +
+                "O." + KEY_ORDER_PAYMENT_TYPE + "," +
+                "O." + KEY_ORDER_PAYMENT_VOUCHER_TYPE + "," +
+                "C." + KEY_CLIENT_COD_CLIENT + "," +
+                "C." + KEY_CLIENT_FIRST_NAME + "," +
+                "C." + KEY_CLIENT_LAST_NAME + "," +
+                "U." + KEY_USER_COD_SELLER + "," +
+                "U." + KEY_USER_NAME +
+                " FROM " + TABLE_ORDERS +
+                " O INNER JOIN " + TABLE_CLIENTS  + " C ON O." + KEY_ORDER_CLIENT_COD + " =" +
+                " C." + KEY_CLIENT_ID +
+                " INNER JOIN " + TABLE_USERS  + " U ON O." + KEY_ORDER_SELLER_COD + " =" +
+                " U." + KEY_USER_ID +
+                " WHERE " +
+                " U." + KEY_USER_ID + " = '" + sellerId + "'" +
+                " AND O." + KEY_CREATED_AT + " BETWEEN " +
+                "datetime(date('now', 'localtime')||' 00:00:00') AND datetime(date('now', 'localtime')||' 23:59:59')";
+
+        Log.i(TAG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                Order order = new Order();
+                order.setCodSale(c.getInt(c.getColumnIndex(KEY_ORDER_COD_SALE)));
+                order.setCodOrder(c.getInt(c.getColumnIndex(KEY_ORDER_COD_ORDER)));
+                order.setDateOrder(DateUtil.getDate(c.getString(
+                        c.getColumnIndex(KEY_ORDER_DATE_AT))));
+                order.setDateDelivery(DateUtil.getDate(c.getString(
+                        c.getColumnIndex(KEY_ORDER_DELIVERY_AT))));
+                order.setPaymentType(c.getInt(c.getColumnIndex(KEY_ORDER_PAYMENT_TYPE)));
+                order.setPaymentVoucherType(c.getInt(c.getColumnIndex(KEY_ORDER_PAYMENT_VOUCHER_TYPE)));
+                Client client = new Client();
+                client.setCodClient(c.getInt(c.getColumnIndex(KEY_CLIENT_COD_CLIENT)));
+                client.setFirstName(c.getString(c.getColumnIndex(KEY_CLIENT_FIRST_NAME)));
+                client.setLastName(c.getString(c.getColumnIndex(KEY_CLIENT_LAST_NAME)));
+                SalesMan seller = new SalesMan();
+                seller.setCodSeller(c.getString(c.getColumnIndex(KEY_USER_COD_SELLER)));
+                seller.setName(c.getString(c.getColumnIndex(KEY_USER_NAME)));
+                order.setSeller(seller);
+                order.setClient(client);
+                order.setItems(getItemsFromOrder(order.getCodSale()));
+
+                orders.add(order);
+            } while (c.moveToNext());
+        }
+        return orders;
     }
 
     public List<Order> getOrdersFromToday(String codSeller){
@@ -984,7 +1073,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " FROM " +
                 TABLE_ORDER_ITEMS +
                 " O INNER JOIN " + TABLE_PRODUCTS  + " P ON O." + KEY_ORDER_ITEM_COD_PRODUCT + " = " +
-                "P." + KEY_PRODUCT_COD +
+                "P." + KEY_PRODUCT_ID +
                 " WHERE O." + KEY_ORDER_COD_SALE + " = ?";
 
         Log.i(TAG, selectQuery);
