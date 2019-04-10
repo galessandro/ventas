@@ -26,7 +26,7 @@ public class Control {
     public static Control toControl(ControlResponse controlResponse){
         Control control = new Control();
         control.setId(controlResponse.getId());
-        control.setTable(controlResponse.getTable());
+        control.setTable(controlResponse.getTabla());
         return control;
     }
 }

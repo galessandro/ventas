@@ -9,9 +9,9 @@ public class ControlResponse {
     @SerializedName("id")
     @Expose
     private Integer id;
-    @SerializedName("table")
+    @SerializedName("tabla")
     @Expose
-    private String table;
+    private String tabla;
     @SerializedName("created_at")
     @Expose
     private String createdAt;
@@ -27,12 +27,12 @@ public class ControlResponse {
         this.id = id;
     }
 
-    public String getTable() {
-        return table;
+    public String getTabla() {
+        return tabla;
     }
 
-    public void setTable(String table) {
-        this.table = table;
+    public void setTabla(String tabla) {
+        this.tabla = tabla;
     }
 
     public String getCreatedAt() {

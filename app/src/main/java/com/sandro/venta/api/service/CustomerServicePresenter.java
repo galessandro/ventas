@@ -36,6 +36,15 @@ public class CustomerServicePresenter {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    private Observable<List<CustomerResponse>> getCustomersByControlRangeObservable(
+            Integer controlIdFrom,
+            Integer controlIdTo){
+        return RetrofitClient.getRetrofitClient().create(CustomerService.class)
+                .getCustomersFromControlRange(controlIdFrom,controlIdTo)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     private Observer<List<CustomerResponse>> getCustomersObserver(){
         return new Observer<List<CustomerResponse>>(){
 
@@ -68,5 +77,9 @@ public class CustomerServicePresenter {
 
     public void getCustomersByControlId(Integer controlId){
         getCustomersByControlIdObservable(controlId).subscribeWith(getCustomersObserver());
+    }
+
+    public void getCustomersByControlRange(Integer controlIdFrom, Integer controlIdTo){
+        getCustomersByControlRangeObservable(controlIdFrom, controlIdTo).subscribeWith(getCustomersObserver());
     }
 }

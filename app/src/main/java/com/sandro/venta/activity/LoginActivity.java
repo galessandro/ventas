@@ -10,8 +10,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -20,6 +22,8 @@ import com.sandro.venta.api.model.ControlResponse;
 import com.sandro.venta.api.model.CustomerResponse;
 import com.sandro.venta.api.model.ProductResponse;
 import com.sandro.venta.api.model.SellerResponse;
+import com.sandro.venta.api.service.ControlListServiceInterface;
+import com.sandro.venta.api.service.ControlListServicePresenter;
 import com.sandro.venta.api.service.ControlServiceInterface;
 import com.sandro.venta.api.service.ControlServicePresenter;
 import com.sandro.venta.api.service.CustomerServiceInterface;
@@ -46,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.txtLoginUser) EditText txtLoginUser;
     @BindView(R.id.txtLoginPass) EditText txtLoginPass;
     @BindView(R.id.btnLogin) Button btnLogin;
+    @BindView(R.id.progressBar) ProgressBar progressBar;
 
     private DatabaseHelper db;
     private SessionManager session;
@@ -81,97 +86,54 @@ public class LoginActivity extends AppCompatActivity {
         int maxIdControlCustomer = db.getMaxIdControlTable("T002");
         int maxIdControlProduct = db.getMaxIdControlTable("T003");
 
-        ControlServicePresenter cSeller = new ControlServicePresenter(new ControlServiceInterface() {
+        ControlListServicePresenter cAllControls = new ControlListServicePresenter(new ControlListServiceInterface() {
             @Override
             public void displayProgressBar() {
-
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setIndeterminate(true);
             }
 
             @Override
             public void hideProgressBar() {
-
+                progressBar.setVisibility(View.INVISIBLE);
+                progressBar.setIndeterminate(false);
             }
 
             @Override
-            public void displayControl(ControlResponse controlResponse) {
-                Log.i(TAG, String.valueOf(controlResponse.getId()));
-
-                if(maxIdControlSeller == 0) {
-                    getAllSellers(controlResponse);
-                }else if(controlResponse.getId() > maxIdControlSeller){
-                    updateSellers(controlResponse);
+            public void displayControl(List<ControlResponse> controlResponseList) {
+                for (ControlResponse controlResponse: controlResponseList) {
+                    Log.i(TAG, String.valueOf(controlResponse.getId()));
+                    if(controlResponse.getTabla().equals("T001")){
+                        if(maxIdControlSeller == 0) {
+                            getAllSellers(controlResponse);
+                        }else if(controlResponse.getId() > maxIdControlSeller){
+                            updateSellers(maxIdControlSeller, controlResponse);
+                        }
+                    }else if (controlResponse.getTabla().equals("T002")){
+                        if(maxIdControlCustomer == 0) {
+                            getAllCustomers(controlResponse);
+                        }else if(controlResponse.getId() > maxIdControlCustomer){
+                            updateCustomers(maxIdControlCustomer, controlResponse);
+                        }
+                    }else if (controlResponse.getTabla().equals("T003")){
+                        if(maxIdControlProduct == 0) {
+                            getAllProducts(controlResponse);
+                        }else if(controlResponse.getId() > maxIdControlProduct){
+                            updateProducts(maxIdControlProduct, controlResponse);
+                        }
+                    }
                 }
             }
 
             @Override
             public void displayError(String errorMessage) {
-                Log.e(TAG, String.valueOf(errorMessage));
+
             }
         });
-
-        cSeller.getMaxIdControl("T001");
-
-        ControlServicePresenter cCustomer = new ControlServicePresenter(new ControlServiceInterface() {
-            @Override
-            public void displayProgressBar() {
-
-            }
-
-            @Override
-            public void hideProgressBar() {
-            }
-
-            @Override
-            public void displayControl(ControlResponse controlResponse) {
-                Log.i(TAG, String.valueOf(controlResponse.getId()));
-
-                if(maxIdControlCustomer == 0) {
-                    getAllCustomers(controlResponse);
-                }else if(controlResponse.getId() > maxIdControlCustomer){
-                    updateCustomers(controlResponse);
-                }
-            }
-
-            @Override
-            public void displayError(String errorMessage) {
-                Log.e(TAG, String.valueOf(errorMessage));
-            }
-        });
-
-        cCustomer.getMaxIdControl("T002");
-
-        ControlServicePresenter cProduct = new ControlServicePresenter(new ControlServiceInterface() {
-            @Override
-            public void displayProgressBar() {
-
-            }
-
-            @Override
-            public void hideProgressBar() {
-
-            }
-
-            @Override
-            public void displayControl(ControlResponse controlResponse) {
-                Log.i(TAG, String.valueOf(controlResponse.getId()));
-
-                if(maxIdControlProduct == 0) {
-                    getAllProducts(controlResponse);
-                }else if(controlResponse.getId() > maxIdControlProduct){
-                    //db.createControl(Control.toControl(controlResponse));
-                    updateProducts(controlResponse);
-                }
-            }
-
-            @Override
-            public void displayError(String errorMessage) {
-                Log.e(TAG, String.valueOf(errorMessage));
-            }
-        });
-        cProduct.getMaxIdControl("T003");
+        cAllControls.getAllControls();
     }
 
-    private void updateProducts(ControlResponse controlResponse) {
+    private void updateProducts(Integer controlIdFrom, ControlResponse controlResponse) {
         ProductServicePresenter c = new ProductServicePresenter(new ProductServiceInterface() {
             @Override
             public void displayProgressBar() {
@@ -195,10 +157,10 @@ public class LoginActivity extends AppCompatActivity {
                 Log.e(TAG, String.valueOf(errorMessage));
             }
         });
-        c.getProductsByControlId(controlResponse.getId());
+        c.getProductsByControlRange(controlIdFrom, controlResponse.getId());
     }
 
-    private void updateCustomers(ControlResponse controlResponse) {
+    private void updateCustomers(Integer controlIdFrom, ControlResponse controlResponse) {
         CustomerServicePresenter c = new CustomerServicePresenter(new CustomerServiceInterface() {
             @Override
             public void displayProgressBar() {
@@ -222,7 +184,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.e(TAG, String.valueOf(errorMessage));
             }
         });
-        c.getCustomersByControlId(controlResponse.getId());
+        c.getCustomersByControlRange(controlIdFrom, controlResponse.getId());
     }
 
     private void getAllCustomers(ControlResponse controlResponse) {
@@ -306,7 +268,7 @@ public class LoginActivity extends AppCompatActivity {
         s.getSellers();
     }
 
-    private void updateSellers(ControlResponse controlResponse){
+    private void updateSellers(Integer controlIdFrom, ControlResponse controlResponse){
         SellerServicePresenter s = new SellerServicePresenter(new SellerServiceInterface() {
             @Override
             public void displayProgressBar() {
@@ -330,7 +292,7 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
-        s.getSellersByControlId(controlResponse.getId());
+        s.getSellersByControlRange(controlIdFrom, controlResponse.getId());
     }
 
     @Override

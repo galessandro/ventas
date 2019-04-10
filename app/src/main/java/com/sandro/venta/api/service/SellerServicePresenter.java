@@ -36,6 +36,15 @@ public class SellerServicePresenter {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    private Observable<List<SellerResponse>> getSellersByControlRangeObservable(
+            Integer controlIdFrom,
+            Integer controlIdTo){
+        return RetrofitClient.getRetrofitClient().create(SellerService.class)
+                .getSellersFromControlRange(controlIdFrom, controlIdTo)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     private Observer<List<SellerResponse>> getSellersObserver(){
         return new Observer<List<SellerResponse>>() {
 
@@ -68,5 +77,9 @@ public class SellerServicePresenter {
 
     public void getSellersByControlId(Integer controlId){
         getSellersByControlIdObservable(controlId).subscribeWith(getSellersObserver());
+    }
+
+    public void getSellersByControlRange(Integer controlIdFrom, Integer controlIdTo){
+        getSellersByControlRangeObservable(controlIdFrom, controlIdTo).subscribeWith(getSellersObserver());
     }
 }

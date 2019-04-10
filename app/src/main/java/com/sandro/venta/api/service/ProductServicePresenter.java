@@ -36,6 +36,16 @@ public class ProductServicePresenter {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    private Observable<List<ProductResponse>> getProductsByControlRangeObservable(
+            Integer controlIdFrom,
+            Integer controlIdTo){
+        return RetrofitClient.getRetrofitClient().create(ProductService.class)
+                .getProductsFromControlRange(controlIdFrom, controlIdTo)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
     private Observer<List<ProductResponse>> getProductsObserver(){
         return new Observer<List<ProductResponse>>(){
 
@@ -69,4 +79,9 @@ public class ProductServicePresenter {
     public void getProductsByControlId(Integer controlId){
         getProductsByControlIdObservable(controlId).subscribeWith(getProductsObserver());
     }
+
+    public void getProductsByControlRange(Integer controlIdFrom, Integer controlIdTo){
+        getProductsByControlRangeObservable(controlIdFrom, controlIdTo).subscribeWith(getProductsObserver());
+    }
+
 }

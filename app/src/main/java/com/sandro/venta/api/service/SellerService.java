@@ -13,4 +13,9 @@ public interface SellerService {
     @GET("sellers")
     Observable<List<SellerResponse>> getSellers(@Query("controlId") Integer controlId);
 
+    @GET("sellers/range")
+    Observable<List<SellerResponse>> getSellersFromControlRange(
+            @Query("controlIdFrom") Integer controlIdFrom,
+            @Query("controlIdTo") Integer controlIdTo);
+
 }

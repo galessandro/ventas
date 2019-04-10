@@ -13,5 +13,8 @@ import retrofit2.http.Query;
 public interface ControlService {
 
     @GET("controls")
-    Observable<ControlResponse> getControls(@Query("table") String table);
+    Observable<ControlResponse> getControls(@Query("tabla") String tabla);
+
+    @GET("controls/all")
+    Observable<List<ControlResponse>> getAllControls();
 }
