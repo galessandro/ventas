@@ -14,4 +14,9 @@
     <dimen name="activity_padding_rows">6dp</dimen>
     <dimen name="activity_padding_rows_min">4dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
+
+    <dimen name="activityPadding">16dp</dimen>
+    <dimen name="placeholderImage">60dp</dimen>
+    <dimen name="placeholderTextHeight">8dp</dimen>
+    <dimen name="padding_10">10dp</dimen>
 </resources>

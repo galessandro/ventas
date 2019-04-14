@@ -24,8 +24,6 @@ import com.sandro.venta.api.model.ProductResponse;
 import com.sandro.venta.api.model.SellerResponse;
 import com.sandro.venta.api.service.ControlListServiceInterface;
 import com.sandro.venta.api.service.ControlListServicePresenter;
-import com.sandro.venta.api.service.ControlServiceInterface;
-import com.sandro.venta.api.service.ControlServicePresenter;
 import com.sandro.venta.api.service.CustomerServiceInterface;
 import com.sandro.venta.api.service.CustomerServicePresenter;
 import com.sandro.venta.api.service.ProductServiceInterface;
@@ -50,7 +48,6 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.txtLoginUser) EditText txtLoginUser;
     @BindView(R.id.txtLoginPass) EditText txtLoginPass;
     @BindView(R.id.btnLogin) Button btnLogin;
-    @BindView(R.id.progressBar) ProgressBar progressBar;
 
     private DatabaseHelper db;
     private SessionManager session;
@@ -89,14 +86,10 @@ public class LoginActivity extends AppCompatActivity {
         ControlListServicePresenter cAllControls = new ControlListServicePresenter(new ControlListServiceInterface() {
             @Override
             public void displayProgressBar() {
-                progressBar.setVisibility(View.VISIBLE);
-                progressBar.setIndeterminate(true);
             }
 
             @Override
             public void hideProgressBar() {
-                progressBar.setVisibility(View.INVISIBLE);
-                progressBar.setIndeterminate(false);
             }
 
             @Override
@@ -127,7 +120,6 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void displayError(String errorMessage) {
-
             }
         });
         cAllControls.getAllControls();

@@ -16,6 +16,8 @@ import com.sandro.venta.bean.Product;
 import com.sandro.venta.bean.SalesMan;
 import com.sandro.venta.util.DateUtil;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,7 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
     // Database Version
-    private static final int DATABASE_VERSION = 27;
+    private static final int DATABASE_VERSION = 30;
 
     // Database Name
     private static final String DATABASE_NAME = "ventas";
@@ -47,82 +49,90 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Clients Table - column names
     private static final String KEY_CLIENT_ID = "id";
-    private static final String KEY_CLIENT_COD_CLIENT = "codclient";//4
-    private static final String KEY_CLIENT_FIRST_NAME = "firstname"; //45
-    private static final String KEY_CLIENT_LAST_NAME = "lastname"; //45
-    private static final String KEY_CLIENT_ADDRESS = "address"; //80
-    private static final String KEY_CLIENT_RUC = "ruc";//11
-    private static final String KEY_CLIENT_DNI = "dni";//8
-    private static final String KEY_CLIENT_COD_SELLER = "codseller";//8
-    private static final String KEY_CLIENT_MAX_COD = "maxcodclient";//8
-    private static final String KEY_CLIENT_SEMAPHORE = "semaphore";//8
+    private static final String KEY_CLIENT_COD_CLIENT = "codclient";
+    private static final String KEY_CLIENT_FIRST_NAME = "firstname";
+    private static final String KEY_CLIENT_LAST_NAME = "lastname";
+    private static final String KEY_CLIENT_ADDRESS = "address";
+    private static final String KEY_CLIENT_RUC = "ruc";
+    private static final String KEY_CLIENT_DNI = "dni";
+    private static final String KEY_CLIENT_COD_SELLER = "codseller";
+    private static final String KEY_CLIENT_MAX_COD = "maxcodclient";
+    private static final String KEY_CLIENT_SEMAPHORE = "semaphore";
+    private static final String KEY_CLIENT_DOCUMENTO = "documento";
+    private static final String KEY_CLIENT_FULL_NAME = "fullname";
+    private static final String KEY_CLIENT_COD_ENTIDAD = "cod_entidad";
+    private static final String KEY_CLIENT_UBIGEO = "ubigeo";
+    private static final String KEY_CLIENT_ZONA = "zona";
 
     // Orders Table - column names
     private static final String KEY_ORDER_ID = "id";
-    private static final String KEY_ORDER_COD_SALE = "codsale"; //8
-    private static final String KEY_ORDER_COD_ORDER = "codorder"; //4
-    private static final String KEY_ORDER_DATE_AT = "dateorder";//8
-    private static final String KEY_ORDER_CLIENT_COD = "codclient";//4
-    private static final String KEY_ORDER_SELLER_COD = "codseller";//2
-    private static final String KEY_ORDER_DELIVERY_AT = "datedelivery";//8
+    private static final String KEY_ORDER_COD_SALE = "codsale";
+    private static final String KEY_ORDER_COD_ORDER = "codorder";
+    private static final String KEY_ORDER_DATE_AT = "dateorder";
+    private static final String KEY_ORDER_CLIENT_COD = "codclient";
+    private static final String KEY_ORDER_SELLER_COD = "codseller";
+    private static final String KEY_ORDER_DELIVERY_AT = "datedelivery";
     private static final String KEY_ORDER_PAYMENT_TYPE = "paymenttype";
     private static final String KEY_ORDER_PAYMENT_VOUCHER_TYPE = "paymentVouchertype";
     private static final String KEY_ORDER_IMEI = "imei";
     private static final String KEY_ORDER_SEMAPHORE = "semaphore";
     private static final String KEY_ORDER_LATITUDE = "latitude";
     private static final String KEY_ORDER_LONGITUDE = "longitude";
+    private static final String KEY_ORDER_FLAG_CLOUD = "flagcloud";
+    private static final String KEY_ORDER_COD_ORDER_INTERNA = "ordeninterna";
+
 
 
     // Orders item Table - column names
     private static final String KEY_ORDER_ITEM_ID = "id";
-    private static final String KEY_ORDER_ITEM_COD_SALE = "codsale"; //8
-    private static final String KEY_ORDER_ITEM_COD_PRODUCT = "codproduct";//9
-    private static final String KEY_ORDER_ITEM_QUANTITY = "quantity";//6
-    private static final String KEY_ORDER_ITEM_PRICE = "price"; //10
-    private static final String KEY_ORDER_ITEM_TYPE_UNIT = "typeunit"; //1
-    private static final String KEY_ORDER_ITEM_BOX_BY = "boxby"; //8
-    private static final String KEY_ORDER_ITEM_TYPE_PRICE = "typeprice"; //1
-    private static final String KEY_ORDER_ITEM_PRICE_LIST = "pricetlist"; //1
-    private static final String KEY_ORDER_ITEM_PRODUCT_COD_LEVEL = "codlevel"; //1
-    private static final String KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_FROM = "levelrangefrom"; //1
-    private static final String KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_TO = "levelrangeto"; //1
+    private static final String KEY_ORDER_ITEM_COD_SALE = "codsale";
+    private static final String KEY_ORDER_ITEM_COD_PRODUCT = "codproduct";
+    private static final String KEY_ORDER_ITEM_QUANTITY = "quantity";
+    private static final String KEY_ORDER_ITEM_PRICE = "price";
+    private static final String KEY_ORDER_ITEM_TYPE_UNIT = "typeunit";
+    private static final String KEY_ORDER_ITEM_BOX_BY = "boxby";
+    private static final String KEY_ORDER_ITEM_TYPE_PRICE = "typeprice";
+    private static final String KEY_ORDER_ITEM_PRICE_LIST = "pricetlist";
+    private static final String KEY_ORDER_ITEM_PRODUCT_COD_LEVEL = "codlevel";
+    private static final String KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_FROM = "levelrangefrom";
+    private static final String KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_TO = "levelrangeto";
 
     // ProductResponse Table - column names
     private static final String KEY_PRODUCT_ID = "id";
-    private static final String KEY_PRODUCT_COD = "codproduct"; //9
-    private static final String KEY_PRODUCT_NAME = "name"; //80
-    private static final String KEY_PRODUCT_PRICE_ONE = "priceone"; //10
-    private static final String KEY_PRODUCT_PRICE_TWO = "pricetwo"; //10
-    private static final String KEY_PRODUCT_PRICE_THREE = "pricethree"; //10
-    private static final String KEY_PRODUCT_PRICE_RANGE_NAME_ONE = "pricerangenameone"; //1
-    private static final String KEY_PRODUCT_PRICE_RANGE_FROM_ONE = "pricerangefromone"; //6
-    private static final String KEY_PRODUCT_PRICE_RANGE_TO_ONE = "pricerangetoone"; //6
-    private static final String KEY_PRODUCT_PRICE_VALUE_FROM_ONE = "pricevaluefromone"; //10
-    private static final String KEY_PRODUCT_PRICE_VALUE_TO_ONE = "pricevaluetoone"; //10
-    private static final String KEY_PRODUCT_PRICE_RANGE_NAME_TWO = "pricerangenametwo"; //1
-    private static final String KEY_PRODUCT_PRICE_RANGE_FROM_TWO = "pricerangefromtwo"; //6
-    private static final String KEY_PRODUCT_PRICE_RANGE_TO_TWO = "pricerangetotwo"; //6
-    private static final String KEY_PRODUCT_PRICE_VALUE_FROM_TWO = "pricevaluefromtwo"; //10
-    private static final String KEY_PRODUCT_PRICE_VALUE_TO_TWO = "pricevaluetotwo"; //10
-    private static final String KEY_PRODUCT_PRICE_RANGE_NAME_THREE = "pricerangenamethree"; //1
-    private static final String KEY_PRODUCT_PRICE_RANGE_FROM_THREE = "pricerangefromthree"; //6
-    private static final String KEY_PRODUCT_PRICE_RANGE_TO_THREE = "pricerangetothree"; //6
-    private static final String KEY_PRODUCT_PRICE_VALUE_FROM_THREE = "pricevaluefromthree"; //10
-    private static final String KEY_PRODUCT_PRICE_VALUE_TO_THREE = "pricevaluetothree"; //10
-    private static final String KEY_PRODUCT_PRICE_RANGE_NAME_FOUR = "pricerangenamefour"; //1
-    private static final String KEY_PRODUCT_PRICE_RANGE_FROM_FOUR = "pricerangefromfour"; //6
-    private static final String KEY_PRODUCT_PRICE_RANGE_TO_FOUR = "pricerangetofour"; //6
-    private static final String KEY_PRODUCT_PRICE_VALUE_FROM_FOUR = "pricevaluefromfour"; //10
-    private static final String KEY_PRODUCT_PRICE_VALUE_TO_FOUR = "pricevaluetofour"; //10
-    private static final String KEY_PRODUCT_PRICE_RANGE_NAME_FIVE = "pricerangenamefive"; //1
-    private static final String KEY_PRODUCT_PRICE_RANGE_FROM_FIVE = "pricerangefromfive"; //6
-    private static final String KEY_PRODUCT_PRICE_RANGE_TO_FIVE = "pricerangetofive"; //6
-    private static final String KEY_PRODUCT_PRICE_VALUE_FROM_FIVE = "pricevaluefromfive"; //10
-    private static final String KEY_PRODUCT_PRICE_VALUE_TO_FIVE = "pricevaluetofive"; //10
-    private static final String KEY_PRODUCT_BOX_BY = "boxby"; //8
-    private static final String KEY_PRODUCT_TYPE_UNIT = "typeunit"; //1
-    private static final String KEY_PRODUCT_PRICE_OF_LIST = "priceoflist"; //6
-    private static final String KEY_PRODUCT_FLAG_PRICE = "flagprice"; //1
+    private static final String KEY_PRODUCT_COD = "codproduct";
+    private static final String KEY_PRODUCT_NAME = "name";
+    private static final String KEY_PRODUCT_PRICE_ONE = "priceone";
+    private static final String KEY_PRODUCT_PRICE_TWO = "pricetwo";
+    private static final String KEY_PRODUCT_PRICE_THREE = "pricethree";
+    private static final String KEY_PRODUCT_PRICE_RANGE_NAME_ONE = "pricerangenameone";
+    private static final String KEY_PRODUCT_PRICE_RANGE_FROM_ONE = "pricerangefromone";
+    private static final String KEY_PRODUCT_PRICE_RANGE_TO_ONE = "pricerangetoone";
+    private static final String KEY_PRODUCT_PRICE_VALUE_FROM_ONE = "pricevaluefromone";
+    private static final String KEY_PRODUCT_PRICE_VALUE_TO_ONE = "pricevaluetoone";
+    private static final String KEY_PRODUCT_PRICE_RANGE_NAME_TWO = "pricerangenametwo";
+    private static final String KEY_PRODUCT_PRICE_RANGE_FROM_TWO = "pricerangefromtwo";
+    private static final String KEY_PRODUCT_PRICE_RANGE_TO_TWO = "pricerangetotwo";
+    private static final String KEY_PRODUCT_PRICE_VALUE_FROM_TWO = "pricevaluefromtwo";
+    private static final String KEY_PRODUCT_PRICE_VALUE_TO_TWO = "pricevaluetotwo";
+    private static final String KEY_PRODUCT_PRICE_RANGE_NAME_THREE = "pricerangenamethree";
+    private static final String KEY_PRODUCT_PRICE_RANGE_FROM_THREE = "pricerangefromthree";
+    private static final String KEY_PRODUCT_PRICE_RANGE_TO_THREE = "pricerangetothree";
+    private static final String KEY_PRODUCT_PRICE_VALUE_FROM_THREE = "pricevaluefromthree";
+    private static final String KEY_PRODUCT_PRICE_VALUE_TO_THREE = "pricevaluetothree";
+    private static final String KEY_PRODUCT_PRICE_RANGE_NAME_FOUR = "pricerangenamefour";
+    private static final String KEY_PRODUCT_PRICE_RANGE_FROM_FOUR = "pricerangefromfour";
+    private static final String KEY_PRODUCT_PRICE_RANGE_TO_FOUR = "pricerangetofour";
+    private static final String KEY_PRODUCT_PRICE_VALUE_FROM_FOUR = "pricevaluefromfour";
+    private static final String KEY_PRODUCT_PRICE_VALUE_TO_FOUR = "pricevaluetofour";
+    private static final String KEY_PRODUCT_PRICE_RANGE_NAME_FIVE = "pricerangenamefive";
+    private static final String KEY_PRODUCT_PRICE_RANGE_FROM_FIVE = "pricerangefromfive";
+    private static final String KEY_PRODUCT_PRICE_RANGE_TO_FIVE = "pricerangetofive";
+    private static final String KEY_PRODUCT_PRICE_VALUE_FROM_FIVE = "pricevaluefromfive";
+    private static final String KEY_PRODUCT_PRICE_VALUE_TO_FIVE = "pricevaluetofive";
+    private static final String KEY_PRODUCT_BOX_BY = "boxby";
+    private static final String KEY_PRODUCT_TYPE_UNIT = "typeunit";
+    private static final String KEY_PRODUCT_PRICE_OF_LIST = "priceoflist";
+    private static final String KEY_PRODUCT_FLAG_PRICE = "flagprice";
 
     // User Table - column names
     private static final String KEY_USER_ID = "id";
@@ -148,6 +158,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_CLIENT_ADDRESS + " TEXT," +
             KEY_CLIENT_COD_SELLER + " TEXT," +
             KEY_CLIENT_SEMAPHORE + " TEXT," +
+            KEY_CLIENT_DOCUMENTO + " TEXT," +
+            KEY_CLIENT_UBIGEO + " TEXT," +
+            KEY_CLIENT_ZONA + " TEXT," +
+            KEY_CLIENT_FULL_NAME + " TEXT," +
+            KEY_CLIENT_COD_ENTIDAD + " TEXT," +
             KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP)";
 
     private static final String CREATE_TABLE_ORDERS = "CREATE TABLE "
@@ -165,6 +180,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_ORDER_PAYMENT_VOUCHER_TYPE + " INTEGER, " +
             KEY_ORDER_LATITUDE + " REAL, " +
             KEY_ORDER_LONGITUDE + " REAL, " +
+            KEY_ORDER_FLAG_CLOUD + " INTEGER, " +
+            KEY_ORDER_COD_ORDER_INTERNA + " NUMERIC, " +
             KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
             "FOREIGN KEY(" + KEY_ORDER_CLIENT_COD + ") REFERENCES " + TABLE_CLIENTS + "("+ KEY_CLIENT_ID +"), " +
             "FOREIGN KEY(" + KEY_ORDER_SELLER_COD + ") REFERENCES " + TABLE_USERS + "("+ KEY_USER_ID +"))";
@@ -370,6 +387,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_CLIENT_DNI, client.getDni());
         values.put(KEY_CLIENT_COD_SELLER, client.getCodSeller());
         values.put(KEY_CLIENT_SEMAPHORE, client.getSemaphore());
+        values.put(KEY_CLIENT_DOCUMENTO, client.getDocumento());
+        values.put(KEY_CLIENT_COD_ENTIDAD, client.getCodEntidad());
+        values.put(KEY_CLIENT_FULL_NAME, client.getFullName());
+        values.put(KEY_CLIENT_UBIGEO, client.getUbigeo());
+        values.put(KEY_CLIENT_ZONA, client.getZona());
         values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
 
         return db.insert(TABLE_CLIENTS, null, values);
@@ -390,6 +412,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values.put(KEY_CLIENT_DNI, client.getDni());
                 values.put(KEY_CLIENT_COD_SELLER, client.getCodSeller());
                 values.put(KEY_CLIENT_SEMAPHORE, client.getSemaphore());
+                values.put(KEY_CLIENT_DOCUMENTO, client.getDocumento());
+                values.put(KEY_CLIENT_COD_ENTIDAD, client.getCodEntidad());
+                values.put(KEY_CLIENT_FULL_NAME, client.getFullName());
+                values.put(KEY_CLIENT_UBIGEO, client.getUbigeo());
+                values.put(KEY_CLIENT_ZONA, client.getZona());
                 values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
                 values.put(KEY_CLIENT_ID, client.getId());
                 db.insert(TABLE_CLIENTS, null, values);
@@ -467,6 +494,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values.put(KEY_CLIENT_DNI, client.getDni());
                 values.put(KEY_CLIENT_COD_SELLER, client.getCodSeller());
                 values.put(KEY_CLIENT_SEMAPHORE, client.getSemaphore());
+                values.put(KEY_CLIENT_DOCUMENTO, client.getDocumento());
+                values.put(KEY_CLIENT_COD_ENTIDAD, client.getCodEntidad());
+                values.put(KEY_CLIENT_FULL_NAME, client.getFullName());
+                values.put(KEY_CLIENT_UBIGEO, client.getUbigeo());
+                values.put(KEY_CLIENT_ZONA, client.getZona());
                 values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
                 values.put(KEY_CLIENT_ID, client.getId());
                 int id = (int) db.insertWithOnConflict(TABLE_CLIENTS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
@@ -595,6 +627,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             client.setDni((c.getString(c.getColumnIndex(KEY_CLIENT_DNI))));
             client.setDateReg(DateUtil.getDateTime(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
             client.setSemaphore(c.getString(c.getColumnIndex(KEY_CLIENT_SEMAPHORE)));
+            client.setDocumento(c.getString(c.getColumnIndex(KEY_CLIENT_DOCUMENTO)));
+            client.setCodEntidad(c.getString(c.getColumnIndex(KEY_CLIENT_COD_ENTIDAD)));
+            client.setFullName(c.getString(c.getColumnIndex(KEY_CLIENT_FULL_NAME)));
+            client.setUbigeo(c.getString(c.getColumnIndex(KEY_CLIENT_UBIGEO)));
+            client.setZona(c.getString(c.getColumnIndex(KEY_CLIENT_ZONA)));
         }
 
         return client;
@@ -622,6 +659,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 client.setDni((c.getString(c.getColumnIndex(KEY_CLIENT_DNI))));
                 client.setDateReg(DateUtil.getDateTime(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
                 client.setSemaphore(c.getString(c.getColumnIndex(KEY_CLIENT_SEMAPHORE)));
+                client.setDocumento(c.getString(c.getColumnIndex(KEY_CLIENT_DOCUMENTO)));
+                client.setCodEntidad(c.getString(c.getColumnIndex(KEY_CLIENT_COD_ENTIDAD)));
+                client.setFullName(c.getString(c.getColumnIndex(KEY_CLIENT_FULL_NAME)));
+                client.setUbigeo(c.getString(c.getColumnIndex(KEY_CLIENT_UBIGEO)));
+                client.setZona(c.getString(c.getColumnIndex(KEY_CLIENT_ZONA)));
                 // adding to client list
                 clients.add(client);
             } while (c.moveToNext());
@@ -680,6 +722,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 client.setCodSeller(c.getString(c.getColumnIndex(KEY_CLIENT_COD_SELLER)));
                 client.setDateReg(DateUtil.getDateTime(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
                 client.setSemaphore(c.getString(c.getColumnIndex(KEY_CLIENT_SEMAPHORE)));
+                client.setDocumento(c.getString(c.getColumnIndex(KEY_CLIENT_DOCUMENTO)));
+                client.setCodEntidad(c.getString(c.getColumnIndex(KEY_CLIENT_COD_ENTIDAD)));
+                client.setFullName(c.getString(c.getColumnIndex(KEY_CLIENT_FULL_NAME)));
+                client.setUbigeo(c.getString(c.getColumnIndex(KEY_CLIENT_UBIGEO)));
+                client.setZona(c.getString(c.getColumnIndex(KEY_CLIENT_ZONA)));
                 // adding to client list
                 clients.add(client);
             } while (c.moveToNext());
@@ -721,6 +768,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return maxOrder;
+    }
+
+    public long getNextOrderInterna(){
+        long maxOrderInterna = Long.parseLong(DateUtil.getCurrentNumberDate() + StringUtils.leftPad("1", 3, "0"));
+        SQLiteDatabase db = this.getReadableDatabase();
+        //Cursor c =  db.query(TABLE_ORDERS, new String[]{"MAX("+KEY_ORDER_COD_ORDER_INTERNA+")"}, "dateorder = ?", new String[]{"date('now', 'localtime')"}, null, null, null);
+        //Cursor c =  db.query(TABLE_ORDERS, new String[]{"MAX(ordeninterna)"}, "strftime('%Y%m%d', dateorder) = ?", new String[]{"strftime('%Y%m%d', date('now', 'localtime'))"}, null, null, null);
+        Cursor c =  db.rawQuery("select MAX(ordeninterna)+1 from orders where dateorder = date('now', 'localtime')", null);
+        //query(TABLE_ORDERS, new String[]{"MAX(ordeninterna)"}, "strftime('%Y%m%d', dateorder) = ?", new String[]{"strftime('%Y%m%d', date('now', 'localtime'))"}, null, null, null);
+
+        if(c.moveToFirst()){
+            if(c.getLong(0) != 0l){
+                maxOrderInterna = c.getLong(0);
+            }
+        }
+
+        return maxOrderInterna;
     }
 
     public List<Product> getAllProducts() {
@@ -858,6 +922,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_ORDER_SEMAPHORE, order.getClient().getSemaphore());
         values.put(KEY_ORDER_LATITUDE, order.getLatitude());
         values.put(KEY_ORDER_LONGITUDE, order.getLongitude());
+        values.put(KEY_ORDER_FLAG_CLOUD, order.getFlagCloud());
+        values.put(KEY_ORDER_COD_ORDER_INTERNA, order.getOrderInterna());
+
 
         return db.insert(TABLE_ORDERS, null, values);
     }
@@ -890,6 +957,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "O." + KEY_ORDER_DELIVERY_AT + "," +
                 "O." + KEY_ORDER_PAYMENT_TYPE + "," +
                 "O." + KEY_ORDER_PAYMENT_VOUCHER_TYPE + "," +
+                "O." + KEY_ORDER_FLAG_CLOUD + "," +
                 "C." + KEY_CLIENT_COD_CLIENT + "," +
                 "C." + KEY_CLIENT_FIRST_NAME + "," +
                 "C." + KEY_CLIENT_LAST_NAME + "," +
@@ -922,6 +990,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         c.getColumnIndex(KEY_ORDER_DELIVERY_AT))));
                 order.setPaymentType(c.getInt(c.getColumnIndex(KEY_ORDER_PAYMENT_TYPE)));
                 order.setPaymentVoucherType(c.getInt(c.getColumnIndex(KEY_ORDER_PAYMENT_VOUCHER_TYPE)));
+                order.setFlagCloud(c.getInt(c.getColumnIndex(KEY_ORDER_FLAG_CLOUD)));
                 Client client = new Client();
                 client.setCodClient(c.getInt(c.getColumnIndex(KEY_CLIENT_COD_CLIENT)));
                 client.setFirstName(c.getString(c.getColumnIndex(KEY_CLIENT_FIRST_NAME)));

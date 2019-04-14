@@ -23,6 +23,11 @@ public class Client implements Parcelable {
     private String dni;
     private String codSeller;
     private String semaphore;
+    private String ubigeo;
+    private String zona;
+    private String documento;
+    private String codEntidad;
+    private String fullName;
     private Date dateReg;
 
     public Client() {
@@ -51,6 +56,11 @@ public class Client implements Parcelable {
         this.dni = in.readString();
         this.codSeller = in.readString();
         this.semaphore = in.readString();
+        this.documento = in.readString();
+        this.ubigeo = in.readString();
+        this.zona = in.readString();
+        this.codEntidad = in.readString();
+        this.fullName = in.readString();
     }
 
     public String getCodSeller() {
@@ -137,6 +147,46 @@ public class Client implements Parcelable {
         this.semaphore = semaphore;
     }
 
+    public String getUbigeo() {
+        return ubigeo;
+    }
+
+    public void setUbigeo(String ubigeo) {
+        this.ubigeo = ubigeo;
+    }
+
+    public String getZona() {
+        return zona;
+    }
+
+    public void setZona(String zona) {
+        this.zona = zona;
+    }
+
+    public String getDocumento() {
+        return documento;
+    }
+
+    public void setDocumento(String documento) {
+        this.documento = documento;
+    }
+
+    public String getCodEntidad() {
+        return codEntidad;
+    }
+
+    public void setCodEntidad(String codEntidad) {
+        this.codEntidad = codEntidad;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -153,6 +203,11 @@ public class Client implements Parcelable {
         parcel.writeString(getDni());
         parcel.writeString(getCodSeller());
         parcel.writeString(getSemaphore());
+        parcel.writeString(getDocumento());
+        parcel.writeString(getUbigeo());
+        parcel.writeString(getZona());
+        parcel.writeString(getCodEntidad());
+        parcel.writeString(getFullName());
     }
 
     public static final Parcelable.Creator<Client> CREATOR = new Parcelable.Creator<Client>() {
@@ -171,7 +226,7 @@ public class Client implements Parcelable {
         for (CustomerResponse customerResponse: customerResponseList) {
             Client client = new Client();
             client.setId(customerResponse.getId());
-            client.setAddress(customerResponse.getUBIGEOCOMPLETO());
+            client.setAddress(customerResponse.getDIRCLI());
             client.setId(customerResponse.getId());
             client.setDni(customerResponse.getDNI());
             client.setRuc(customerResponse.getRUC());
@@ -180,6 +235,11 @@ public class Client implements Parcelable {
             client.setCodSeller(customerResponse.getCODVEN());
             client.setCodClient(Integer.parseInt(customerResponse.getCODCLI()));
             client.setSemaphore(customerResponse.getSEMAFORO());
+            client.setCodEntidad(customerResponse.getCODENTIDAD());
+            client.setUbigeo(customerResponse.getUBIGEOCOMPLETO());
+            client.setZona(customerResponse.getZONA());
+            client.setFullName(customerResponse.getNOMBRE());
+            client.setDocumento(customerResponse.getNDOCUMENTO());
             clientList.add(client);
         }
         return clientList;

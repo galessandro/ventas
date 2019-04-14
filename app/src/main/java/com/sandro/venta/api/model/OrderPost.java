@@ -46,6 +46,9 @@ public class OrderPost {
     @SerializedName("statusDownloaded")
     @Expose
     private String statusDownloaded;
+    @SerializedName("orderInterna")
+    @Expose
+    private Long orderInterna;
     @SerializedName("itemPosts")
     @Expose
     private List<ItemPost> itemPosts = null;
@@ -152,6 +155,14 @@ public class OrderPost {
 
     public void setStatusDownloaded(String statusDownloaded) {
         this.statusDownloaded = statusDownloaded;
+    }
+
+    public Long getOrderInterna() {
+        return orderInterna;
+    }
+
+    public void setOrderInterna(Long orderInterna) {
+        this.orderInterna = orderInterna;
     }
 
     public List<ItemPost> getItemPosts() {

@@ -52,14 +52,14 @@
         android:id="@+id/textView4"
         android:layout_width="79dp"
         android:layout_height="wrap_content"
-        android:text="@string/activity_client_lbl_first_name"
-        app:layout_constraintBaseline_toBaselineOf="@+id/txtViewClientFirstName"
-        app:layout_constraintEnd_toStartOf="@+id/txtViewClientFirstName"
+        android:text="@string/activity_client_lbl_documento"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txtViewClientDocumento"
+        app:layout_constraintEnd_toStartOf="@+id/txtViewClientDocumento"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/txtViewClientFirstName"
+        android:id="@+id/txtViewClientDocumento"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -74,14 +74,14 @@
         android:id="@+id/textView5"
         android:layout_width="79dp"
         android:layout_height="wrap_content"
-        android:text="@string/activity_client_lbl_last_name"
-        app:layout_constraintBaseline_toBaselineOf="@+id/txtViewClientLastName"
-        app:layout_constraintEnd_toStartOf="@+id/txtViewClientLastName"
+        android:text="@string/activity_client_lbl_name"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txtViewClientName"
+        app:layout_constraintEnd_toStartOf="@+id/txtViewClientName"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/txtViewClientLastName"
+        android:id="@+id/txtViewClientName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -89,7 +89,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView5"
-        app:layout_constraintTop_toBottomOf="@+id/txtViewClientFirstName" />
+        app:layout_constraintTop_toBottomOf="@+id/txtViewClientDocumento" />
 
 
     <TextView
@@ -111,21 +111,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/txtViewClientLastName" />
+        app:layout_constraintTop_toBottomOf="@+id/txtViewClientName" />
 
 
     <TextView
         android:id="@+id/textView7"
         android:layout_width="79dp"
         android:layout_height="wrap_content"
-        android:text="@string/activity_client_lbl_ruc"
-        app:layout_constraintBaseline_toBaselineOf="@+id/txtViewClientRuc"
-        app:layout_constraintEnd_toStartOf="@+id/txtViewClientRuc"
+        android:text="@string/activity_client_lbl_ubigeo"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txtViewClientUbigeo"
+        app:layout_constraintEnd_toStartOf="@+id/txtViewClientUbigeo"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/txtViewClientRuc"
+        android:id="@+id/txtViewClientUbigeo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -140,14 +140,14 @@
         android:id="@+id/textView8"
         android:layout_width="79dp"
         android:layout_height="wrap_content"
-        android:text="@string/activity_client_lbl_dni"
-        app:layout_constraintBaseline_toBaselineOf="@+id/txtViewClientDni"
-        app:layout_constraintEnd_toStartOf="@+id/txtViewClientDni"
+        android:text="@string/activity_client_lbl_zona"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txtViewClientZona"
+        app:layout_constraintEnd_toStartOf="@+id/txtViewClientZona"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/txtViewClientDni"
+        android:id="@+id/txtViewClientZona"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -155,7 +155,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView8"
-        app:layout_constraintTop_toBottomOf="@+id/txtViewClientRuc" />
+        app:layout_constraintTop_toBottomOf="@+id/txtViewClientUbigeo" />
 
     <Button
         android:id="@+id/btnNewOrder"
@@ -169,7 +169,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtViewClientDni"
+        app:layout_constraintTop_toBottomOf="@+id/txtViewClientZona"
         tools:layout_width="0dp" />
 
     <ImageView
@@ -185,7 +185,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btnNewOrder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtViewClientDni"
+        app:layout_constraintTop_toBottomOf="@+id/txtViewClientZona"
         tools:srcCompat="@tools:sample/avatars" />
 
 

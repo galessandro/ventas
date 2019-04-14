@@ -2,21 +2,14 @@ package com.sandro.venta.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sandro.venta.R;
 import com.sandro.venta.bean.Client;
-import com.sandro.venta.bean.Order;
-import com.sandro.venta.bean.SalesMan;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,11 +18,11 @@ import butterknife.OnClick;
 public class ViewClientActivity extends AppCompatActivity {
 
     @BindView(R.id.txtViewClientCod) TextView txtClientCode;
-    @BindView(R.id.txtViewClientFirstName) TextView txtClientFirstName;
-    @BindView(R.id.txtViewClientLastName) TextView txtClientLastName;
+    @BindView(R.id.txtViewClientDocumento) TextView txtViewClientDocumento;
+    @BindView(R.id.txtViewClientName) TextView txtClientName;
     @BindView(R.id.txtViewClientAddress) TextView txtClientAddress;
-    @BindView(R.id.txtViewClientRuc) TextView txtClientRuc;
-    @BindView(R.id.txtViewClientDni) TextView txtClientDni;
+    @BindView(R.id.txtViewClientUbigeo) TextView txtClientUbigeo;
+    @BindView(R.id.txtViewClientZona) TextView txtClientZona;
     @BindView(R.id.imgViewSemaphore) ImageView imgViewSemaphore;
     private Client client;
     private static final int REQUEST_NEW_ORDER_CODE = 104;
@@ -45,11 +38,11 @@ public class ViewClientActivity extends AppCompatActivity {
 
     private void loadClientToView(){
         txtClientCode.setText(String.valueOf(client.getCodClient()));
-        txtClientFirstName.setText(client.getFirstName());
-        txtClientLastName.setText(client.getLastName());
+        txtViewClientDocumento.setText(client.getCodEntidad() + "-" + client.getDocumento());
+        txtClientName.setText(client.getFullName());
         txtClientAddress.setText(client.getAddress());
-        txtClientRuc.setText(client.getRuc());
-        txtClientDni.setText(client.getDni());
+        txtClientUbigeo.setText(client.getUbigeo());
+        txtClientZona.setText(client.getZona());
 
         GradientDrawable shape = (GradientDrawable) getResources().getDrawable(R.drawable.circle);
         int color = Color.RED;

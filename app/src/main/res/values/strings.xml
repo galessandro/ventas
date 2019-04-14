@@ -34,6 +34,9 @@
     <string name="activity_client_lbl_dni">DNI:</string>
     <string name="activity_client_btn_save">Grabar</string>
     <string name="activity_client_btn_cancel">Cancelar</string>
+    <string name="activity_client_lbl_documento">Documento:</string>
+    <string name="activity_client_lbl_ubigeo">Ubigeo:</string>
+    <string name="activity_client_lbl_zona">Zona:</string>
 
     <string name="client_add_error_required_value">Este valor es requerido</string>
     <string name="client_add_error_required_id_value">Ingrese el RUC o DNI</string>

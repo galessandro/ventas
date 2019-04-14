@@ -25,6 +25,9 @@ public class Order implements Parcelable{
     public static int PAYMENT_TYPE_VOUCHER_BOLETA = 1;
     public static int PAYMENT_TYPE_VOUCHER_FACTURA = 2;
     public static int PAYMENT_TYPE_VOUCHER_NOTA_PEDIDO = 11;
+    public static int CLOUD_SAVE_SUCCESS = 0;
+    public static int CLOUD_SAVE_ERROR = 1;
+    public static int CLOUD_SAVE_SERVER = 2;
     public static String PAYMENT_TYPE_DESC_CASH = "Contado";
     public static String PAYMENT_TYPE_DESC_CREDIT = "Credito";
     public static String PAYMENT_TYPE_VOUCHER_DESC_BOLETA = "Boleta";
@@ -44,6 +47,8 @@ public class Order implements Parcelable{
     private double latitude;
     private double longitude;
     private String semaphore;
+    private int flagCloud;
+    private long orderInterna;
 
     public Order (){
         items = new ArrayList<>();
@@ -61,6 +66,8 @@ public class Order implements Parcelable{
         in.readTypedList(items, Item.CREATOR);
         this.paymentType = in.readInt();
         this.paymentVoucherType = in.readInt();
+        this.flagCloud = in.readInt();
+        this.orderInterna = in.readLong();
     }
 
     public String getImei() {
@@ -175,6 +182,22 @@ public class Order implements Parcelable{
         this.paymentVoucherType = paymentVoucherType;
     }
 
+    public int getFlagCloud() {
+        return flagCloud;
+    }
+
+    public void setFlagCloud(int flagCloud) {
+        this.flagCloud = flagCloud;
+    }
+
+    public long getOrderInterna() {
+        return orderInterna;
+    }
+
+    public void setOrderInterna(long orderInterna) {
+        this.orderInterna = orderInterna;
+    }
+
     public Double getTotalAmount(){
         Double totalAmount = 0d;
         for (Item item : items) {
@@ -199,6 +222,8 @@ public class Order implements Parcelable{
         parcel.writeTypedList(getItems());
         parcel.writeInt(getPaymentType());
         parcel.writeInt(getPaymentVoucherType());
+        parcel.writeInt(getFlagCloud());
+        parcel.writeLong(getOrderInterna());
     }
 
     public static final Parcelable.Creator<Order> CREATOR = new Parcelable.Creator<Order>() {
@@ -217,9 +242,7 @@ public class Order implements Parcelable{
         post.setCodorder(StringUtils.leftPad(String.valueOf(this.getCodOrder()), 4, "0"));
         post.setDateorder(DateUtil.getFormatDate(this.getDateOrder(), DateUtil.dateSimpleFormat));
         post.setCustomerId(this.getClient().getId());
-        //post.setCustomerId(1);
         post.setSellerId(this.getSeller().getId());
-        //post.setSellerId(2);
         post.setDatedelivery(DateUtil.getFormatDate(this.getDateDelivery(), DateUtil.dateSimpleFormat));
         post.setPaymenttype(String.valueOf(this.getPaymentType()));
         post.setReceiptType(String.valueOf(this.getPaymentVoucherType()));
@@ -228,13 +251,14 @@ public class Order implements Parcelable{
         post.setLongitude(this.getLongitude());
         post.setStatusDownloaded("1");
         post.setSemaphore(this.getClient().getSemaphore());
+        post.setOrderInterna(this.getOrderInterna());
+
         List<ItemPost> itemPostList = new ArrayList<>();
 
         for (Item item: this.getItems()) {
             ItemPost itemPost = new ItemPost();
             itemPost.setCodsale(post.getCodsale());
             itemPost.setProductId(item.getProduct().getId());
-            //itemPost.setProductId(1);
             itemPost.setTypeunit(item.getProduct().getTypeUnit());
             itemPost.setQuantity(item.getQuantity());
             itemPost.setPrice(item.getPrice());

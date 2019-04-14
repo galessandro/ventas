@@ -138,6 +138,9 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                 this, R.array.paymentVoucherTypes, R.layout.support_simple_spinner_dropdown_item
         );
         spnOrderPaymentVoucherType.setAdapter(paymentVoucherTypeAdapter);
+        if(selectedClient.getCodEntidad().equals("6")){
+            spnOrderPaymentVoucherType.setSelection(1);
+        }
 
     }
 
@@ -264,6 +267,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
         order.setCodSale(codSale);
         order.setDateDelivery(DateUtil.getDate(txtOrderDeliveryDate.getText().toString()));
         order.setDateOrder(DateUtil.getDate(txtOrderDate.getText().toString()));
+        order.setFlagCloud(Order.CLOUD_SAVE_SUCCESS);
         order.setPaymentType(spnOrderPaymentType.getSelectedItem().toString().equals(
                 Order.PAYMENT_TYPE_DESC_CASH) ?
                 Order.PAYMENT_TYPE_CASH :
@@ -278,13 +282,10 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
             paymentVoucher = Order.PAYMENT_TYPE_VOUCHER_NOTA_PEDIDO;
         }
         order.setPaymentVoucherType(paymentVoucher);
-        db.createOrder(order);
-        for (Item saveItem : order.getItems()) {
-            db.createOrderItem(saveItem);
-        }
 
-        saveOrderToFile(order);
+        //saveOrderToFile(order);
         saveOrderNube(order);
+
 
         new AlertDialog.Builder(getSupportActionBar().getThemedContext())
                 .setIcon(android.R.drawable.ic_dialog_info)
@@ -304,6 +305,13 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
                 .show();
     }
 
+    private void saveLocalOrder(Order order) {
+        db.createOrder(order);
+        for (Item saveItem : order.getItems()) {
+            db.createOrderItem(saveItem);
+        }
+    }
+
     private void saveOrderNube(Order order) {
         PostOrderService orderService = RetrofitClient.getRetrofitClient().create(PostOrderService.class);
         Call<OrderPost> call = orderService.createOrder(order.toPostOrder());
@@ -312,15 +320,21 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
             public void onResponse(Call<OrderPost> call, Response<OrderPost> response) {
                 if(response.isSuccessful()){
                     Log.i("GGRANADOS","success save");
+                    saveLocalOrder(order);
                 } else {
                     Log.i("GGRANADOS", "failed save:" + response.errorBody());
+                    order.setOrderInterna(db.getNextOrderInterna());
+                    order.setFlagCloud(Order.CLOUD_SAVE_ERROR);
+                    saveLocalOrder(order);
                 }
-
             }
 
             @Override
             public void onFailure(Call<OrderPost> call, Throwable t) {
                 Log.i("GGRANADOS", "failed:" + t.toString());
+                order.setOrderInterna(db.getNextOrderInterna());
+                order.setFlagCloud(Order.CLOUD_SAVE_SERVER);
+                saveLocalOrder(order);
             }
         });
     }

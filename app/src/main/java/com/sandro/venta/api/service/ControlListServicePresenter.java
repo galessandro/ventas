@@ -1,5 +1,7 @@
 package com.sandro.venta.api.service;
 
+import android.util.Log;
+
 import com.sandro.venta.api.RetrofitClient;
 import com.sandro.venta.api.model.ControlResponse;
 
@@ -32,7 +34,7 @@ public class ControlListServicePresenter {
         return new Observer<List<ControlResponse>>() {
             @Override
             public void onSubscribe(Disposable d) {
-
+                disposable = d;
             }
 
             @Override
@@ -48,6 +50,7 @@ public class ControlListServicePresenter {
 
             @Override
             public void onComplete() {
+                Log.i("GGRANADOS","completed getAllControls");
                 controlServiceInterface.hideProgressBar();
             }
         };
