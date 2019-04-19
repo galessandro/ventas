@@ -50,6 +50,7 @@
     <string name="activity_back_warning">¿Esta seguro de salir?\nSe perderan los
         datos ingresados</string>
 
+    <string name="activity_back_exit">¿Esta seguro de salir?</string>
 
     <string name="activity_name_orders">Ordenes</string>
     <string name="activity_order_cod_order">Orden:</string>
@@ -159,5 +160,7 @@
 
     <string name="imagen_semaforo_desc">Semaforo</string>
 
+    <string name="order_menu_sync">Sincronizar</string>
+    <string name="order_sync_msg">Se sincronizará el teléfono. ¿Desea continuar?</string>
 
 </resources>

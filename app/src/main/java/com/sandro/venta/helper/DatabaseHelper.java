@@ -66,8 +66,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Orders Table - column names
     private static final String KEY_ORDER_ID = "id";
-    private static final String KEY_ORDER_COD_SALE = "codsale";
-    private static final String KEY_ORDER_COD_ORDER = "codorder";
     private static final String KEY_ORDER_DATE_AT = "dateorder";
     private static final String KEY_ORDER_CLIENT_COD = "codclient";
     private static final String KEY_ORDER_SELLER_COD = "codseller";
@@ -82,10 +80,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_ORDER_COD_ORDER_INTERNA = "ordeninterna";
 
 
-
     // Orders item Table - column names
     private static final String KEY_ORDER_ITEM_ID = "id";
-    private static final String KEY_ORDER_ITEM_COD_SALE = "codsale";
+    private static final String KEY_ORDER_ITEM_ORDER_ID = "order_id";
     private static final String KEY_ORDER_ITEM_COD_PRODUCT = "codproduct";
     private static final String KEY_ORDER_ITEM_QUANTITY = "quantity";
     private static final String KEY_ORDER_ITEM_PRICE = "price";
@@ -140,7 +137,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_USER_PASS = "pass";
     private static final String KEY_USER_COD_SELLER = "codseller";
     private static final String KEY_USER_NAME = "name";
-    private static final String KEY_USER_CONTROL_ID = "control_id";
     private static final String KEY_USER_IMEI = "imei";
 
     private static final String KEY_CONTROL_ID = "id";
@@ -168,8 +164,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_ORDERS = "CREATE TABLE "
             + TABLE_ORDERS + "(" +
             KEY_ORDER_ID + " INTEGER PRIMARY KEY," +
-            KEY_ORDER_COD_SALE + " INTEGER, " +
-            KEY_ORDER_COD_ORDER + " INTEGER," +
             KEY_ORDER_DATE_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
             KEY_ORDER_CLIENT_COD + " INTEGER," +
             KEY_ORDER_SELLER_COD + " INTEGER," +
@@ -190,7 +184,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_ORDERS_ITEM = "CREATE TABLE "
             + TABLE_ORDER_ITEMS + "(" +
             KEY_ORDER_ITEM_ID + " INTEGER PRIMARY KEY," +
-            KEY_ORDER_ITEM_COD_SALE + " INTEGER, " +
+            KEY_ORDER_ITEM_ORDER_ID + " INTEGER, " +
             KEY_ORDER_ITEM_COD_PRODUCT + " INTEGER," +
             KEY_ORDER_ITEM_QUANTITY + " REAL, " +
             KEY_ORDER_ITEM_PRICE + " REAL, " +
@@ -252,7 +246,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_USER_PASS + " TEXT, " +
             KEY_USER_COD_SELLER + " TEXT," +
             KEY_USER_IMEI + " TEXT," +
-            KEY_USER_CONTROL_ID + " INTEGER," +
             KEY_USER_NAME + " TEXT)";
 
 
@@ -307,6 +300,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return seller;
+    }
+
+    public boolean isUserExists(Integer userId){
+        boolean exists = false;
+        String selectQuery = "SELECT  count(1) " +
+                "FROM " + TABLE_USERS + " " +
+                "WHERE " + KEY_USER_ID + " = ? ";
+
+        Log.i(TAG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, new String[]{userId.toString()});
+
+        if(c.moveToFirst()){
+            if(c.getInt(0)>0){
+                exists = true;
+            }
+        }
+
+        return exists;
     }
 
     private void crearUsuariosDefecto(SQLiteDatabase db) {
@@ -480,6 +493,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public int updateOrder(Order order){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_ORDER_FLAG_CLOUD, order.getFlagCloud());
+        int result = db.update(TABLE_ORDERS, values, "id=?", new String[]{String.valueOf(order.getId())});
+        return result;
+    }
+
     public void clientBatchUpdate(List<Client> clientList){
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
@@ -571,12 +592,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public long createUser(SalesMan user){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(KEY_USER_ID, user.getId());
         values.put(KEY_USER_COD_SELLER, user.getCodSeller());
         values.put(KEY_USER_NAME, user.getName());
         values.put(KEY_USER_USER, user.getUser());
         values.put(KEY_USER_PASS, user.getPass());
         values.put(KEY_USER_IMEI, user.getImei());
-        values.put(KEY_USER_CONTROL_ID, user.getControlId());
 
         return db.insert(TABLE_USERS, null, values);
     }
@@ -592,7 +613,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values.put(KEY_USER_USER, user.getUser());
                 values.put(KEY_USER_PASS, user.getPass());
                 values.put(KEY_USER_IMEI, user.getImei());
-                values.put(KEY_USER_CONTROL_ID, user.getControlId());
                 values.put(KEY_USER_ID, user.getId());
 
                 db.insert(TABLE_USERS, null, values);
@@ -682,7 +702,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values.put(KEY_USER_USER, user.getUser());
                 values.put(KEY_USER_PASS, user.getPass());
                 values.put(KEY_USER_IMEI, user.getImei());
-                values.put(KEY_USER_CONTROL_ID, user.getControlId());
                 values.put(KEY_USER_ID, user.getId());
                 int id = (int) db.insertWithOnConflict(TABLE_USERS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
                 if (id == -1) {
@@ -754,14 +773,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return maxCodClient;
     }
 
-    public int getMaxOrder(){
+    public int getNextOrderId(){
         int maxOrder = 1;
 
         SQLiteDatabase db = this.getReadableDatabase();
 
         int year = Calendar.getInstance().get(Calendar.YEAR);
 
-        Cursor c =  db.query(TABLE_ORDERS, new String[]{"MAX(codsale)"}, "strftime('%Y', dateorder) = ?", new String[]{String.valueOf(year)}, null, null, null);
+        //Cursor c =  db.query(TABLE_ORDERS, new String[]{"MAX(codsale)"}, "strftime('%Y', dateorder) = ?", new String[]{String.valueOf(year)}, null, null, null);
+        Cursor c =  db.query(TABLE_ORDERS, new String[]{"ifnull(MAX(id)+1,1)"}, null, null, null, null, null);
 
         if(c.moveToFirst()){
             maxOrder = c.getInt(0);
@@ -775,12 +795,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         //Cursor c =  db.query(TABLE_ORDERS, new String[]{"MAX("+KEY_ORDER_COD_ORDER_INTERNA+")"}, "dateorder = ?", new String[]{"date('now', 'localtime')"}, null, null, null);
         //Cursor c =  db.query(TABLE_ORDERS, new String[]{"MAX(ordeninterna)"}, "strftime('%Y%m%d', dateorder) = ?", new String[]{"strftime('%Y%m%d', date('now', 'localtime'))"}, null, null, null);
-        Cursor c =  db.rawQuery("select MAX(ordeninterna)+1 from orders where dateorder = date('now', 'localtime')", null);
+        Cursor c =  db.rawQuery("select MAX(ordeninterna) from orders where dateorder = date('now', 'localtime')", null);
         //query(TABLE_ORDERS, new String[]{"MAX(ordeninterna)"}, "strftime('%Y%m%d', dateorder) = ?", new String[]{"strftime('%Y%m%d', date('now', 'localtime'))"}, null, null, null);
 
         if(c.moveToFirst()){
-            if(c.getLong(0) != 0l){
+            if(c.getLong(0) != 0L){
                 maxOrderInterna = c.getLong(0);
+                maxOrderInterna++;
             }
         }
 
@@ -909,8 +930,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public long createOrder(Order order){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_ORDER_COD_SALE, order.getCodSale());
-        values.put(KEY_ORDER_COD_ORDER, order.getCodOrder());
         values.put(KEY_ORDER_DATE_AT, DateUtil.getFormatDate(order.getDateOrder()));
         values.put(KEY_ORDER_CLIENT_COD, order.getClient().getId());
         values.put(KEY_ORDER_SELLER_COD, order.getSeller().getId());
@@ -925,14 +944,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_ORDER_FLAG_CLOUD, order.getFlagCloud());
         values.put(KEY_ORDER_COD_ORDER_INTERNA, order.getOrderInterna());
 
-
         return db.insert(TABLE_ORDERS, null, values);
     }
 
     public long createOrderItem(Item item){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_ORDER_ITEM_COD_SALE, item.getCodSale());
+        values.put(KEY_ORDER_ITEM_ORDER_ID, item.getOrderId());
         values.put(KEY_ORDER_ITEM_COD_PRODUCT, item.getProduct().getId());
         values.put(KEY_ORDER_ITEM_QUANTITY, item.getQuantity());
         values.put(KEY_ORDER_ITEM_PRICE, item.getPrice());
@@ -951,8 +969,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<Order> getOrdersFromToday(Integer sellerId){
         List<Order> orders = new ArrayList<>();
         String selectQuery = "SELECT  " +
-                "O." + KEY_ORDER_COD_SALE + ", " +
-                "O." + KEY_ORDER_COD_ORDER + "," +
+                "O." + KEY_ORDER_ID + ", " +
                 "O." + KEY_ORDER_DATE_AT + "," +
                 "O." + KEY_ORDER_DELIVERY_AT + "," +
                 "O." + KEY_ORDER_PAYMENT_TYPE + "," +
@@ -982,8 +999,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 Order order = new Order();
-                order.setCodSale(c.getInt(c.getColumnIndex(KEY_ORDER_COD_SALE)));
-                order.setCodOrder(c.getInt(c.getColumnIndex(KEY_ORDER_COD_ORDER)));
+                order.setId(c.getInt(c.getColumnIndex(KEY_ORDER_ID)));
                 order.setDateOrder(DateUtil.getDate(c.getString(
                         c.getColumnIndex(KEY_ORDER_DATE_AT))));
                 order.setDateDelivery(DateUtil.getDate(c.getString(
@@ -1000,8 +1016,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 seller.setName(c.getString(c.getColumnIndex(KEY_USER_NAME)));
                 order.setSeller(seller);
                 order.setClient(client);
-                order.setItems(getItemsFromOrder(order.getCodSale()));
-
+                order.setItems(getItemsFromOrder(order.getId()));
                 orders.add(order);
             } while (c.moveToNext());
         }
@@ -1011,8 +1026,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<Order> getOrdersFromToday(String codSeller){
         List<Order> orders = new ArrayList<>();
         String selectQuery = "SELECT  " +
-                "O." + KEY_ORDER_COD_SALE + ", " +
-                "O." + KEY_ORDER_COD_ORDER + "," +
+                "O." + KEY_ORDER_ID + ", " +
                 "O." + KEY_ORDER_DATE_AT + "," +
                 "O." + KEY_ORDER_DELIVERY_AT + "," +
                 "O." + KEY_ORDER_PAYMENT_TYPE + "," +
@@ -1041,8 +1055,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 Order order = new Order();
-                order.setCodSale(c.getInt(c.getColumnIndex(KEY_ORDER_COD_SALE)));
-                order.setCodOrder(c.getInt(c.getColumnIndex(KEY_ORDER_COD_ORDER)));
+                order.setId(c.getInt(c.getColumnIndex(KEY_ORDER_ID)));
                 order.setDateOrder(DateUtil.getDate(c.getString(
                         c.getColumnIndex(KEY_ORDER_DATE_AT))));
                 order.setDateDelivery(DateUtil.getDate(c.getString(
@@ -1058,7 +1071,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 seller.setName(c.getString(c.getColumnIndex(KEY_USER_NAME)));
                 order.setSeller(seller);
                 order.setClient(client);
-                order.setItems(getItemsFromOrder(order.getCodSale()));
+                order.setItems(getItemsFromOrder(order.getId()));
 
                 orders.add(order);
             } while (c.moveToNext());
@@ -1066,11 +1079,63 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return orders;
     }
 
+    public int countPendingOrder(){
+        int pendingOrders = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT  count(1) FROM " + TABLE_ORDERS +
+                " WHERE " + KEY_ORDER_FLAG_CLOUD + " = ?" +
+                " OR " + KEY_ORDER_FLAG_CLOUD + " = ?";
+        Cursor c = db.rawQuery(selectQuery, new String[]{"1","2"});
+        if (c.moveToFirst()) {
+            pendingOrders = c.getInt(0);
+        }
+        return pendingOrders;
+
+    }
+
+    public List<Order> getPendingOrders(){
+        List<Order> orders = new ArrayList<>();
+        String selectQuery = "SELECT  * FROM " + TABLE_ORDERS +
+                " WHERE " + KEY_ORDER_FLAG_CLOUD + " = ?" +
+                " OR " + KEY_ORDER_FLAG_CLOUD + " = ?";
+
+        Log.i(TAG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, new String[]{"1","2"});
+
+        if (c.moveToFirst()) {
+            do {
+                Order order = new Order();
+                order.setId(c.getInt(c.getColumnIndex(KEY_ORDER_ID)));
+                order.setDateOrder(DateUtil.getDate(c.getString(c.getColumnIndex(KEY_ORDER_DATE_AT))));
+                order.setDateDelivery(DateUtil.getDate(c.getString(c.getColumnIndex(KEY_ORDER_DELIVERY_AT))));
+                order.setPaymentType(c.getInt(c.getColumnIndex(KEY_ORDER_PAYMENT_TYPE)));
+                order.setPaymentVoucherType(c.getInt(c.getColumnIndex(KEY_ORDER_PAYMENT_VOUCHER_TYPE)));
+                order.setImei(c.getString(c.getColumnIndex(KEY_ORDER_IMEI)));
+                order.setLatitude(c.getDouble(c.getColumnIndex(KEY_ORDER_LATITUDE)));
+                order.setLongitude(c.getDouble(c.getColumnIndex(KEY_ORDER_LONGITUDE)));
+                order.setSemaphore(c.getString(c.getColumnIndex(KEY_ORDER_SEMAPHORE)));
+                order.setOrderInterna(c.getLong(c.getColumnIndex(KEY_ORDER_COD_ORDER_INTERNA)));
+                order.setDateReg(DateUtil.getDate(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
+                Client client = new Client();
+                client.setId(c.getInt(c.getColumnIndex(KEY_CLIENT_ID)));
+                SalesMan seller = new SalesMan();
+                seller.setId(c.getInt(c.getColumnIndex(KEY_ORDER_SELLER_COD)));
+                order.setSeller(seller);
+                order.setClient(client);
+                order.setItems(getItemsFromOrder(order.getId()));
+                orders.add(order);
+            } while (c.moveToNext());
+        }
+
+        return orders;
+    }
+
     public List<Order> getOrdersFromARangeDate(Date fechaPedido){
         List<Order> orders = new ArrayList<>();
         String selectQuery = "SELECT  " +
-                "O." + KEY_ORDER_COD_SALE + ", " +
-                "O." + KEY_ORDER_COD_ORDER + "," +
+                "O." + KEY_ORDER_ID + ", " +
                 "O." + KEY_ORDER_DATE_AT + "," +
                 "O." + KEY_ORDER_DELIVERY_AT + "," +
                 "O." + KEY_ORDER_PAYMENT_TYPE + "," +
@@ -1098,8 +1163,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 Order order = new Order();
-                order.setCodSale(c.getInt(c.getColumnIndex(KEY_ORDER_COD_SALE)));
-                order.setCodOrder(c.getInt(c.getColumnIndex(KEY_ORDER_COD_ORDER)));
+                order.setId(c.getInt(c.getColumnIndex(KEY_ORDER_ID)));
                 order.setDateOrder(DateUtil.getDate(c.getString(
                         c.getColumnIndex(KEY_ORDER_DATE_AT))));
                 order.setDateDelivery(DateUtil.getDate(c.getString(
@@ -1115,7 +1179,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 seller.setName(c.getString(c.getColumnIndex(KEY_USER_NAME)));
                 order.setSeller(seller);
                 order.setClient(client);
-                order.setItems(getItemsFromOrder(order.getCodSale()));
+                order.setItems(getItemsFromOrder(order.getId()));
 
                 orders.add(order);
             } while (c.moveToNext());
@@ -1123,14 +1187,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return orders;
     }
 
-    public List<Item> getItemsFromOrder(int codSale) {
+    public List<Item> getItemsFromOrder(int orderId) {
         List<Item> items = new ArrayList<>();
 
         String selectQuery = "SELECT  " +
-                "O." + KEY_ORDER_ITEM_COD_SALE + ", " +
+                "O." + KEY_ORDER_ITEM_ID + ", " +
+                "O." + KEY_ORDER_ITEM_ORDER_ID + ", " +
                 "O." + KEY_ORDER_ITEM_QUANTITY + ", " +
                 "O." + KEY_ORDER_ITEM_PRICE + "," +
                 "O." + KEY_ORDER_ITEM_TYPE_PRICE + "," +
+                "P." + KEY_PRODUCT_ID + "," +
                 "P." + KEY_PRODUCT_COD + "," +
                 "P." + KEY_PRODUCT_NAME + "," +
                 "P." + KEY_PRODUCT_BOX_BY + "," +
@@ -1143,24 +1209,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 TABLE_ORDER_ITEMS +
                 " O INNER JOIN " + TABLE_PRODUCTS  + " P ON O." + KEY_ORDER_ITEM_COD_PRODUCT + " = " +
                 "P." + KEY_PRODUCT_ID +
-                " WHERE O." + KEY_ORDER_COD_SALE + " = ?";
+                " WHERE O." + KEY_ORDER_ITEM_ORDER_ID + " = ?";
 
         Log.i(TAG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, new String[]{
-                String.valueOf(codSale)
+                String.valueOf(orderId)
         });
 
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
                 Item item = new Item();
-                item.setCodSale(c.getInt(c.getColumnIndex(KEY_ORDER_ITEM_COD_SALE)));
+                item.setId(c.getInt(c.getColumnIndex(KEY_ORDER_ITEM_ID)));
+                item.setOrderId(c.getInt(c.getColumnIndex(KEY_ORDER_ITEM_ORDER_ID)));
                 item.setQuantity(c.getDouble(c.getColumnIndex(KEY_ORDER_ITEM_QUANTITY)));
                 item.setPrice(c.getDouble(c.getColumnIndex(KEY_ORDER_ITEM_PRICE)));
                 item.setTypePrice(c.getString(c.getColumnIndex(KEY_ORDER_ITEM_TYPE_PRICE)));
                 Product product = new Product();
+                product.setId(c.getInt(c.getColumnIndex(KEY_PRODUCT_ID)));
                 product.setCodProduct(c.getString(c.getColumnIndex(KEY_PRODUCT_COD)));
                 product.setName(c.getString(c.getColumnIndex(KEY_PRODUCT_NAME)));
                 product.setBoxBy(c.getInt(c.getColumnIndex(KEY_PRODUCT_BOX_BY)));
@@ -1171,7 +1239,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 item.setLevelRangeFrom(c.getDouble(c.getColumnIndex(KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_FROM)));
                 item.setLevelRangeTo(c.getDouble(c.getColumnIndex(KEY_ORDER_ITEM_PRODUCT_LEVEL_RANGE_TO)));
                 // adding to product list
-
                 items.add(item);
             } while (c.moveToNext());
         }

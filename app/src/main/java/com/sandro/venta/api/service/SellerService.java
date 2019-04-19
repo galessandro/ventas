@@ -18,4 +18,8 @@ public interface SellerService {
             @Query("controlIdFrom") Integer controlIdFrom,
             @Query("controlIdTo") Integer controlIdTo);
 
+
+    @GET("sellers/login")
+    Observable<SellerResponse> login(@Query("imei") String imei);
+
 }

@@ -7,12 +7,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class OrderPost {
 
-    @SerializedName("codsale")
+    @SerializedName("id")
     @Expose
-    private String codsale;
-    @SerializedName("codorder")
+    private Integer id;
+    @SerializedName("app_id")
     @Expose
-    private String codorder;
+    private Integer appId;
     @SerializedName("dateorder")
     @Expose
     private String dateorder;
@@ -53,20 +53,20 @@ public class OrderPost {
     @Expose
     private List<ItemPost> itemPosts = null;
 
-    public String getCodsale() {
-        return codsale;
+    public Integer getId() {
+        return id;
     }
 
-    public void setCodsale(String codsale) {
-        this.codsale = codsale;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public String getCodorder() {
-        return codorder;
+    public Integer getAppId() {
+        return appId;
     }
 
-    public void setCodorder(String codorder) {
-        this.codorder = codorder;
+    public void setAppId(Integer appId) {
+        this.appId = appId;
     }
 
     public String getDateorder() {
@@ -173,4 +173,23 @@ public class OrderPost {
         this.itemPosts = itemPosts;
     }
 
+    @Override
+    public String toString() {
+        return "OrderPost{" +
+                "appId=" + appId +
+                ", dateorder='" + dateorder + '\'' +
+                ", customerId=" + customerId +
+                ", sellerId=" + sellerId +
+                ", datedelivery='" + datedelivery + '\'' +
+                ", paymenttype='" + paymenttype + '\'' +
+                ", receiptType='" + receiptType + '\'' +
+                ", imei='" + imei + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", semaphore='" + semaphore + '\'' +
+                ", statusDownloaded='" + statusDownloaded + '\'' +
+                ", orderInterna=" + orderInterna +
+                ", itemPosts=" + itemPosts +
+                '}';
+    }
 }

@@ -1,6 +1,7 @@
 package com.sandro.venta.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,36 +9,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.text.InputFilter;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.sandro.venta.R;
-import com.sandro.venta.api.model.ControlResponse;
-import com.sandro.venta.api.model.CustomerResponse;
-import com.sandro.venta.api.model.ProductResponse;
 import com.sandro.venta.api.model.SellerResponse;
-import com.sandro.venta.api.service.ControlListServiceInterface;
-import com.sandro.venta.api.service.ControlListServicePresenter;
-import com.sandro.venta.api.service.CustomerServiceInterface;
-import com.sandro.venta.api.service.CustomerServicePresenter;
-import com.sandro.venta.api.service.ProductServiceInterface;
-import com.sandro.venta.api.service.ProductServicePresenter;
-import com.sandro.venta.api.service.SellerServiceInterface;
-import com.sandro.venta.api.service.SellerServicePresenter;
-import com.sandro.venta.bean.Client;
-import com.sandro.venta.bean.Control;
-import com.sandro.venta.bean.Product;
+import com.sandro.venta.api.service.LoginServiceInterface;
+import com.sandro.venta.api.service.LoginServicePresenter;
 import com.sandro.venta.bean.SalesMan;
 import com.sandro.venta.helper.DatabaseHelper;
 import com.sandro.venta.util.SessionManager;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,12 +29,17 @@ import butterknife.OnClick;
 
 public class LoginActivity extends AppCompatActivity {
 
-    @BindView(R.id.txtLoginUser) EditText txtLoginUser;
-    @BindView(R.id.txtLoginPass) EditText txtLoginPass;
-    @BindView(R.id.btnLogin) Button btnLogin;
+    @BindView(R.id.txtLoginUser)
+    EditText txtLoginUser;
+    @BindView(R.id.txtLoginPass)
+    EditText txtLoginPass;
+    @BindView(R.id.btnLogin)
+    Button btnLogin;
 
     private DatabaseHelper db;
     private SessionManager session;
+
+    TelephonyManager telephonyManager;
 
     private final String TAG = LoginActivity.class.getSimpleName();
 
@@ -61,7 +50,6 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         configActivity();
 
-
         int permissionAll = 1;
 
         String[] permissions = {
@@ -71,225 +59,23 @@ public class LoginActivity extends AppCompatActivity {
                 Manifest.permission.INTERNET,
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION};
-        if(!hasPermissions(this, permissions)){
+        if (!hasPermissions(this, permissions)) {
             ActivityCompat.requestPermissions(this, permissions, permissionAll);
+            telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+        } else {
+            telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         }
+
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
         db = new DatabaseHelper(getApplicationContext());
-
-        int maxIdControlSeller = db.getMaxIdControlTable("T001");
-        int maxIdControlCustomer = db.getMaxIdControlTable("T002");
-        int maxIdControlProduct = db.getMaxIdControlTable("T003");
-
-        ControlListServicePresenter cAllControls = new ControlListServicePresenter(new ControlListServiceInterface() {
-            @Override
-            public void displayProgressBar() {
-            }
-
-            @Override
-            public void hideProgressBar() {
-            }
-
-            @Override
-            public void displayControl(List<ControlResponse> controlResponseList) {
-                for (ControlResponse controlResponse: controlResponseList) {
-                    Log.i(TAG, String.valueOf(controlResponse.getId()));
-                    if(controlResponse.getTabla().equals("T001")){
-                        if(maxIdControlSeller == 0) {
-                            getAllSellers(controlResponse);
-                        }else if(controlResponse.getId() > maxIdControlSeller){
-                            updateSellers(maxIdControlSeller, controlResponse);
-                        }
-                    }else if (controlResponse.getTabla().equals("T002")){
-                        if(maxIdControlCustomer == 0) {
-                            getAllCustomers(controlResponse);
-                        }else if(controlResponse.getId() > maxIdControlCustomer){
-                            updateCustomers(maxIdControlCustomer, controlResponse);
-                        }
-                    }else if (controlResponse.getTabla().equals("T003")){
-                        if(maxIdControlProduct == 0) {
-                            getAllProducts(controlResponse);
-                        }else if(controlResponse.getId() > maxIdControlProduct){
-                            updateProducts(maxIdControlProduct, controlResponse);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void displayError(String errorMessage) {
-            }
-        });
-        cAllControls.getAllControls();
-    }
-
-    private void updateProducts(Integer controlIdFrom, ControlResponse controlResponse) {
-        ProductServicePresenter c = new ProductServicePresenter(new ProductServiceInterface() {
-            @Override
-            public void displayProgressBar() {
-
-            }
-
-            @Override
-            public void hideProgressBar() {
-
-            }
-
-            @Override
-            public void displayProducts(List<ProductResponse> productResponseList) {
-                Log.i(TAG, "displayProducts" + productResponseList.size());
-                db.productBatchUpdate(Product.toProductList(productResponseList));
-                db.createControl(Control.toControl(controlResponse));
-            }
-
-            @Override
-            public void displayError(String errorMessage) {
-                Log.e(TAG, String.valueOf(errorMessage));
-            }
-        });
-        c.getProductsByControlRange(controlIdFrom, controlResponse.getId());
-    }
-
-    private void updateCustomers(Integer controlIdFrom, ControlResponse controlResponse) {
-        CustomerServicePresenter c = new CustomerServicePresenter(new CustomerServiceInterface() {
-            @Override
-            public void displayProgressBar() {
-
-            }
-
-            @Override
-            public void hideProgressBar() {
-
-            }
-
-            @Override
-            public void displayCustomers(List<CustomerResponse> customerResponseList) {
-                Log.i(TAG, "displayCustomers" + customerResponseList.size());
-                db.clientBatchUpdate(Client.toClientList(customerResponseList));
-                db.createControl(Control.toControl(controlResponse));
-            }
-
-            @Override
-            public void displayError(String errorMessage) {
-                Log.e(TAG, String.valueOf(errorMessage));
-            }
-        });
-        c.getCustomersByControlRange(controlIdFrom, controlResponse.getId());
-    }
-
-    private void getAllCustomers(ControlResponse controlResponse) {
-        CustomerServicePresenter c = new CustomerServicePresenter(new CustomerServiceInterface() {
-            @Override
-            public void displayProgressBar() {
-
-            }
-
-            @Override
-            public void hideProgressBar() {
-
-            }
-
-            @Override
-            public void displayCustomers(List<CustomerResponse> customerResponse) {
-                Log.i(TAG, String.valueOf(customerResponse.size()));
-                db.createClientBatch(Client.toClientList(customerResponse));
-                db.createControl(Control.toControl(controlResponse));
-            }
-
-            @Override
-            public void displayError(String errorMessage) {
-                Log.e(TAG, String.valueOf(errorMessage));
-            }
-        });
-        c.getCustomers();
-    }
-
-    private void getAllProducts(ControlResponse controlResponse) {
-        ProductServicePresenter c = new ProductServicePresenter(new ProductServiceInterface() {
-            @Override
-            public void displayProgressBar() {
-
-            }
-
-            @Override
-            public void hideProgressBar() {
-
-            }
-
-            @Override
-            public void displayProducts(List<ProductResponse> productResponseList) {
-                Log.i(TAG, String.valueOf(productResponseList.size()));
-                db.createProductBatch(Product.toProductList(productResponseList));
-                db.createControl(Control.toControl(controlResponse));
-            }
-
-            @Override
-            public void displayError(String errorMessage) {
-                Log.e(TAG, String.valueOf(errorMessage));
-            }
-        });
-        c.getProducts();
-    }
-
-    private void getAllSellers(ControlResponse controlResponse){
-        SellerServicePresenter s = new SellerServicePresenter(new SellerServiceInterface() {
-            @Override
-            public void displayProgressBar() {
-
-            }
-
-            @Override
-            public void hideProgressBar() {
-
-            }
-
-            @Override
-            public void displaySellers(List<SellerResponse> sellerResponse) {
-                Log.i(TAG, String.valueOf(sellerResponse.size()));
-                db.createUserBatch(SalesMan.toSalesManList(sellerResponse));
-                db.createControl(Control.toControl(controlResponse));
-            }
-
-            @Override
-            public void displayError(String errorMessage) {
-                Log.e(TAG, String.valueOf(errorMessage));
-            }
-        });
-        s.getSellers();
-    }
-
-    private void updateSellers(Integer controlIdFrom, ControlResponse controlResponse){
-        SellerServicePresenter s = new SellerServicePresenter(new SellerServiceInterface() {
-            @Override
-            public void displayProgressBar() {
-
-            }
-
-            @Override
-            public void hideProgressBar() {
-
-            }
-
-            @Override
-            public void displaySellers(List<SellerResponse> sellerResponse) {
-                Log.i(TAG, "displaySellers:" + sellerResponse.size());
-                db.sellerBatchUpdate(SalesMan.toSalesManList(sellerResponse));
-                db.createControl(Control.toControl(controlResponse));
-            }
-
-            @Override
-            public void displayError(String errorMessage) {
-
-            }
-        });
-        s.getSellersByControlRange(controlIdFrom, controlResponse.getId());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        session.logoutUser();
         clearForm();
     }
 
@@ -307,19 +93,52 @@ public class LoginActivity extends AppCompatActivity {
         txtLoginUser.setFilters(newFilters);
     }
 
+    @SuppressLint("MissingPermission")
     @OnClick(R.id.btnLogin)
-    public void logIn(){
-        SalesMan user= db.validateUser(
+    public void logIn() {
+        SalesMan user = db.validateUser(
                 txtLoginUser.getText().toString(),
                 txtLoginPass.getText().toString());
 
-        if( user != null ){
+        if (user != null) {
             session.logoutUser();
             session.createLoginSession(user.getName(), user.getCodSeller(), user.getId());
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
         } else {
-            Toast.makeText(this, R.string.login_user_error, Toast.LENGTH_SHORT).show();
+            LoginServicePresenter l = new LoginServicePresenter(new LoginServiceInterface() {
+                @Override
+                public void displayProgressBar() {
+
+                }
+
+                @Override
+                public void hideProgressBar() {
+
+                }
+
+                @Override
+                public void displaySeller(SellerResponse sellerResponse) {
+                    if(sellerResponse!=null){
+                        SalesMan user = SalesMan.toSalesMan(sellerResponse);
+                        if(!db.isUserExists(sellerResponse.getId())){
+                            db.createUser(user);
+                        }
+                        session.logoutUser();
+                        session.createLoginSession(user.getName(), user.getCodSeller(), user.getId());
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(LoginActivity.this, R.string.login_user_error, Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void displayError(String errorMessage) {
+                    Toast.makeText(LoginActivity.this, R.string.login_user_error, Toast.LENGTH_LONG).show();
+                }
+            });
+            l.login(telephonyManager.getDeviceId());
         }
     }
 

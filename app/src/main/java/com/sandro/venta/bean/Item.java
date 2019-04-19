@@ -10,7 +10,8 @@ import java.util.Date;
  */
 public class Item implements Parcelable{
 
-    private Integer codSale;
+    private Integer id;
+    private Integer orderId;
     private Product product;
     private Double quantity;
     private Double price;
@@ -27,7 +28,8 @@ public class Item implements Parcelable{
 
     private Item(Parcel in) {
         super();
-        this.codSale = in.readInt();
+        this.id = in.readInt();
+        this.orderId = in.readInt();
         this.product = in.readParcelable(Product.class.getClassLoader());
         this.quantity = in.readDouble();
         this.price = in.readDouble();
@@ -38,12 +40,20 @@ public class Item implements Parcelable{
         this.priceOfList = in.readInt();
     }
 
-    public Integer getCodSale() {
-        return codSale;
+    public Integer getId() {
+        return id;
     }
 
-    public void setCodSale(Integer codSale) {
-        this.codSale = codSale;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 
     public Product getProduct() {
@@ -126,7 +136,8 @@ public class Item implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeInt(getCodSale() == null ? 0 : getCodSale());
+        parcel.writeInt(getId() == null ? 0 : getId());
+        parcel.writeInt(getOrderId() == null ? 0 : getOrderId());
         parcel.writeParcelable(getProduct(), flags);
         parcel.writeDouble(getQuantity());
         parcel.writeDouble(getPrice());

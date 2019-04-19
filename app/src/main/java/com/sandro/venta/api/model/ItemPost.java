@@ -6,9 +6,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class ItemPost {
 
-    @SerializedName("codsale")
+    @SerializedName("app_id")
     @Expose
-    private String codsale;
+    private Integer appId;
     @SerializedName("product_id")
     @Expose
     private Integer productId;
@@ -40,12 +40,12 @@ public class ItemPost {
     @Expose
     private Double levelrangeto;
 
-    public String getCodsale() {
-        return codsale;
+    public Integer getAppId() {
+        return appId;
     }
 
-    public void setCodsale(String codsale) {
-        this.codsale = codsale;
+    public void setAppId(Integer appId) {
+        this.appId = appId;
     }
 
     public Integer getProductId() {
@@ -128,4 +128,20 @@ public class ItemPost {
         this.levelrangeto = levelrangeto;
     }
 
+    @Override
+    public String toString() {
+        return "ItemPost{" +
+                "appId=" + appId +
+                ", productId=" + productId +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                ", typeunit='" + typeunit + '\'' +
+                ", boxby=" + boxby +
+                ", typeprice='" + typeprice + '\'' +
+                ", pricetlist=" + pricetlist +
+                ", codlevel=" + codlevel +
+                ", levelrangefrom=" + levelrangefrom +
+                ", levelrangeto=" + levelrangeto +
+                '}';
+    }
 }

@@ -14,7 +14,9 @@ import retrofit2.http.Query;
 public interface CustomerService {
 
     @GET("customers")
-    Observable<List<CustomerResponse>> getCustomers(@Query("controlId") Integer controlId);
+    Observable<List<CustomerResponse>> getCustomers(
+            @Query("controlId") Integer controlId,
+            @Query("codVen")  String codVen);
 
     @GET("customers/range")
     Observable<List<CustomerResponse>> getCustomersFromControlRange(
