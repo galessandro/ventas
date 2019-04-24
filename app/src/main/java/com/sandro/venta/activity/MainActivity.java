@@ -112,20 +112,4 @@ public class MainActivity extends AppCompatActivity {
             return 2;
         }
     }
-
-    @Override
-    public void onBackPressed() {
-        new AlertDialog.Builder(getSupportActionBar().getThemedContext())
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setTitle(getResources().getString(R.string.activity_back_title))
-                .setMessage(getResources().getString(R.string.activity_back_exit))
-                .setPositiveButton(getResources().getString(R.string.activity_back_close_yes),
-                        (dialog, which) -> {
-                            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                        })
-                .setNegativeButton(getResources().getString(R.string.activity_back_close_no),
-                        null)
-                .show();
-    }
 }

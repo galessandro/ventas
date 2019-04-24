@@ -448,6 +448,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try {
             for (Product product : productList) {
                 ContentValues values = new ContentValues();
+                values.put(KEY_PRODUCT_ID, product.getId());
                 values.put(KEY_PRODUCT_COD, product.getCodProduct());
                 values.put(KEY_PRODUCT_NAME, product.getName());
                 values.put(KEY_PRODUCT_PRICE_ONE, product.getPriceOne());
@@ -1119,7 +1120,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 order.setOrderInterna(c.getLong(c.getColumnIndex(KEY_ORDER_COD_ORDER_INTERNA)));
                 order.setDateReg(DateUtil.getDate(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
                 Client client = new Client();
-                client.setId(c.getInt(c.getColumnIndex(KEY_CLIENT_ID)));
+                client.setId(c.getInt(c.getColumnIndex(KEY_ORDER_CLIENT_COD)));
                 SalesMan seller = new SalesMan();
                 seller.setId(c.getInt(c.getColumnIndex(KEY_ORDER_SELLER_COD)));
                 order.setSeller(seller);

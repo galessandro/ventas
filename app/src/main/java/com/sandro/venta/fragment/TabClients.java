@@ -80,7 +80,7 @@ public class TabClients extends Fragment implements SearchView.OnQueryTextListen
         ControlServicePresenter cControl = new ControlServicePresenter(new ControlServiceInterface() {
             @Override
             public void displayProgressBar() {
-
+                shimmer.startShimmer();
             }
 
             @Override

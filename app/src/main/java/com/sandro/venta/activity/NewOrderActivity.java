@@ -46,6 +46,8 @@ import com.sandro.venta.util.DateUtil;
 import com.sandro.venta.util.LocationTrack;
 import com.sandro.venta.util.SessionManager;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,6 +117,9 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
 
         Intent intent = new Intent(getIntent());
         Client selectedClient = intent.getParcelableExtra("selectedClient");
+        if(StringUtils.isEmpty(selectedClient.getSemaphore())){
+            selectedClient.setSemaphore("V");
+        }
         order.setClient(selectedClient);
 
         findViewsById();
