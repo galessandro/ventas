@@ -51,7 +51,7 @@ public class ListOrderAdapter extends RecyclerView.Adapter<ListOrderAdapter.View
             codOrder += " * ";
         }
         holder.tvOrderCod.setText(codOrder);
-        holder.tvOrderClient.setText(order.getClient().getBusinessName());
+        holder.tvOrderClient.setText(order.getClient().getFullName());
         holder.tvOrderTotalAmount.setText(df.format(order.getTotalAmount()));
         holder.tvOrderDeliveryDate.setText(DateUtil.getFormatDate(order.getDateDelivery(), DateUtil.datePeruFormat));
     }

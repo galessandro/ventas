@@ -73,12 +73,22 @@ public class TabListOrders extends Fragment implements ListOrderAdapter.OnListOr
 
         db = new DatabaseHelper(this.getContext());
 
-        listOrders = db.getOrdersFromToday(salesMan.getId());
+        List<Order> listOrdersTmp = db.getOrdersFromToday(salesMan.getId());
+        removeZeroOrders(listOrdersTmp);
 
         adapter = new ListOrderAdapter(listOrders, this.getContext(), this);
         recyclerView.setAdapter(adapter);
 
         return rootView;
+    }
+
+    private void removeZeroOrders(List<Order> listOrdersTmp) {
+        listOrders = new ArrayList<>();
+        for (Order order: listOrdersTmp) {
+            if(order.getTotalAmount() > 0d){
+                listOrders.add(order);
+            }
+        }
     }
 
     @Override public void onDestroyView() {

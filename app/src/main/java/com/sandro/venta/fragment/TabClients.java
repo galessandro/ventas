@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -15,6 +16,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.sandro.venta.R;
@@ -44,20 +48,24 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnItemSelected;
 import butterknife.Unbinder;
 
 public class TabClients extends Fragment implements SearchView.OnQueryTextListener, ListClientAdapter.OnClientListener {
 
     @BindView(R.id.rcyViewClients) RecyclerView recyclerView;
     @BindView(R.id.shimmer) ShimmerFrameLayout shimmer;
+    @BindView(R.id.spnDays) AppCompatSpinner spinner;
 
     ListClientAdapter adapter;
+    ArrayAdapter<CharSequence> adapterDays;
     Unbinder unbinder;
     private List<Client> listClients;
     private DatabaseHelper db;
     private SessionManager session;
     private Context context;
     private final String TAG = "GGRANADOS";
+    boolean firstLoadDays = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,6 +84,11 @@ public class TabClients extends Fragment implements SearchView.OnQueryTextListen
         db = new DatabaseHelper(this.getContext());
 
         int maxIdControlCustomer = db.getMaxIdControlTable("T002");
+
+        adapterDays = ArrayAdapter.createFromResource(context,
+                R.array.days_array, android.R.layout.simple_spinner_item);
+        adapterDays.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapterDays);
 
         ControlServicePresenter cControl = new ControlServicePresenter(new ControlServiceInterface() {
             @Override
@@ -223,5 +236,32 @@ public class TabClients extends Fragment implements SearchView.OnQueryTextListen
             intent.putExtra("selectedClient", client);
             startActivity(intent);
         }
+    }
+
+    @OnItemSelected(R.id.spnDays)
+    public void spinnerItemSelected(Spinner spinner, int position) {
+        if(firstLoadDays){
+            firstLoadDays = false;
+            return;
+        }
+        CharSequence days = adapterDays.getItem(position);
+        if(days.toString().equals("TODOS")){
+            adapter.setFilter(listClients);
+        } else {
+            List<Client> listClientsFiltered = filterByZona(listClients, days.toString());
+            adapter.setFilter(listClientsFiltered);
+        }
+
+    }
+
+
+    private List<Client> filterByZona(List<Client> listClientsFull, String zona){
+        List<Client> listClientsFiltered = new ArrayList<>();
+        for (Client client: listClientsFull) {
+            if(client.getZona().toLowerCase().contains(zona.toLowerCase())){
+                listClientsFiltered.add(client);
+            }
+        }
+        return listClientsFiltered;
     }
 }

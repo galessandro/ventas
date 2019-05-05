@@ -47,7 +47,7 @@ public class ViewOrderDetailActivity extends AppCompatActivity {
 
     private void loadOrderToView() {
         txtOrderCod.setText(String.valueOf(order.getId()));
-        txtOrderClient.setText(order.getClient().getBusinessName());
+        txtOrderClient.setText(order.getClient().getFullName());
         txtOrderSeller.setText(order.getSeller().getCodSeller());
         txtOrderPaymentTypeView.setText(order.getPaymentType() == Constants.PAYMENT_TYPE_CASH ?
         Constants.PAYMENT_TYPE_DESC_CASH : Constants.PAYMENT_TYPE_DESC_CREDIT);

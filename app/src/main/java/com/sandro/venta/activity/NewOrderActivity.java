@@ -471,7 +471,7 @@ public class NewOrderActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void updateClient(){
-        txtOrderClient.setText(order.getClient().getBusinessName());
+        txtOrderClient.setText(order.getClient().getFullName());
     }
 
     public void updateSalesMan(){

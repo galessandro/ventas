@@ -44,8 +44,8 @@ public class AddProductActivity extends AppCompatActivity {
         lblCodProduct.setText(selectedProduct.getCodProduct());
         lblNameProduct.setText(selectedProduct.getName());
         lblBoxByProduct.setText(String.valueOf(selectedProduct.getBoxBy()));
-        lblPriceTwoProduct.setText(selectedProduct.getPriceTwo().toString());
-        txtPriceProduct.setText(selectedProduct.getPriceTwo().toString());
+        lblPriceTwoProduct.setText(selectedProduct.getPriceThree().toString());
+        txtPriceProduct.setText(selectedProduct.getPriceThree().toString());
         txtPriceProduct.setEnabled(true);
         if(selectedProduct.getFlagPrice() != null && selectedProduct.getFlagPrice().equals(Product.PRODUCT_FLAG_LEVELS_ENABLE)){
             String quantity = txtQuantityProduct.getText().toString().equals("")? "0" :
