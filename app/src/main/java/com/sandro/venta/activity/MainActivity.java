@@ -1,7 +1,9 @@
 package com.sandro.venta.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import android.support.v4.app.Fragment;
@@ -9,10 +11,29 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.sandro.venta.R;
+import com.sandro.venta.api.model.ControlResponse;
+import com.sandro.venta.api.model.CustomerResponse;
+import com.sandro.venta.api.model.ProductResponse;
+import com.sandro.venta.api.service.ControlListServiceInterface;
+import com.sandro.venta.api.service.ControlListServicePresenter;
+import com.sandro.venta.api.service.CustomerServiceInterface;
+import com.sandro.venta.api.service.CustomerServicePresenter;
+import com.sandro.venta.api.service.ProductServiceInterface;
+import com.sandro.venta.api.service.ProductServicePresenter;
+import com.sandro.venta.bean.Client;
+import com.sandro.venta.bean.Control;
+import com.sandro.venta.bean.Product;
+import com.sandro.venta.bean.SalesMan;
 import com.sandro.venta.fragment.TabClients;
 import com.sandro.venta.fragment.TabListOrders;
+import com.sandro.venta.helper.DatabaseHelper;
+import com.sandro.venta.util.SessionManager;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private final String TAG = "GGRANADOS";
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -59,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             mViewPager.setCurrentItem(0);
         }
-
     }
 
     /**

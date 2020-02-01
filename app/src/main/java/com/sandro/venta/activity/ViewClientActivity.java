@@ -45,12 +45,12 @@ public class ViewClientActivity extends AppCompatActivity {
         txtClientZona.setText(client.getZona());
 
         GradientDrawable shape = (GradientDrawable) getResources().getDrawable(R.drawable.circle);
-        int color = Color.RED;
+        int color = Color.GREEN;
 
         if(client.getSemaphore().equals("A")){
             color = Color.rgb(255, 191, 0);
-        } else if(client.getSemaphore().equals("V")){
-            color = Color.GREEN;
+        } else if(client.getSemaphore().equals("R")){
+            color = Color.RED;
         }
 
         shape.setColor(color);

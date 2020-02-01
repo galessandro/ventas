@@ -50,6 +50,7 @@
     <string name="activity_back_warning">¿Esta seguro de salir?\nSe perderan los
         datos ingresados</string>
 
+    <string name="activity_back_exit">¿Esta seguro de salir?</string>
 
     <string name="activity_name_orders">Ordenes</string>
     <string name="activity_order_cod_order">Orden:</string>
@@ -83,6 +84,16 @@
         <item>Nota Pedido</item>
     </string-array>
 
+    <string-array name="days_array">
+        <item>TODOS</item>
+        <item>LU</item>
+        <item>MA</item>
+        <item>MI</item>
+        <item>JU</item>
+        <item>VI</item>
+        <item>SA</item>
+    </string-array>
+
     <string name="activity_order_item_row_cod">Codigo</string>
     <string name="activity_order_item_row_name">Nombre</string>
     <string name="activity_order_item_row_cant">Cant.</string>
@@ -101,7 +112,7 @@
     <string name="activity_product_add_cajapor">Caja por:</string>
     <string name="activity_product_add_precio">Precio:</string>
     <string name="activity_product_add_preciouno">Precio 1:</string>
-    <string name="activity_product_add_preciodos">Precio 2:</string>
+    <string name="activity_product_add_preciodos">Precio:</string>
     <string name="activity_product_add_cantidad">Cantidad:</string>
     <string name="activity_product_add_btn_aceptar">Aceptar</string>
     <string name="product_add_price_hint">Precio</string>
@@ -159,5 +170,7 @@
 
     <string name="imagen_semaforo_desc">Semaforo</string>
 
+    <string name="order_menu_sync">Sincronizar</string>
+    <string name="order_sync_msg">Se sincronizará el teléfono. ¿Desea continuar?</string>
 
 </resources>

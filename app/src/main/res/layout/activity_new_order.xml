@@ -11,6 +11,7 @@
     android:id="@+id/layout_new_order"
     tools:context=".activity.NewOrderActivity">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

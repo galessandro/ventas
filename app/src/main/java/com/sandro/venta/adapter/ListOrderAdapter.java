@@ -46,12 +46,12 @@ public class ListOrderAdapter extends RecyclerView.Adapter<ListOrderAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int i) {
         Order order = listOrders.get(i);
-        String codOrder = String.valueOf(order.getCodOrder());
+        String codOrder = String.valueOf(order.getId());
         if(order.getFlagCloud() == 1 || order.getFlagCloud() == 2){
             codOrder += " * ";
         }
         holder.tvOrderCod.setText(codOrder);
-        holder.tvOrderClient.setText(order.getClient().getBusinessName());
+        holder.tvOrderClient.setText(order.getClient().getFullName());
         holder.tvOrderTotalAmount.setText(df.format(order.getTotalAmount()));
         holder.tvOrderDeliveryDate.setText(DateUtil.getFormatDate(order.getDateDelivery(), DateUtil.datePeruFormat));
     }

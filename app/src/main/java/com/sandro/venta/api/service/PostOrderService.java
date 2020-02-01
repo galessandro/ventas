@@ -14,4 +14,7 @@ public interface PostOrderService {
 
     @POST("orders")
     Call<OrderPost> createOrder(@Body OrderPost order);
+
+    @POST("orders/batch")
+    Call<List<OrderPost>> createOrders(@Body List<OrderPost> orders);
 }

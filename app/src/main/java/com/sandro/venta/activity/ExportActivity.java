@@ -172,8 +172,8 @@ public class ExportActivity extends AppCompatActivity {
             Date date = new Date();
 
             StringBuffer sb = new StringBuffer();
-            sb.append(StringUtils.leftPad(String.valueOf(order.getCodSale()), 8, "0"))
-                    .append(StringUtils.leftPad(String.valueOf(order.getCodOrder()), 4, "0"))
+            sb.append(StringUtils.leftPad(String.valueOf(order.getId()), 8, "0"))
+                    .append(StringUtils.leftPad(String.valueOf(order.getId()), 4, "0"))
                     .append(DateUtil.getFormatDate(order.getDateOrder(), DateUtil.dateSimpleFormat))
                     .append(StringUtils.leftPad(String.valueOf(order.getClient().getCodClient()), 8, "0"))
                     .append(order.getSeller().getCodSeller().substring(0, 2))
@@ -189,7 +189,7 @@ public class ExportActivity extends AppCompatActivity {
             bufferedWriter = new BufferedWriter(new FileWriter(fileItem, true));
             for (Item item : order.getItems()) {
                 sb = new StringBuffer();
-                sb.append(StringUtils.leftPad(String.valueOf(item.getCodSale()), 8, "0"))
+                sb.append(StringUtils.leftPad(String.valueOf(item.getId()), 8, "0"))
                         .append(StringUtils.rightPad(item.getProduct().getCodProduct(), 9, " "))
                         .append(StringUtils.leftPad(String.valueOf(item.getQuantity()), 6, " "))
                         .append(StringUtils.leftPad(String.valueOf(item.getPrice()), 10, " "))

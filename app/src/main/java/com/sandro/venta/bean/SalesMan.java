@@ -14,7 +14,6 @@ import java.util.List;
 public class SalesMan implements Parcelable {
 
     private int id;
-    private int controlId;
     private String imei;
     private String codSeller;
     private String name;
@@ -32,16 +31,7 @@ public class SalesMan implements Parcelable {
         this.user = in.readString();
         this.pass = in.readString();
         this.imei = in.readString();
-        this.controlId = in.readInt();
         this.id = in.readInt();
-    }
-
-    public int getControlId() {
-        return controlId;
-    }
-
-    public void setControlId(int controlId) {
-        this.controlId = controlId;
     }
 
     public String getImei() {
@@ -104,7 +94,6 @@ public class SalesMan implements Parcelable {
         parcel.writeString(getUser());
         parcel.writeString(getPass());
         parcel.writeString(getImei());
-        parcel.writeInt(getControlId());
         parcel.writeInt(getId());
     }
 
@@ -122,7 +111,6 @@ public class SalesMan implements Parcelable {
         SalesMan salesMan = new SalesMan();
         salesMan.setId(seller.getId());
         salesMan.setCodSeller(seller.getCODVEN());
-        salesMan.setControlId(seller.getControlId());
         salesMan.setImei(seller.getIMEI());
         salesMan.setName(seller.getNOMVEN());
         salesMan.setUser(seller.getCODVEN());
@@ -138,7 +126,6 @@ public class SalesMan implements Parcelable {
             SalesMan salesMan = new SalesMan();
             salesMan.setId(seller.getId());
             salesMan.setCodSeller(seller.getCODVEN());
-            salesMan.setControlId(seller.getControlId());
             salesMan.setImei(seller.getIMEI());
             salesMan.setName(seller.getNOMVEN());
             salesMan.setUser(seller.getCODVEN());

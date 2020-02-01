@@ -124,7 +124,7 @@ public class OrderAdapter extends ArrayAdapter<Order> {
         // Get the current product
         final Order order = getItem(position);
 
-        holder.orderCod.setText(String.valueOf(order.getCodOrder()));
+        holder.orderCod.setText(String.valueOf(order.getId()));
         holder.orderClient.setText(order.getClient().getBusinessName());
         holder.orderTotalAmount.setText(df.format(order.getTotalAmount()));
         holder.orderDeliveryDate.setText(DateUtil.getFormatDate(order.getDateDelivery(), DateUtil.datePeruFormat));

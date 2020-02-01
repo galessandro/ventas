@@ -1,9 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Ventas Online</string>
-    <string name="nav_menu_cerrarVenta">Cerrar ventas</string>
+    <string name="nav_menu_cerrarVenta">Close Sales</string>
+    <string name="nav_menu_parametros">Settings</string>
+    <string name="nav_menu_sync">Sincronizar</string>
     <string name="nav_menu_clientes">Clientes</string>
-    <string name="nav_menu_parametros">Configuración</string>
+    <string name="nav_menu_exportar">Exportar</string>
+    <string name="nav_menu_new_order">Nueva Orden</string>
+    <string name="nav_menu_email_author">dimesandro@gmail.com</string>
     <string name="navigation_drawer_close">AA</string>
     <string name="navigation_drawer_open">BB</string>
+    <string name="author">dimesandro@gmail.com</string>
+
+
+    <string name="simbolo_nuevo_sol">S/.</string>
+    <string name="zero_soles">S/. 0.0</string>
+
+    <string name="login_title">Ventas Online</string>
+    <string name="login_user">Usuario:</string>
+    <string name="login_pass">Clave:</string>
+    <string name="login_button">Ingresar</string>
+    <string name="login_user_error">Usuario y/o o clave son invalidos.</string>
+    <string name="login_version">2019-001</string>
+
+    <string name="activity_name_clients">Cliente</string>
+    <string name="activity_client_lbl_search">Ingresar datos cliente</string>
+    <string name="activity_client_lbl_id">Cod. Cliente:</string>
+    <string name="activity_client_lbl_name">Nombres:</string>
+    <string name="activity_client_lbl_first_name">Nombres:</string>
+    <string name="activity_client_lbl_last_name">Apellidos:</string>
+    <string name="activity_client_lbl_address">Dirección:</string>
+    <string name="activity_client_lbl_ruc">RUC:</string>
+    <string name="activity_client_lbl_dni">DNI:</string>
+    <string name="activity_client_btn_save">Grabar</string>
+    <string name="activity_client_btn_cancel">Cancelar</string>
+    <string name="activity_client_lbl_documento">Documento:</string>
+    <string name="activity_client_lbl_ubigeo">Ubigeo:</string>
+    <string name="activity_client_lbl_zona">Zona:</string>
+
+    <string name="client_add_error_required_value">Este valor es requerido</string>
+    <string name="client_add_error_required_id_value">Ingrese el RUC o DNI</string>
+
+    <string name="client_register_success">Se registro correctamente el cliente</string>
+
+
+    <string name="activity_back_close_yes">Si</string>
+    <string name="activity_back_close_no">No</string>
+    <string name="activity_back_title">Mensaje</string>
+    <string name="activity_back_warning">¿Esta seguro de salir?\nSe perderan los
+        datos ingresados</string>
+
+    <string name="activity_back_exit">¿Esta seguro de salir?</string>
+
+    <string name="activity_name_orders">Ordenes</string>
+    <string name="activity_order_cod_order">Orden:</string>
+    <string name="activity_order_client">Cliente:</string>
+    <string name="activity_order_seller">Vendedor:</string>
+    <string name="activity_order_type_payment">Forma de Pago:</string>
+    <string name="activity_order_type_payment_voucher">Comprobante:</string>
+    <string name="activity_order_date">Fecha de pedido:</string>
+    <string name="activity_order_delivery_date">Fecha de entrega:</string>
+    <string name="activity_order_products">Items:</string>
+    <string name="activity_order_total">Total:</string>
+    <string name="order_warning_save">¿Esta seguro de grabar el pedido?</string>
+    <string name="order_error_no_client">Seleccione un cliente</string>
+    <string name="order_error_no_product">Seleccione un producto</string>
+    <string name="order_error_no_quantity">Verifique las cantidades</string>
+    <string name="order_error_date_error">La fecha de entrega no puede ser menor a
+    la fecha del pedido</string>
+    <string name="order_warning_save_accept">Aceptar</string>
+    <string name="order_warning_save_cancel">Cancelar</string>
+    <string name="order_register_success">Se registro correctamente el pedido</string>
+    <string name="order_logout">¿Esta seguro que desea salir de la aplicacion?</string>
+
+    <string-array name="paymentTypes">
+        <item>Contado</item>
+        <item>Credito</item>
+    </string-array>
+
+    <string-array name="paymentVoucherTypes">
+        <item>Boleta</item>
+        <item>Factura</item>
+        <item>Nota Pedido</item>
+    </string-array>
+
+    <string-array name="days_array">
+        <item>TODOS</item>
+        <item>LU</item>
+        <item>MA</item>
+        <item>MI</item>
+        <item>JU</item>
+        <item>VI</item>
+        <item>SA</item>
+    </string-array>
+
+    <string name="activity_order_item_row_cod">Codigo</string>
+    <string name="activity_order_item_row_name">Nombre</string>
+    <string name="activity_order_item_row_cant">Cant.</string>
+    <string name="activity_order_item_row_price">Precio</string>
+    <string name="activity_order_item_row_subto">Subtotal</string>
+
+    <string name="activity_order_menu_add_product">Agregar producto</string>
+    <string name="activity_order_menu_add_cliente">Seleccionar Cliente</string>
+    <string name="activity_order_menu_save_order">Grabar orden</string>
+
+
+    <string name="activity_product_search_desc">Ingrese producto</string>
+
+    <string name="activity_product_add_codigo">Código:</string>
+    <string name="activity_product_add_nombre">Nombre:</string>
+    <string name="activity_product_add_cajapor">Caja por:</string>
+    <string name="activity_product_add_precio">Precio:</string>
+    <string name="activity_product_add_preciouno">Precio 1:</string>
+    <string name="activity_product_add_preciodos">Precio:</string>
+    <string name="activity_product_add_cantidad">Cantidad:</string>
+    <string name="activity_product_add_btn_aceptar">Aceptar</string>
+    <string name="product_add_price_hint">Precio</string>
+    <string name="product_add_quantity_hint">Cantidad</string>
+
+    <string name="product_add_error">Este valor es requerido</string>
+    <string name="product_add_error_zero">El valor debe ser mayor a 0</string>
+    <string name="product_add_error_product_duplicate">
+        El producto ya ha sido selccionado. Ingrese otro</string>
+
+    <string name="activity_sync_items">Sincronizar</string>
+    <string name="activity_sync_no_check_items">Seleccione un item a sincronizar</string>
+
+    <string name="activity_sync_no_found_file">No se encontro el archivo
+        a sincronizar en el telefono</string>
+    <string name="activity_sync_no_read_line">Ocurrio un error al intentar leer
+    el archivo</string>
+
+    <string name="activity_sync_no_found_file_cliente">No se encontro el archivo de clientes
+        a sincronizar en el telefono</string>
+    <string name="activity_sync_no_read_line_cliente">Ocurrio un error al intentar leer
+    el archivo de clientes</string>
+    <string name="activity_sync_no_found_file_producto">No se encontro el archivo de productos
+        a sincronizar en el telefono</string>
+    <string name="activity_sync_no_read_line_producto">Ocurrio un error al intentar leer
+    el archivo de productos</string>
+    <string name="activity_sync_warning">Se sincronizaran los itemPosts seleccionados\n
+        ¿Esta seguro de continuar?</string>
+    <string name="activity_sync_success">Se realizo la sincronizacion correctamente</string>
+    <string name="order_row_cod_order">Cod.</string>
+    <string name="order_row_name_client">Cliente</string>
+    <string name="order_row_total_amount">Total</string>
+    <string name="order_row_total_amount_with_symbol">S/. Total</string>
+    <string name="order_row_delivery_date">Fec. entrega</string>
+
+
+    <string name="export_ini_date">Seleccione la fecha</string>
+    <string name="export_btn_export">Exportar</string>
+    <string name="export_result_no_order">No se encontro resultados para la fecha indicada</string>
+    <string name="export_result_success">Se genero correctamente las ordenes registradas el dia %1$s</string>
+    <string name="permission_storage_rationale">Se necesita permiso para acceder a los archivos de productos y clientes.</string>
+    <string name="permission_storage_save">Se necesita permiso para registrar las ordenes.</string>
+    <string name="ok">OK</string>
+    <string name="permissions_not_granted">No cuenta con los permisos necesarios.</string>
+    <string name="permision_available_storage">Se concedio permiso para acceder a los archivos.</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="tab_main_clientes">Clientes</string>
+    <string name="tab_main_pedidos">Pedidos</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="action_search">Buscar</string>
+    <string name="action_client_btn_new_order">Realizar pedido</string>
+    <string name="permission_imei_read">Se necesita permiso para acceder al estado del telefono</string>
+
+    <string name="imagen_semaforo_desc">Semaforo</string>
+
+    <string name="order_menu_sync">Sincronizar</string>
+    <string name="order_sync_msg">Se sincronizará el teléfono. ¿Desea continuar?</string>
 </resources>

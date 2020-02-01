@@ -20,35 +20,21 @@ import retrofit2.http.POST;
  */
 public class Order implements Parcelable{
 
-    public static int PAYMENT_TYPE_CASH = 1;
-    public static int PAYMENT_TYPE_CREDIT = 2;
-    public static int PAYMENT_TYPE_VOUCHER_BOLETA = 1;
-    public static int PAYMENT_TYPE_VOUCHER_FACTURA = 2;
-    public static int PAYMENT_TYPE_VOUCHER_NOTA_PEDIDO = 11;
-    public static int CLOUD_SAVE_SUCCESS = 0;
-    public static int CLOUD_SAVE_ERROR = 1;
-    public static int CLOUD_SAVE_SERVER = 2;
-    public static String PAYMENT_TYPE_DESC_CASH = "Contado";
-    public static String PAYMENT_TYPE_DESC_CREDIT = "Credito";
-    public static String PAYMENT_TYPE_VOUCHER_DESC_BOLETA = "Boleta";
-    public static String PAYMENT_TYPE_VOUCHER_DESC_FACTURA = "Factura";
-    public static String PAYMENT_TYPE_VOUCHER_DESC_NOTA = "Nota Pedido";
-    private int codSale;
-    private int codOrder;
-    private Date dateOrder;
-    private Client client;
-    private SalesMan seller;
-    private Date dateDelivery;
-    private List<Item> items;
-    private Date dateReg;
+    private int id;
     private int paymentType;
     private int paymentVoucherType;
+    private int flagCloud;
+    private Date dateOrder;
+    private Date dateDelivery;
+    private Date dateReg;
+    private Client client;
+    private SalesMan seller;
     private String imei;
+    private String semaphore;
     private double latitude;
     private double longitude;
-    private String semaphore;
-    private int flagCloud;
     private long orderInterna;
+    private List<Item> items;
 
     public Order (){
         items = new ArrayList<>();
@@ -56,8 +42,7 @@ public class Order implements Parcelable{
 
     private Order(Parcel in) {
         super();
-        this.codSale = in.readInt();
-        this.codOrder = in.readInt();
+        this.id = in.readInt();
         this.dateOrder = new Date(in.readLong());
         this.client = in.readParcelable(Client.class.getClassLoader());
         this.seller = in.readParcelable(SalesMan.class.getClassLoader());
@@ -68,6 +53,14 @@ public class Order implements Parcelable{
         this.paymentVoucherType = in.readInt();
         this.flagCloud = in.readInt();
         this.orderInterna = in.readLong();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getImei() {
@@ -100,22 +93,6 @@ public class Order implements Parcelable{
 
     public void setSemaphore(String semaphore) {
         this.semaphore = semaphore;
-    }
-
-    public int getCodSale() {
-        return codSale;
-    }
-
-    public void setCodSale(int codSale) {
-        this.codSale = codSale;
-    }
-
-    public int getCodOrder() {
-        return codOrder;
-    }
-
-    public void setCodOrder(int codOrder) {
-        this.codOrder = codOrder;
     }
 
     public Date getDateOrder() {
@@ -213,8 +190,7 @@ public class Order implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeInt(getCodSale());
-        parcel.writeInt(getCodOrder());
+        parcel.writeInt(getId());
         parcel.writeLong(getDateOrder().getTime());
         parcel.writeParcelable(getClient(), flags);
         parcel.writeParcelable(getSeller(), flags);
@@ -238,8 +214,7 @@ public class Order implements Parcelable{
 
     public OrderPost toPostOrder(){
         OrderPost post = new OrderPost();
-        post.setCodsale(StringUtils.leftPad(String.valueOf(this.getCodSale()), 8, "0"));
-        post.setCodorder(StringUtils.leftPad(String.valueOf(this.getCodOrder()), 4, "0"));
+        post.setAppId(this.getId());
         post.setDateorder(DateUtil.getFormatDate(this.getDateOrder(), DateUtil.dateSimpleFormat));
         post.setCustomerId(this.getClient().getId());
         post.setSellerId(this.getSeller().getId());
@@ -250,14 +225,14 @@ public class Order implements Parcelable{
         post.setLatitude(this.getLatitude());
         post.setLongitude(this.getLongitude());
         post.setStatusDownloaded("1");
-        post.setSemaphore(this.getClient().getSemaphore());
+        post.setSemaphore(this.getSemaphore());
         post.setOrderInterna(this.getOrderInterna());
 
         List<ItemPost> itemPostList = new ArrayList<>();
 
         for (Item item: this.getItems()) {
             ItemPost itemPost = new ItemPost();
-            itemPost.setCodsale(post.getCodsale());
+            itemPost.setAppId(this.getId());
             itemPost.setProductId(item.getProduct().getId());
             itemPost.setTypeunit(item.getProduct().getTypeUnit());
             itemPost.setQuantity(item.getQuantity());

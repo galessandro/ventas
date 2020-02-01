@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.sandro.venta.R;
 import com.sandro.venta.adapter.ItemViewAdapter;
 import com.sandro.venta.bean.Order;
+import com.sandro.venta.util.Constants;
 import com.sandro.venta.util.DateUtil;
 
 import java.text.DecimalFormat;
@@ -45,19 +46,19 @@ public class ViewOrderDetailActivity extends AppCompatActivity {
     }
 
     private void loadOrderToView() {
-        txtOrderCod.setText(String.valueOf(order.getCodSale()));
-        txtOrderClient.setText(order.getClient().getBusinessName());
+        txtOrderCod.setText(String.valueOf(order.getId()));
+        txtOrderClient.setText(order.getClient().getFullName());
         txtOrderSeller.setText(order.getSeller().getCodSeller());
-        txtOrderPaymentTypeView.setText(order.getPaymentType() == Order.PAYMENT_TYPE_CASH ?
-        Order.PAYMENT_TYPE_DESC_CASH : Order.PAYMENT_TYPE_DESC_CREDIT);
+        txtOrderPaymentTypeView.setText(order.getPaymentType() == Constants.PAYMENT_TYPE_CASH ?
+        Constants.PAYMENT_TYPE_DESC_CASH : Constants.PAYMENT_TYPE_DESC_CREDIT);
         int codPaymentVoucherType = order.getPaymentVoucherType();
         String codPaymentVoucherTypeDesc = "";
-        if(codPaymentVoucherType == Order.PAYMENT_TYPE_VOUCHER_BOLETA){
-            codPaymentVoucherTypeDesc = Order.PAYMENT_TYPE_VOUCHER_DESC_BOLETA;
-        } else if(codPaymentVoucherType == Order.PAYMENT_TYPE_VOUCHER_FACTURA){
-            codPaymentVoucherTypeDesc = Order.PAYMENT_TYPE_VOUCHER_DESC_FACTURA;
+        if(codPaymentVoucherType == Constants.PAYMENT_TYPE_VOUCHER_BOLETA){
+            codPaymentVoucherTypeDesc = Constants.PAYMENT_TYPE_VOUCHER_DESC_BOLETA;
+        } else if(codPaymentVoucherType == Constants.PAYMENT_TYPE_VOUCHER_FACTURA){
+            codPaymentVoucherTypeDesc = Constants.PAYMENT_TYPE_VOUCHER_DESC_FACTURA;
         } else {
-            codPaymentVoucherTypeDesc = Order.PAYMENT_TYPE_VOUCHER_DESC_NOTA;
+            codPaymentVoucherTypeDesc = Constants.PAYMENT_TYPE_VOUCHER_DESC_NOTA;
         }
         txtOrderPaymentVoucherTypeView.setText(codPaymentVoucherTypeDesc);
         txtOrderDate.setText(DateUtil.getFormatDate(order.getDateOrder(), DateUtil.datePeruFormat));

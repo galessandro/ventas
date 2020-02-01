@@ -41,8 +41,7 @@ public class ListClientAdapter extends RecyclerView.Adapter<ListClientAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int i) {
         Client client = lstClients.get(i);
-        holder.tvDni.setText(client.getDni());
-        holder.tvName.setText(client.getBusinessName());
+        holder.tvName.setText(client.getFullName());
     }
 
     public Client getItem(int position){
@@ -55,7 +54,6 @@ public class ListClientAdapter extends RecyclerView.Adapter<ListClientAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.txtItemClientRuc) TextView tvDni;
         @BindView(R.id.txtItemClientBussinnesName) TextView tvName;
         OnClientListener onClientListener;
 

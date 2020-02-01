@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.sandro.venta.api.model.CustomerResponse;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -234,6 +236,9 @@ public class Client implements Parcelable {
             client.setLastName(customerResponse.getNOMBRE());
             client.setCodSeller(customerResponse.getCODVEN());
             client.setCodClient(Integer.parseInt(customerResponse.getCODCLI()));
+            if(StringUtils.isEmpty(customerResponse.getSEMAFORO())){
+                customerResponse.setSEMAFORO("V");
+            }
             client.setSemaphore(customerResponse.getSEMAFORO());
             client.setCodEntidad(customerResponse.getCODENTIDAD());
             client.setUbigeo(customerResponse.getUBIGEOCOMPLETO());

@@ -24,14 +24,21 @@ public class CustomerServicePresenter {
 
     private Observable<List<CustomerResponse>> getCustomersObservable(){
         return RetrofitClient.getRetrofitClient().create(CustomerService.class)
-                .getCustomers(null)
+                .getCustomers(null, null)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private Observable<List<CustomerResponse>> getCustomersBySellerObservable(String codVen){
+        return RetrofitClient.getRetrofitClient().create(CustomerService.class)
+                .getCustomers(null, codVen)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     private Observable<List<CustomerResponse>> getCustomersByControlIdObservable(Integer controlId){
         return RetrofitClient.getRetrofitClient().create(CustomerService.class)
-                .getCustomers(controlId)
+                .getCustomers(controlId, null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -77,6 +84,10 @@ public class CustomerServicePresenter {
 
     public void getCustomersByControlId(Integer controlId){
         getCustomersByControlIdObservable(controlId).subscribeWith(getCustomersObserver());
+    }
+
+    public void getCustomersBySeller(String codVen){
+        getCustomersBySellerObservable(codVen).subscribeWith(getCustomersObserver());
     }
 
     public void getCustomersByControlRange(Integer controlIdFrom, Integer controlIdTo){
