@@ -24,6 +24,9 @@ public class ViewClientActivity extends AppCompatActivity {
     @BindView(R.id.txtViewClientUbigeo) TextView txtClientUbigeo;
     @BindView(R.id.txtViewClientZona) TextView txtClientZona;
     @BindView(R.id.imgViewSemaphore) ImageView imgViewSemaphore;
+    @BindView(R.id.textView11) TextView txtObs1;
+    @BindView(R.id.textView12) TextView txtObs2;
+
     private Client client;
     private static final int REQUEST_NEW_ORDER_CODE = 104;
 
@@ -44,6 +47,9 @@ public class ViewClientActivity extends AppCompatActivity {
         txtClientUbigeo.setText(client.getUbigeo());
         txtClientZona.setText(client.getZona());
 
+        txtObs1.setText(client.getObs1());
+        txtObs2.setText(client.getObs2());
+
         GradientDrawable shape = (GradientDrawable) getResources().getDrawable(R.drawable.circle);
         int color = Color.GREEN;
 
@@ -51,6 +57,10 @@ public class ViewClientActivity extends AppCompatActivity {
             color = Color.rgb(255, 191, 0);
         } else if(client.getSemaphore().equals("R")){
             color = Color.RED;
+        } else if(client.getSemaphore().equals("N")){
+            color = Color.YELLOW;
+        } else if(client.getSemaphore().equals("V")){
+            color = Color.GREEN;
         }
 
         shape.setColor(color);

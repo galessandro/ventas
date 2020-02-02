@@ -32,6 +32,9 @@ public class Client implements Parcelable {
     private String fullName;
     private Date dateReg;
 
+    private String obs1;
+    private String obs2;
+
     public Client() {
     }
 
@@ -63,6 +66,9 @@ public class Client implements Parcelable {
         this.zona = in.readString();
         this.codEntidad = in.readString();
         this.fullName = in.readString();
+        this.obs1 = in.readString();
+        this.obs2 = in.readString();
+
     }
 
     public String getCodSeller() {
@@ -189,6 +195,22 @@ public class Client implements Parcelable {
         this.fullName = fullName;
     }
 
+    public String getObs1() {
+        return obs1;
+    }
+
+    public void setObs1(String obs1) {
+        this.obs1 = obs1;
+    }
+
+    public String getObs2() {
+        return obs2;
+    }
+
+    public void setObs2(String obs2) {
+        this.obs2 = obs2;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -210,6 +232,9 @@ public class Client implements Parcelable {
         parcel.writeString(getZona());
         parcel.writeString(getCodEntidad());
         parcel.writeString(getFullName());
+
+        parcel.writeString(getObs1());
+        parcel.writeString(getObs2());
     }
 
     public static final Parcelable.Creator<Client> CREATOR = new Parcelable.Creator<Client>() {
@@ -245,6 +270,10 @@ public class Client implements Parcelable {
             client.setZona(customerResponse.getZONA());
             client.setFullName(customerResponse.getNOMBRE());
             client.setDocumento(customerResponse.getNDOCUMENTO());
+
+            client.setObs1(customerResponse.getOBS1());
+            client.setObs2(customerResponse.getOBS2());
+
             clientList.add(client);
         }
         return clientList;

@@ -63,6 +63,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_CLIENT_COD_ENTIDAD = "cod_entidad";
     private static final String KEY_CLIENT_UBIGEO = "ubigeo";
     private static final String KEY_CLIENT_ZONA = "zona";
+    private static final String KEY_CLIENT_OBS1 = "obs1";
+    private static final String KEY_CLIENT_OBS2 = "obs2";
 
     // Orders Table - column names
     private static final String KEY_ORDER_ID = "id";
@@ -159,6 +161,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_CLIENT_ZONA + " TEXT," +
             KEY_CLIENT_FULL_NAME + " TEXT," +
             KEY_CLIENT_COD_ENTIDAD + " TEXT," +
+            KEY_CLIENT_OBS1 + " TEXT," +
+            KEY_CLIENT_OBS2 + " TEXT," +
             KEY_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP)";
 
     private static final String CREATE_TABLE_ORDERS = "CREATE TABLE "
@@ -405,6 +409,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_CLIENT_FULL_NAME, client.getFullName());
         values.put(KEY_CLIENT_UBIGEO, client.getUbigeo());
         values.put(KEY_CLIENT_ZONA, client.getZona());
+        values.put(KEY_CLIENT_OBS1, client.getObs1());
+        values.put(KEY_CLIENT_OBS2, client.getObs2());
         values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
 
         return db.insert(TABLE_CLIENTS, null, values);
@@ -430,6 +436,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values.put(KEY_CLIENT_FULL_NAME, client.getFullName());
                 values.put(KEY_CLIENT_UBIGEO, client.getUbigeo());
                 values.put(KEY_CLIENT_ZONA, client.getZona());
+                values.put(KEY_CLIENT_OBS1, client.getObs1());
+                values.put(KEY_CLIENT_OBS2, client.getObs2());
                 values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
                 values.put(KEY_CLIENT_ID, client.getId());
                 db.insert(TABLE_CLIENTS, null, values);
@@ -520,7 +528,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values.put(KEY_CLIENT_COD_ENTIDAD, client.getCodEntidad());
                 values.put(KEY_CLIENT_FULL_NAME, client.getFullName());
                 values.put(KEY_CLIENT_UBIGEO, client.getUbigeo());
-                values.put(KEY_CLIENT_ZONA, client.getZona());
+                values.put(KEY_CLIENT_OBS1, client.getObs1());
+                values.put(KEY_CLIENT_OBS2, client.getObs2());
                 values.put(KEY_CREATED_AT, DateUtil.getCurrentDateTime());
                 values.put(KEY_CLIENT_ID, client.getId());
                 int id = (int) db.insertWithOnConflict(TABLE_CLIENTS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
@@ -653,6 +662,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             client.setFullName(c.getString(c.getColumnIndex(KEY_CLIENT_FULL_NAME)));
             client.setUbigeo(c.getString(c.getColumnIndex(KEY_CLIENT_UBIGEO)));
             client.setZona(c.getString(c.getColumnIndex(KEY_CLIENT_ZONA)));
+            client.setObs1(c.getString(c.getColumnIndex(KEY_CLIENT_OBS1)));
+            client.setObs2(c.getString(c.getColumnIndex(KEY_CLIENT_OBS2)));
         }
 
         return client;
@@ -685,6 +696,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 client.setFullName(c.getString(c.getColumnIndex(KEY_CLIENT_FULL_NAME)));
                 client.setUbigeo(c.getString(c.getColumnIndex(KEY_CLIENT_UBIGEO)));
                 client.setZona(c.getString(c.getColumnIndex(KEY_CLIENT_ZONA)));
+                client.setObs1(c.getString(c.getColumnIndex(KEY_CLIENT_OBS1)));
+                client.setObs2(c.getString(c.getColumnIndex(KEY_CLIENT_OBS2)));
                 // adding to client list
                 clients.add(client);
             } while (c.moveToNext());
@@ -747,6 +760,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 client.setFullName(c.getString(c.getColumnIndex(KEY_CLIENT_FULL_NAME)));
                 client.setUbigeo(c.getString(c.getColumnIndex(KEY_CLIENT_UBIGEO)));
                 client.setZona(c.getString(c.getColumnIndex(KEY_CLIENT_ZONA)));
+                client.setObs1(c.getString(c.getColumnIndex(KEY_CLIENT_OBS1)));
+                client.setObs2(c.getString(c.getColumnIndex(KEY_CLIENT_OBS2)));
                 // adding to client list
                 clients.add(client);
             } while (c.moveToNext());
